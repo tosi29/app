@@ -39,10 +39,14 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           : '/api/comments';
         
         const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
         const data = await response.json();
         setComments(data);
       } catch (error) {
         console.error('Error fetching comments:', error);
+        // In a real app, you might want to show an error message to the user
       } finally {
         setLoading(false);
       }
