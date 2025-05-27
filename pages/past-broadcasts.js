@@ -43,6 +43,10 @@ export default function PastBroadcasts() {
                     <a href="#" className={styles.link}>
                       再生
                     </a>
+                    {' | '}
+                    <Link href={`/comments?episodeId=${broadcast.id}`} className={styles.link}>
+                      コメント
+                    </Link>
                   </td>
                 </tr>
               ))}
