@@ -28,6 +28,11 @@
     transform: scale(0.75);
     transform-origin: top left;
   }
+  
+  .commentTooltip {
+    width: 200px;
+    font-size: 0.9rem;
+  }
 }
 
 .graph {
