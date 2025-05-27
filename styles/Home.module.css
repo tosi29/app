@@ -72,3 +72,50 @@
   height: 1em;
   margin-left: 0.5rem;
 }
+
+.tableContainer {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 1rem;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.table th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.link {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.backToHome {
+  margin: 3rem 0 0;
+}
+
+.linkContainer {
+  margin: 2rem 0;
+}
