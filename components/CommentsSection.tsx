@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import commentStyles from '../styles/Comments.module.css';
 
@@ -23,7 +23,7 @@ interface CommentsSectionProps {
   selectedEpisodeId?: number;
 }
 
-export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): JSX.Element {
+export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
 
   // Sample data for comments (in a real app, this would come from an API or props)

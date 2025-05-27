@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styles from '../styles/Tabs.module.css';
 
 interface TabProps {
@@ -11,7 +11,7 @@ interface TabProps {
   onTabChange: (tabId: string) => void;
 }
 
-export default function Tabs({ active, tabs, onTabChange }: TabProps): JSX.Element {
+export default function Tabs({ active, tabs, onTabChange }: TabProps): React.ReactNode {
   return (
     <div className={styles.tabsContainer}>
       <div className={styles.tabsHeader}>
