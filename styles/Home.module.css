@@ -103,6 +103,18 @@
   background-color: #f1f1f1;
 }
 
+.series-basic {
+  background-color: rgba(144, 238, 144, 0.2); /* Light green */
+}
+
+.series-guest {
+  background-color: rgba(173, 216, 230, 0.2); /* Light blue */
+}
+
+.series-community {
+  background-color: rgba(255, 182, 193, 0.2); /* Light pink */
+}
+
 .link {
   color: #0070f3;
   text-decoration: none;

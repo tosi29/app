@@ -16,6 +16,7 @@ interface PastBroadcast {
   date: string;
   title: string;
   description: string;
+  series: string;
 }
 
 interface CommentsSectionProps {
@@ -100,6 +101,18 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     return broadcast ? broadcast.title : '不明なエピソード';
   };
 
+  // Function to get episode series by id
+  const getEpisodeSeries = (episodeId: number): string => {
+    const broadcast = pastBroadcasts.find(b => b.id === episodeId);
+    return broadcast ? broadcast.series : '';
+  };
+
+  // Function to get series CSS class name
+  const getSeriesClassName = (episodeId: number): string => {
+    const series = getEpisodeSeries(episodeId);
+    return series ? `commentDot-${series.toLowerCase().split(' ')[0]}` : '';
+  };
+
   // Filter comments if selectedEpisodeId is provided
   const filteredComments = selectedEpisodeId 
     ? comments.filter(comment => comment.episodeId === selectedEpisodeId)
@@ -165,6 +178,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
             {filteredComments.map((comment) => {
               const x = 50 + comment.opinionScore * 500; // Scale to fit within the graph
               const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
+              const seriesClass = getSeriesClassName(comment.episodeId);
               
               return (
                 <circle
@@ -172,7 +186,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   cx={x}
                   cy={y}
                   r="8"
-                  className={commentStyles.commentDot}
+                  className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''}`}
                   onMouseOver={() => handleMouseOver(comment)}
                   onMouseOut={handleMouseOut}
                 />
@@ -189,7 +203,12 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 top: `${550 - hoveredComment.positiveScore * 500 - 20}px`,
               }}
             >
-              <p className={commentStyles.commentEpisode}>{getEpisodeTitle(hoveredComment.episodeId)}</p>
+              <p className={commentStyles.commentEpisode}>
+                {getEpisodeTitle(hoveredComment.episodeId)} 
+                <span className={commentStyles.commentSeries}>
+                  ({getEpisodeSeries(hoveredComment.episodeId)})
+                </span>
+              </p>
               <p className={commentStyles.commentText}>{hoveredComment.text}</p>
               <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
             </div>
@@ -197,10 +216,28 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
         </div>
 
         <div className={commentStyles.legend}>
-          <div className={commentStyles.legendItem}>
-            <div className={commentStyles.legendColorBox}></div>
-            <div>コメント</div>
-          </div>
+          {!selectedEpisodeId && (
+            <>
+              <div className={commentStyles.legendItem}>
+                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
+                <div>Basic Series</div>
+              </div>
+              <div className={commentStyles.legendItem}>
+                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
+                <div>Guest Series</div>
+              </div>
+              <div className={commentStyles.legendItem}>
+                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
+                <div>Community Series</div>
+              </div>
+            </>
+          )}
+          {selectedEpisodeId && (
+            <div className={commentStyles.legendItem}>
+              <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(selectedEpisodeId)]}`}></div>
+              <div>{getEpisodeSeries(selectedEpisodeId)}</div>
+            </div>
+          )}
         </div>
       </div>
     </>

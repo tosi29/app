@@ -60,6 +60,18 @@
   transition: fill 0.2s, r 0.2s;
 }
 
+.commentDot-basic {
+  fill: #90ee90; /* Green */
+}
+
+.commentDot-guest {
+  fill: #add8e6; /* Blue */
+}
+
+.commentDot-community {
+  fill: #ffb6c1; /* Pink */
+}
+
 .commentDot:hover {
   fill: #ff6b6b;
 }
@@ -81,6 +93,13 @@
   font-size: 12px;
   font-weight: bold;
   color: #0070f3;
+}
+
+.commentSeries {
+  font-size: 11px;
+  color: #666;
+  margin-left: 5px;
+  font-weight: normal;
 }
 
 .commentText {
