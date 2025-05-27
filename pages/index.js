@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -19,6 +20,12 @@ export default function Home() {
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
         </p>
+
+        <div className={styles.linkContainer}>
+          <Link href="/past-broadcasts" className={styles.link}>
+            過去の配信一覧を見る →
+          </Link>
+        </div>
       </main>
 
       <footer className={styles.footer}>
