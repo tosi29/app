@@ -4,11 +4,20 @@ import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 import commentStyles from '../styles/Comments.module.css'
 
+interface Comment {
+  id: number;
+  episodeId: number;
+  text: string;
+  positiveScore: number; // 0 to 1 where 1 is most positive
+  opinionScore: number; // 0 to 1 where 1 is pure opinion (vs reaction)
+  author: string;
+}
+
 export default function Comments() {
-  const [hoveredComment, setHoveredComment] = useState(null);
+  const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
 
   // Sample data for comments
-  const comments = [
+  const comments: Comment[] = [
     { 
       id: 1, 
       episodeId: 1, 
@@ -76,12 +85,12 @@ export default function Comments() {
   ];
 
   // Handle mouse over comment dot
-  const handleMouseOver = (comment) => {
+  const handleMouseOver = (comment: Comment): void => {
     setHoveredComment(comment);
   };
 
   // Handle mouse out from comment dot
-  const handleMouseOut = () => {
+  const handleMouseOut = (): void => {
     setHoveredComment(null);
   };
 
