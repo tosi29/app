@@ -8,6 +8,7 @@
   display: flex;
   border-bottom: 1px solid #eaeaea;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .tabButton {
@@ -33,4 +34,16 @@
 
 .tabContent {
   padding: 0.5rem 0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .tabsHeader {
+    justify-content: center;
+  }
+  
+  .tabButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
 }
