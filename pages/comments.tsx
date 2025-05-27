@@ -6,11 +6,11 @@ export default function Comments() {
   const { episodeId } = router.query;
 
   useEffect(() => {
-    // Redirect to the comments tab in past-broadcasts
+    // Redirect to the comments tab in home page
     if (typeof episodeId === 'string') {
-      router.replace(`/past-broadcasts?tab=comments&episodeId=${episodeId}`);
+      router.replace(`/?tab=comments&episodeId=${episodeId}`);
     } else {
-      router.replace('/past-broadcasts?tab=comments');
+      router.replace('/?tab=comments');
     }
   }, [episodeId, router]);
 
