@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
+import { GetStaticProps } from 'next'
 
 interface PastBroadcast {
   id: number;
@@ -13,7 +14,11 @@ interface PastBroadcast {
   series: string;
 }
 
-export default function Home() {
+interface HomeProps {
+  pastBroadcasts: PastBroadcast[];
+}
+
+export default function Home({ pastBroadcasts }: HomeProps) {
   const router = useRouter();
   const { tab, episodeId } = router.query;
   
@@ -34,15 +39,6 @@ export default function Home() {
       query: tabId === 'comments' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
-
-  // Sample data for past broadcasts
-  const pastBroadcasts: PastBroadcast[] = [
-    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
-    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
-    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
-    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
-    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
-  ]
 
   // Content for the broadcasts tab
   const BroadcastsContent = () => (
@@ -129,4 +125,19 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  // Fetch broadcasts data from the API
+  // In a real-world scenario, this would be an absolute URL to your API
+  const res = await fetch('http://localhost:3000/api/broadcasts')
+  const pastBroadcasts = await res.json()
+
+  return {
+    props: {
+      pastBroadcasts,
+    },
+    // Revalidate the data every 10 seconds
+    revalidate: 10,
+  }
 }
