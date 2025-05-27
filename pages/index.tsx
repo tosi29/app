@@ -107,12 +107,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <div className={styles.tabsSection}>
         <Tabs 
           active={activeTab} 
           tabs={tabs} 
           onTabChange={handleTabChange} 
         />
+      </div>
+
+      <main className={styles.main}>
+        {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
 
       <footer className={styles.footer}>

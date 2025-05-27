@@ -25,9 +25,6 @@ export default function Tabs({ active, tabs, onTabChange }: TabProps): React.Rea
           </button>
         ))}
       </div>
-      <div className={styles.tabContent}>
-        {tabs.find(tab => tab.id === active)?.content}
-      </div>
     </div>
   );
 }
