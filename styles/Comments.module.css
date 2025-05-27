@@ -88,6 +88,38 @@
   pointer-events: none;
 }
 
+.commentTooltip-right {
+  transform: translate(10px, -50%);
+}
+
+.commentTooltip-left {
+  transform: translate(calc(-100% - 10px), -50%);
+}
+
+.commentTooltip-top {
+  transform: translate(-50%, calc(-100% - 10px));
+}
+
+.commentTooltip-bottom {
+  transform: translate(-50%, 10px);
+}
+
+.commentTooltip-topRight {
+  transform: translate(10px, calc(-100% - 10px));
+}
+
+.commentTooltip-topLeft {
+  transform: translate(calc(-100% - 10px), calc(-100% - 10px));
+}
+
+.commentTooltip-bottomRight {
+  transform: translate(10px, 10px);
+}
+
+.commentTooltip-bottomLeft {
+  transform: translate(calc(-100% - 10px), 10px);
+}
+
 .commentEpisode {
   margin: 0 0 5px 0;
   font-size: 12px;
