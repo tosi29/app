@@ -61,6 +61,13 @@
   pointer-events: none;
 }
 
+.commentEpisode {
+  margin: 0 0 5px 0;
+  font-size: 12px;
+  font-weight: bold;
+  color: #0070f3;
+}
+
 .commentText {
   margin: 0 0 8px 0;
   font-size: 14px;
