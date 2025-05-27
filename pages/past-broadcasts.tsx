@@ -2,9 +2,16 @@ import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
+interface PastBroadcast {
+  id: number;
+  date: string;
+  title: string;
+  description: string;
+}
+
 export default function PastBroadcasts() {
   // Sample data for past broadcasts
-  const pastBroadcasts = [
+  const pastBroadcasts: PastBroadcast[] = [
     { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series' },
     { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic' },
     { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques' },
