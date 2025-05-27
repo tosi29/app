@@ -1,0 +1,95 @@
+.graphContainer {
+  width: 100%;
+  max-width: 700px;
+  margin: 2rem 0;
+  padding: 20px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.graphAxes {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  margin: 0 auto;
+}
+
+.graph {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.xAxisLabel {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #666;
+}
+
+.yAxisLabel {
+  position: absolute;
+  top: 50%;
+  left: -40px;
+  transform: translateY(-50%) rotate(-90deg);
+  font-size: 14px;
+  color: #666;
+}
+
+.commentDot {
+  fill: #0070f3;
+  cursor: pointer;
+  transition: fill 0.2s, r 0.2s;
+}
+
+.commentDot:hover {
+  fill: #ff6b6b;
+}
+
+.commentTooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  width: 250px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.commentText {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.commentAuthor {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  font-size: 14px;
+}
+
+.legendColorBox {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  background-color: #0070f3;
+  border-radius: 50%;
+}
