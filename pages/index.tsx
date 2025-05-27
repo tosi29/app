@@ -128,16 +128,31 @@ export default function Home({ pastBroadcasts }: HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // Fetch broadcasts data from the API
-  // In a real-world scenario, this would be an absolute URL to your API
-  const res = await fetch('http://localhost:3000/api/broadcasts')
-  const pastBroadcasts = await res.json()
+  try {
+    // In a production environment, we'd use an absolute URL with proper protocol and domain
+    // For local development and SSG, we need to use a different approach
+    // This is a simplified version for this example
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const host = process.env.VERCEL_URL || 'localhost:3000';
+    const res = await fetch(`${protocol}://${host}/api/broadcasts`);
+    const pastBroadcasts = await res.json();
 
-  return {
-    props: {
-      pastBroadcasts,
-    },
-    // Revalidate the data every 10 seconds
-    revalidate: 10,
+    return {
+      props: {
+        pastBroadcasts,
+      },
+      // Revalidate the data every 10 seconds
+      revalidate: 10,
+    };
+  } catch (error) {
+    console.error('Error fetching broadcasts:', error);
+    
+    // Return empty data in case of an error
+    return {
+      props: {
+        pastBroadcasts: [],
+      },
+      revalidate: 10,
+    };
   }
 }
