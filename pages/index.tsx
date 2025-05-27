@@ -10,6 +10,7 @@ interface PastBroadcast {
   date: string;
   title: string;
   description: string;
+  series: string;
 }
 
 export default function Home() {
@@ -36,11 +37,11 @@ export default function Home() {
 
   // Sample data for past broadcasts
   const pastBroadcasts: PastBroadcast[] = [
-    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series' },
-    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic' },
-    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques' },
-    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest' },
-    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community' },
+    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
+    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
+    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
+    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
+    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
   ]
 
   // Content for the broadcasts tab
@@ -52,6 +53,7 @@ export default function Home() {
           <thead>
             <tr>
               <th>日付</th>
+              <th>シリーズ</th>
               <th>タイトル</th>
               <th>説明</th>
               <th>リンク</th>
@@ -59,8 +61,12 @@ export default function Home() {
           </thead>
           <tbody>
             {pastBroadcasts.map((broadcast) => (
-              <tr key={broadcast.id}>
+              <tr 
+                key={broadcast.id} 
+                className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
+              >
                 <td>{broadcast.date}</td>
+                <td>{broadcast.series}</td>
                 <td>{broadcast.title}</td>
                 <td>{broadcast.description}</td>
                 <td>
