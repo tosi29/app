@@ -194,3 +194,15 @@
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
+
+.legendColorBox.commentDot-basic {
+  background-color: #4ade80; /* Green */
+}
+
+.legendColorBox.commentDot-guest {
+  background-color: #60a5fa; /* Blue */
+}
+
+.legendColorBox.commentDot-community {
+  background-color: #f472b6; /* Pink */
+}
