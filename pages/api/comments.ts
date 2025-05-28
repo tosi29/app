@@ -80,7 +80,7 @@ const comments: Comment[] = [
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Comment[] | Comment[]>
+  res: NextApiResponse<Comment[]>
 ) {
   const { episodeId } = req.query;
   
