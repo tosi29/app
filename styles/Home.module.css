@@ -134,6 +134,17 @@
   top: 0;
 }
 
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.sortableHeader:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .table th:first-child {
   border-top-left-radius: var(--border-radius);
 }

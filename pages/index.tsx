@@ -55,6 +55,22 @@ export default function Home() {
   const BroadcastsContent = () => {
     // State to track which series are expanded
     const [expandedSeries, setExpandedSeries] = useState<Record<string, boolean>>({});
+    // State to track sorting
+    const [sortColumn, setSortColumn] = useState<keyof PastBroadcast>('date');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+    // Sort broadcasts based on the selected column and direction
+    const sortBroadcasts = (broadcasts: PastBroadcast[], column: keyof PastBroadcast, direction: 'asc' | 'desc') => {
+      return [...broadcasts].sort((a, b) => {
+        let comparison = 0;
+        if (a[column] < b[column]) {
+          comparison = -1;
+        } else if (a[column] > b[column]) {
+          comparison = 1;
+        }
+        return direction === 'asc' ? comparison : -comparison;
+      });
+    };
 
     // Group broadcasts by series
     const broadcastsBySeries = useMemo(() => {
@@ -65,8 +81,34 @@ export default function Home() {
         }
         grouped[broadcast.series].push(broadcast);
       });
+
+      // Sort broadcasts within each series
+      Object.keys(grouped).forEach(seriesKey => {
+        grouped[seriesKey] = sortBroadcasts(grouped[seriesKey], sortColumn, sortDirection);
+      });
+
       return grouped;
-    }, []);
+    }, [sortColumn, sortDirection]);
+
+    // Handle column header click for sorting
+    const handleSort = (column: keyof PastBroadcast) => {
+      if (column === sortColumn) {
+        // Toggle sort direction if clicking the same column
+        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+      } else {
+        // Set new sort column and default to ascending
+        setSortColumn(column);
+        setSortDirection('asc');
+      }
+    };
+
+    // Get sort indicator for a column
+    const getSortIndicator = (column: keyof PastBroadcast) => {
+      if (column === sortColumn) {
+        return sortDirection === 'asc' ? '↑' : '↓';
+      }
+      return null;
+    };
 
     // Initialize all series as expanded when component mounts
     useEffect(() => {
@@ -92,11 +134,36 @@ export default function Home() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>日付</th>
-                <th>シリーズ</th>
-                <th>タイトル</th>
-                <th>説明</th>
-                <th>再生時間</th>
+                <th 
+                  className={styles.sortableHeader} 
+                  onClick={() => handleSort('date')}
+                >
+                  日付 {getSortIndicator('date')}
+                </th>
+                <th 
+                  className={styles.sortableHeader} 
+                  onClick={() => handleSort('series')}
+                >
+                  シリーズ {getSortIndicator('series')}
+                </th>
+                <th 
+                  className={styles.sortableHeader} 
+                  onClick={() => handleSort('title')}
+                >
+                  タイトル {getSortIndicator('title')}
+                </th>
+                <th 
+                  className={styles.sortableHeader} 
+                  onClick={() => handleSort('description')}
+                >
+                  説明 {getSortIndicator('description')}
+                </th>
+                <th 
+                  className={styles.sortableHeader} 
+                  onClick={() => handleSort('duration')}
+                >
+                  再生時間 {getSortIndicator('duration')}
+                </th>
                 <th>リンク</th>
               </tr>
             </thead>
