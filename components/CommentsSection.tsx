@@ -102,7 +102,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       </p>
 
       {loading ? (
-        <p className={styles.description}>コメントを読み込んでいます...</p>
+        <div className={styles.loadingContainer}>
+          <p className={styles.description}>コメントを読み込んでいます...</p>
+          <div className={styles.loadingIndicator}></div>
+        </div>
       ) : (
 
       <div className={commentStyles.graphContainer}>
@@ -112,30 +115,30 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
           <svg width="600" height="600" className={commentStyles.graph}>
             {/* X-axis line */}
-            <line x1="50" y1="550" x2="550" y2="550" stroke="#333" strokeWidth="2" />
+            <line x1="50" y1="550" x2="550" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
             
             {/* Y-axis line */}
-            <line x1="50" y1="50" x2="50" y2="550" stroke="#333" strokeWidth="2" />
+            <line x1="50" y1="50" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
             
             {/* X-axis label ticks */}
-            <line x1="50" y1="550" x2="50" y2="560" stroke="#333" strokeWidth="2" />
-            <text x="50" y="575" textAnchor="middle" fontSize="12">0</text>
+            <line x1="50" y1="550" x2="50" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="50" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0</text>
             
-            <line x1="300" y1="550" x2="300" y2="560" stroke="#333" strokeWidth="2" />
-            <text x="300" y="575" textAnchor="middle" fontSize="12">0.5</text>
+            <line x1="300" y1="550" x2="300" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="300" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0.5</text>
             
-            <line x1="550" y1="550" x2="550" y2="560" stroke="#333" strokeWidth="2" />
-            <text x="550" y="575" textAnchor="middle" fontSize="12">1.0</text>
+            <line x1="550" y1="550" x2="550" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="550" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">1.0</text>
             
             {/* Y-axis label ticks */}
-            <line x1="40" y1="550" x2="50" y2="550" stroke="#333" strokeWidth="2" />
-            <text x="35" y="555" textAnchor="end" fontSize="12">0</text>
+            <line x1="40" y1="550" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="35" y="555" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0</text>
             
-            <line x1="40" y1="300" x2="50" y2="300" stroke="#333" strokeWidth="2" />
-            <text x="35" y="305" textAnchor="end" fontSize="12">0.5</text>
+            <line x1="40" y1="300" x2="50" y2="300" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="35" y="305" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0.5</text>
             
-            <line x1="40" y1="50" x2="50" y2="50" stroke="#333" strokeWidth="2" />
-            <text x="35" y="55" textAnchor="end" fontSize="12">1.0</text>
+            <line x1="40" y1="50" x2="50" y2="50" stroke="var(--text-secondary)" strokeWidth="1.5" />
+            <text x="35" y="55" textAnchor="end" fontSize="12" fill="var(--text-secondary)">1.0</text>
             
             {/* Plot comment dots */}
             {filteredComments.map((comment) => {
@@ -148,7 +151,6 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   key={comment.id}
                   cx={x}
                   cy={y}
-                  r="8"
                   className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''}`}
                   onMouseOver={() => handleMouseOver(comment)}
                   onMouseOut={handleMouseOut}

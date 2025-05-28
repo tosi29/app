@@ -1,15 +1,18 @@
 .tabsContainer {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   display: flex;
   justify-content: center;
 }
 
 .tabsHeader {
   display: flex;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 0;
   flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .tabButton {
@@ -18,19 +21,43 @@
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-secondary);
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.3s;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
 }
 
 .tabButton:hover {
-  color: #0070f3;
+  color: var(--primary-color);
+}
+
+.tabButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease-in-out;
+}
+
+.tabButton:hover::after {
+  transform: scaleX(0.5);
+  transform-origin: left;
 }
 
 .activeTab {
-  color: #0070f3;
-  border-bottom: 2px solid #0070f3;
-  font-weight: 500;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.activeTab::after {
+  transform: scaleX(1);
 }
 
 .tabContent {
