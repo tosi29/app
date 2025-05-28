@@ -72,22 +72,42 @@ export default function Home() {
       });
     };
 
-    // Group broadcasts by series
+    // Group broadcasts by series with global sorting
     const broadcastsBySeries = useMemo(() => {
+      // First, sort all broadcasts
+      const sortedBroadcasts = sortBroadcasts(pastBroadcasts, sortColumn, sortDirection);
+      
+      // Then group them by series (maintaining the global sort order)
       const grouped: Record<string, PastBroadcast[]> = {};
-      pastBroadcasts.forEach(broadcast => {
+      sortedBroadcasts.forEach(broadcast => {
         if (!grouped[broadcast.series]) {
           grouped[broadcast.series] = [];
         }
         grouped[broadcast.series].push(broadcast);
       });
 
-      // Sort broadcasts within each series
-      Object.keys(grouped).forEach(seriesKey => {
-        grouped[seriesKey] = sortBroadcasts(grouped[seriesKey], sortColumn, sortDirection);
+      // Sort the series keys based on the first broadcast in each series
+      // This ensures that series groups also respect the sorting
+      const sortedSeriesKeys = Object.keys(grouped).sort((seriesA, seriesB) => {
+        const firstBroadcastA = grouped[seriesA][0];
+        const firstBroadcastB = grouped[seriesB][0];
+        
+        let comparison = 0;
+        if (firstBroadcastA[sortColumn] < firstBroadcastB[sortColumn]) {
+          comparison = -1;
+        } else if (firstBroadcastA[sortColumn] > firstBroadcastB[sortColumn]) {
+          comparison = 1;
+        }
+        return sortDirection === 'asc' ? comparison : -comparison;
+      });
+      
+      // Create a new object with sorted series keys
+      const sortedGrouped: Record<string, PastBroadcast[]> = {};
+      sortedSeriesKeys.forEach(key => {
+        sortedGrouped[key] = grouped[key];
       });
 
-      return grouped;
+      return sortedGrouped;
     }, [sortColumn, sortDirection]);
 
     // Handle column header click for sorting
