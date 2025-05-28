@@ -90,19 +90,8 @@ export default function Home() {
       }));
     };
 
-    // Navigate to search tab
-    const goToSearch = () => {
-      handleTabChange('search');
-    };
-
     return (
       <>
-        <div className={styles.titleContainer}>
-          <h1 className={styles.title}>過去の配信一覧</h1>
-          <button onClick={goToSearch} className={styles.searchButton}>
-            配信検索
-          </button>
-        </div>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -196,8 +185,6 @@ export default function Home() {
     
     return (
       <>
-        <h1 className={styles.title}>配信検索</h1>
-        
         <div className={searchStyles.searchContainer}>
           <form onSubmit={handleSearch} className={searchStyles.searchForm}>
             <div className={searchStyles.formGroup}>
