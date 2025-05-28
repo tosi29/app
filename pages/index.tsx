@@ -11,9 +11,10 @@ interface PastBroadcast {
   title: string;
   description: string;
   series: string;
+  duration: string;
 }
 
-type SortField = 'date' | 'series' | 'title' | 'description';
+type SortField = 'date' | 'series' | 'title' | 'description' | 'duration';
 type SortDirection = 'asc' | 'desc';
 
 export default function Home() {
@@ -62,11 +63,11 @@ export default function Home() {
 
   // Sample data for past broadcasts
   const pastBroadcasts: PastBroadcast[] = [
-    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
-    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
-    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
-    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
-    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
+    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series', duration: '25:30' },
+    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series', duration: '31:45' },
+    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series', duration: '42:18' },
+    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series', duration: '38:22' },
+    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series', duration: '27:55' },
   ];
   
   // Sort the broadcasts
@@ -134,6 +135,17 @@ export default function Home() {
                   </span>
                 )}
               </th>
+              <th 
+                className={styles.sortableHeader} 
+                onClick={() => handleSort('duration')}
+              >
+                再生時間
+                {sortField === 'duration' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? '▲' : '▼'}
+                  </span>
+                )}
+              </th>
               <th>リンク</th>
             </tr>
           </thead>
@@ -147,6 +159,7 @@ export default function Home() {
                 <td>{broadcast.series}</td>
                 <td>{broadcast.title}</td>
                 <td>{broadcast.description}</td>
+                <td>{broadcast.duration}</td>
                 <td>
                   <a href="#" className={styles.link}>
                     再生
@@ -196,19 +209,6 @@ export default function Home() {
       <main className={styles.main}>
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            Next.js
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }
