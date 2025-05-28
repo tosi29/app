@@ -13,6 +13,7 @@ interface PastBroadcast {
   description: string;
   series: string;
   duration: string;
+  matchedChunk?: string; // Optional field for matched text chunk
 }
 
 export default function Home() {
