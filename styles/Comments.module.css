@@ -2,11 +2,12 @@
   width: 100%;
   max-width: 700px;
   margin: 2rem 0;
-  padding: 20px;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  background-color: #fff;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
   overflow-x: auto;
+  box-shadow: var(--shadow-md);
 }
 
 .graphAxes {
@@ -19,7 +20,7 @@
 /* Mobile responsiveness */
 @media (max-width: 700px) {
   .graphContainer {
-    padding: 10px;
+    padding: 1rem;
   }
   
   .graphAxes {
@@ -36,9 +37,14 @@
 }
 
 .graph {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: all 0.3s;
+}
+
+.graph:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .xAxisLabel {
@@ -46,8 +52,9 @@
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 14px;
-  color: #666;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .yAxisLabel {
@@ -55,42 +62,50 @@
   top: 50%;
   left: -40px;
   transform: translateY(-50%) rotate(-90deg);
-  font-size: 14px;
-  color: #666;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .commentDot {
-  fill: #0070f3;
+  fill: var(--primary-color);
   cursor: pointer;
-  transition: fill 0.2s, r 0.2s;
+  transition: all 0.3s;
+  r: 8;
+  stroke: white;
+  stroke-width: 1;
 }
 
 .commentDot-basic {
-  fill: #90ee90; /* Green */
+  fill: #4ade80; /* Green */
 }
 
 .commentDot-guest {
-  fill: #add8e6; /* Blue */
+  fill: #60a5fa; /* Blue */
 }
 
 .commentDot-community {
-  fill: #ffb6c1; /* Pink */
+  fill: #f472b6; /* Pink */
 }
 
 .commentDot:hover {
-  fill: #ff6b6b;
+  r: 10;
+  fill: #f43f5e;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
 }
 
 .commentTooltip {
   position: absolute;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 12px;
   width: 250px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   z-index: 10;
   pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .commentTooltip-right {
@@ -127,47 +142,55 @@
 
 .commentEpisode {
   margin: 0 0 5px 0;
-  font-size: 12px;
-  font-weight: bold;
-  color: #0070f3;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .commentSeries {
-  font-size: 11px;
-  color: #666;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   margin-left: 5px;
   font-weight: normal;
 }
 
 .commentText {
   margin: 0 0 8px 0;
-  font-size: 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .commentAuthor {
   margin: 0;
-  font-size: 12px;
-  color: #666;
+  font-size: 0.75rem;
+  color: var(--text-muted);
   text-align: right;
+  font-style: italic;
 }
 
 .legend {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  margin-right: 20px;
-  font-size: 14px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
 }
 
 .legendColorBox {
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  background-color: #0070f3;
   border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
