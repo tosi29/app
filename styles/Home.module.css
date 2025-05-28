@@ -179,6 +179,32 @@
   background-color: rgba(0, 0, 0, 0.02);
 }
 
+.seriesHeader {
+  cursor: pointer;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.seriesHeader:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.seriesHeaderContent {
+  display: flex;
+  align-items: center;
+}
+
+.seriesToggle {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  width: 1rem;
+}
+
+.seriesRow {
+  transition: opacity 0.3s, max-height 0.3s;
+}
+
 .series-basic {
   background-color: rgba(144, 238, 144, 0.1); /* Light green */
   border-left: 3px solid rgba(144, 238, 144, 0.7);
