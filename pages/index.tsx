@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import Tabs from '../components/Tabs'
@@ -52,44 +52,95 @@ export default function Home() {
   ]
 
   // Content for the broadcasts tab
-  const BroadcastsContent = () => (
-    <>
-      <h1 className={styles.title}>過去の配信一覧</h1>
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>シリーズ</th>
-              <th>タイトル</th>
-              <th>説明</th>
-              <th>再生時間</th>
-              <th>リンク</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pastBroadcasts.map((broadcast) => (
-              <tr 
-                key={broadcast.id} 
-                className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
-              >
-                <td>{broadcast.date}</td>
-                <td>{broadcast.series}</td>
-                <td>{broadcast.title}</td>
-                <td>{broadcast.description}</td>
-                <td>{broadcast.duration}</td>
-                <td>
-                  <a href="#" className={styles.link}>
-                    再生
-                  </a>
-                </td>
+  const BroadcastsContent = () => {
+    // State to track which series are expanded
+    const [expandedSeries, setExpandedSeries] = useState<Record<string, boolean>>({});
+
+    // Group broadcasts by series
+    const broadcastsBySeries = useMemo(() => {
+      const grouped: Record<string, PastBroadcast[]> = {};
+      pastBroadcasts.forEach(broadcast => {
+        if (!grouped[broadcast.series]) {
+          grouped[broadcast.series] = [];
+        }
+        grouped[broadcast.series].push(broadcast);
+      });
+      return grouped;
+    }, []);
+
+    // Initialize all series as expanded when component mounts
+    useEffect(() => {
+      const initialExpandedState: Record<string, boolean> = {};
+      Object.keys(broadcastsBySeries).forEach(series => {
+        initialExpandedState[series] = true; // Initially expanded
+      });
+      setExpandedSeries(initialExpandedState);
+    }, [broadcastsBySeries]);
+
+    // Toggle expanded state for a series
+    const toggleSeries = (series: string) => {
+      setExpandedSeries(prev => ({
+        ...prev,
+        [series]: !prev[series]
+      }));
+    };
+
+    return (
+      <>
+        <h1 className={styles.title}>過去の配信一覧</h1>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>シリーズ</th>
+                <th>タイトル</th>
+                <th>説明</th>
+                <th>再生時間</th>
+                <th>リンク</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
+            </thead>
+            <tbody>
+              {Object.entries(broadcastsBySeries).map(([series, broadcasts]) => (
+                <React.Fragment key={series}>
+                  <tr 
+                    className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
+                    onClick={() => toggleSeries(series)}
+                  >
+                    <td colSpan={6}>
+                      <div className={styles.seriesToggle}>
+                        <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
+                          {expandedSeries[series] ? '▼' : '▶'}
+                        </span>
+                        <span className={styles.seriesName}>{series} ({broadcasts.length})</span>
+                      </div>
+                    </td>
+                  </tr>
+                  {expandedSeries[series] && broadcasts.map((broadcast) => (
+                    <tr 
+                      key={broadcast.id} 
+                      className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
+                    >
+                      <td>{broadcast.date}</td>
+                      <td>{broadcast.series}</td>
+                      <td>{broadcast.title}</td>
+                      <td>{broadcast.description}</td>
+                      <td>{broadcast.duration}</td>
+                      <td>
+                        <a href="#" className={styles.link}>
+                          再生
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  };
 
   // Pass the episodeId to CommentsSection when available
   const tabs = [
