@@ -262,6 +262,14 @@ export default function Home() {
                     {broadcast.matchedChunk && (
                       <div className={searchStyles.resultChunk}>{broadcast.matchedChunk}</div>
                     )}
+                    <div className={searchStyles.resultActions}>
+                      <button
+                        onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                        className={styles.link}
+                      >
+                        詳細
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

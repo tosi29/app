@@ -139,6 +139,13 @@
   padding: 1rem;
   border-radius: var(--border-radius);
   border-left: 3px solid var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.resultActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
 }
 
 .noResults {
