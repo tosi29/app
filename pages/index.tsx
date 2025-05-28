@@ -14,6 +14,9 @@ interface PastBroadcast {
   duration: string;
 }
 
+type SortColumn = 'date' | 'series' | 'title' | 'description' | 'duration';
+type SortDirection = 'asc' | 'desc';
+
 export default function Home() {
   const router = useRouter();
   const { tab, episodeId } = router.query;
@@ -22,6 +25,10 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<string>(
     router.query.tab === 'comments' ? 'comments' : 'broadcasts'
   );
+  
+  // Sorting state
+  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   
   useEffect(() => {
     if (router.isReady) {
@@ -42,6 +49,26 @@ export default function Home() {
     }, undefined, { shallow: true });
   };
 
+  // Convert duration string (MM:SS) to seconds for sorting
+  const durationToSeconds = (duration: string): number => {
+    const parts = duration.split(':');
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+    return minutes * 60 + seconds;
+  };
+
+  // Handle column sort
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      // Toggle direction if same column
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New column, default to ascending
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
   // Sample data for past broadcasts
   const pastBroadcasts: PastBroadcast[] = [
     { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series', duration: '25:30' },
@@ -51,6 +78,45 @@ export default function Home() {
     { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series', duration: '27:55' },
   ]
 
+  // Sort the broadcasts data
+  const sortedBroadcasts = [...pastBroadcasts].sort((a, b) => {
+    if (!sortColumn) return 0;
+
+    let aValue: string | number;
+    let bValue: string | number;
+
+    switch (sortColumn) {
+      case 'date':
+        aValue = new Date(a.date).getTime();
+        bValue = new Date(b.date).getTime();
+        break;
+      case 'duration':
+        aValue = durationToSeconds(a.duration);
+        bValue = durationToSeconds(b.duration);
+        break;
+      case 'series':
+        aValue = a.series.toLowerCase();
+        bValue = b.series.toLowerCase();
+        break;
+      case 'title':
+        aValue = a.title.toLowerCase();
+        bValue = b.title.toLowerCase();
+        break;
+      case 'description':
+        aValue = a.description.toLowerCase();
+        bValue = b.description.toLowerCase();
+        break;
+      default:
+        return 0;
+    }
+
+    if (sortDirection === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
   // Content for the broadcasts tab
   const BroadcastsContent = () => (
     <>
@@ -59,16 +125,66 @@ export default function Home() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>日付</th>
-              <th>シリーズ</th>
-              <th>タイトル</th>
-              <th>説明</th>
-              <th>再生時間</th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('date')}
+              >
+                日付
+                {sortColumn === 'date' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('series')}
+              >
+                シリーズ
+                {sortColumn === 'series' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('title')}
+              >
+                タイトル
+                {sortColumn === 'title' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('description')}
+              >
+                説明
+                {sortColumn === 'description' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('duration')}
+              >
+                再生時間
+                {sortColumn === 'duration' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                  </span>
+                )}
+              </th>
               <th>リンク</th>
             </tr>
           </thead>
           <tbody>
-            {pastBroadcasts.map((broadcast) => (
+            {sortedBroadcasts.map((broadcast) => (
               <tr 
                 key={broadcast.id} 
                 className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
