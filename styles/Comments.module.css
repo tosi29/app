@@ -28,6 +28,11 @@
     transform: scale(0.75);
     transform-origin: top left;
   }
+  
+  .commentTooltip {
+    width: 200px;
+    font-size: 0.9rem;
+  }
 }
 
 .graph {
@@ -86,6 +91,38 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 10;
   pointer-events: none;
+}
+
+.commentTooltip-right {
+  transform: translate(10px, -50%);
+}
+
+.commentTooltip-left {
+  transform: translate(calc(-100% - 10px), -50%);
+}
+
+.commentTooltip-top {
+  transform: translate(-50%, calc(-100% - 10px));
+}
+
+.commentTooltip-bottom {
+  transform: translate(-50%, 10px);
+}
+
+.commentTooltip-topRight {
+  transform: translate(10px, calc(-100% - 10px));
+}
+
+.commentTooltip-topLeft {
+  transform: translate(calc(-100% - 10px), calc(-100% - 10px));
+}
+
+.commentTooltip-bottomRight {
+  transform: translate(10px, 10px);
+}
+
+.commentTooltip-bottomLeft {
+  transform: translate(calc(-100% - 10px), 10px);
 }
 
 .commentEpisode {

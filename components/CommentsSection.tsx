@@ -160,10 +160,18 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           {/* Comment tooltip with episode information */}
           {hoveredComment && (
             <div
-              className={commentStyles.commentTooltip}
+              className={`${commentStyles.commentTooltip} ${
+                hoveredComment.opinionScore > 0.5
+                  ? (hoveredComment.positiveScore > 0.5
+                    ? commentStyles['commentTooltip-bottomLeft']
+                    : commentStyles['commentTooltip-topLeft'])
+                  : (hoveredComment.positiveScore > 0.5
+                    ? commentStyles['commentTooltip-bottomRight']
+                    : commentStyles['commentTooltip-topRight'])
+              }`}
               style={{
-                left: `${50 + hoveredComment.opinionScore * 500 + 20}px`,
-                top: `${550 - hoveredComment.positiveScore * 500 - 20}px`,
+                left: `${50 + hoveredComment.opinionScore * 500}px`,
+                top: `${550 - hoveredComment.positiveScore * 500}px`,
               }}
             >
               <p className={commentStyles.commentEpisode}>
