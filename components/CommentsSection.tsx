@@ -89,12 +89,6 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   return (
     <>
-      <h1 className={styles.title}>
-        {selectedEpisodeId 
-          ? `${getEpisodeTitle(selectedEpisodeId)}のコメント` 
-          : 'コメント一覧'}
-      </h1>
-      
       <p className={styles.description}>
         {selectedEpisodeId 
           ? `エピソード #${selectedEpisodeId} へのリスナーからのコメント` 
