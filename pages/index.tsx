@@ -135,6 +135,7 @@ export default function Home() {
                         </a>
                         {' | '}
                         <button
+                          type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                           className={styles.link}
                         >
