@@ -85,9 +85,19 @@ export default function Home() {
       }));
     };
 
+    // Navigate to search page
+    const goToSearch = () => {
+      router.push('/search');
+    };
+
     return (
       <>
-        <h1 className={styles.title}>過去の配信一覧</h1>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>過去の配信一覧</h1>
+          <button onClick={goToSearch} className={styles.searchButton}>
+            配信検索
+          </button>
+        </div>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
