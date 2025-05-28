@@ -211,6 +211,22 @@
   text-decoration: none;
 }
 
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.sortableHeader:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sortIndicator {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
 .backToHome {
   margin: 3rem 0 0;
 }

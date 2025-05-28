@@ -13,6 +13,9 @@ interface PastBroadcast {
   series: string;
 }
 
+type SortField = 'date' | 'series' | 'title' | 'description';
+type SortDirection = 'asc' | 'desc';
+
 export default function Home() {
   const router = useRouter();
   const { tab, episodeId } = router.query;
@@ -21,6 +24,10 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<string>(
     router.query.tab === 'comments' ? 'comments' : 'broadcasts'
   );
+  
+  // Add state for sorting
+  const [sortField, setSortField] = useState<SortField>('date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
   useEffect(() => {
     if (router.isReady) {
@@ -41,6 +48,18 @@ export default function Home() {
     }, undefined, { shallow: true });
   };
 
+  // Handle sort change
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // If clicking the same field, toggle sort direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // If clicking a new field, set it as sort field with default 'asc' direction
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
   // Sample data for past broadcasts
   const pastBroadcasts: PastBroadcast[] = [
     { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
@@ -48,7 +67,20 @@ export default function Home() {
     { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
     { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
     { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
-  ]
+  ];
+  
+  // Sort the broadcasts
+  const sortedBroadcasts = [...pastBroadcasts].sort((a, b) => {
+    const aValue = a[sortField];
+    const bValue = b[sortField];
+    
+    // Compare the values based on sort direction
+    if (sortDirection === 'asc') {
+      return aValue.localeCompare(bValue);
+    } else {
+      return bValue.localeCompare(aValue);
+    }
+  });
 
   // Content for the broadcasts tab
   const BroadcastsContent = () => (
@@ -58,15 +90,55 @@ export default function Home() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>日付</th>
-              <th>シリーズ</th>
-              <th>タイトル</th>
-              <th>説明</th>
+              <th 
+                className={styles.sortableHeader} 
+                onClick={() => handleSort('date')}
+              >
+                日付
+                {sortField === 'date' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? '▲' : '▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader} 
+                onClick={() => handleSort('series')}
+              >
+                シリーズ
+                {sortField === 'series' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? '▲' : '▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader} 
+                onClick={() => handleSort('title')}
+              >
+                タイトル
+                {sortField === 'title' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? '▲' : '▼'}
+                  </span>
+                )}
+              </th>
+              <th 
+                className={styles.sortableHeader} 
+                onClick={() => handleSort('description')}
+              >
+                説明
+                {sortField === 'description' && (
+                  <span className={styles.sortIndicator}>
+                    {sortDirection === 'asc' ? '▲' : '▼'}
+                  </span>
+                )}
+              </th>
               <th>リンク</th>
             </tr>
           </thead>
           <tbody>
-            {pastBroadcasts.map((broadcast) => (
+            {sortedBroadcasts.map((broadcast) => (
               <tr 
                 key={broadcast.id} 
                 className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
@@ -99,7 +171,7 @@ export default function Home() {
       id: 'comments',
       label: 'コメント',
       content: <CommentsSection 
-                 pastBroadcasts={pastBroadcasts}
+                 pastBroadcasts={sortedBroadcasts}
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
                />
     }
