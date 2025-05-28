@@ -63,6 +63,7 @@ export default function Home() {
               <th>シリーズ</th>
               <th>タイトル</th>
               <th>説明</th>
+              <th>再生時間</th>
               <th>リンク</th>
             </tr>
           </thead>
@@ -76,6 +77,7 @@ export default function Home() {
                 <td>{broadcast.series}</td>
                 <td>{broadcast.title}</td>
                 <td>{broadcast.description}</td>
+                <td>{broadcast.duration}</td>
                 <td>
                   <a href="#" className={styles.link}>
                     再生
