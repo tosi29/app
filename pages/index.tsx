@@ -66,7 +66,7 @@ export default function Home() {
         grouped[broadcast.series].push(broadcast);
       });
       return grouped;
-    }, [pastBroadcasts]);
+    }, []);
 
     // Initialize all series as expanded when component mounts
     useEffect(() => {
