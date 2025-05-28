@@ -27,8 +27,33 @@ export default function Home() {
     router.query.tab === 'comments' ? 'comments' : 'broadcasts'
   );
   
+  // Sample data for past broadcasts
+  const pastBroadcasts: PastBroadcast[] = [
+    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
+    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
+    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
+    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
+    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
+  ]
+  
+  // Group broadcasts by series
+  const groupedBroadcasts: GroupedBroadcasts = pastBroadcasts.reduce((groups, broadcast) => {
+    const series = broadcast.series;
+    if (!groups[series]) {
+      groups[series] = [];
+    }
+    groups[series].push(broadcast);
+    return groups;
+  }, {} as GroupedBroadcasts);
+  
+  // Initialize expanded state for all series (default to expanded)
+  const initialExpandedState = Object.keys(groupedBroadcasts).reduce((acc, series) => {
+    acc[series] = true; // Default all series to expanded
+    return acc;
+  }, {} as {[key: string]: boolean});
+  
   // State to track expanded/collapsed series
-  const [expandedSeries, setExpandedSeries] = useState<{[key: string]: boolean}>({});
+  const [expandedSeries, setExpandedSeries] = useState<{[key: string]: boolean}>(initialExpandedState);
   
   useEffect(() => {
     if (router.isReady) {
@@ -48,34 +73,6 @@ export default function Home() {
       query: tabId === 'comments' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
-
-  // Sample data for past broadcasts
-  const pastBroadcasts: PastBroadcast[] = [
-    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
-    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
-    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
-    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
-    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
-  ]
-  
-  // Group broadcasts by series
-  const groupedBroadcasts: GroupedBroadcasts = pastBroadcasts.reduce((groups, broadcast) => {
-    const series = broadcast.series;
-    if (!groups[series]) {
-      groups[series] = [];
-    }
-    groups[series].push(broadcast);
-    return groups;
-  }, {} as GroupedBroadcasts);
-
-  // Initialize expanded state for all series (default to expanded)
-  useEffect(() => {
-    const initialExpandedState: {[key: string]: boolean} = {};
-    Object.keys(groupedBroadcasts).forEach(series => {
-      initialExpandedState[series] = true; // Default all series to expanded
-    });
-    setExpandedSeries(initialExpandedState);
-  }, [groupedBroadcasts]);
 
   // Toggle series expansion
   const toggleSeries = (series: string) => {
