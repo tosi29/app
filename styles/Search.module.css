@@ -98,6 +98,56 @@
   color: var(--text-primary);
 }
 
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.resultCard {
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s;
+}
+
+.resultCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.resultTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.resultSeries {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.resultChunk {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.resultActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
 .noResults {
   padding: 2rem;
   text-align: center;

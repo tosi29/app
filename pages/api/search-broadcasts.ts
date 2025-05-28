@@ -8,6 +8,7 @@ interface PastBroadcast {
   description: string;
   series: string;
   duration: string;
+  matchedChunk?: string; // Optional field for matched text chunk
 }
 
 // Sample data for past broadcasts
@@ -32,10 +33,40 @@ export default function handler(
   // Filter by query (search in title and description)
   if (query && typeof query === 'string' && query.trim() !== '') {
     const searchQuery = query.toLowerCase();
-    filteredBroadcasts = filteredBroadcasts.filter(broadcast => 
-      broadcast.title.toLowerCase().includes(searchQuery) || 
-      broadcast.description.toLowerCase().includes(searchQuery)
-    );
+    filteredBroadcasts = filteredBroadcasts.filter(broadcast => {
+      const titleMatch = broadcast.title.toLowerCase().includes(searchQuery);
+      const descriptionMatch = broadcast.description.toLowerCase().includes(searchQuery);
+      
+      // If there's a match, add the matched chunk to the broadcast object
+      if (titleMatch || descriptionMatch) {
+        let matchedText = '';
+        
+        if (titleMatch) {
+          // Extract context around the matched text in title
+          const matchIndex = broadcast.title.toLowerCase().indexOf(searchQuery);
+          matchedText = broadcast.title;
+        } else if (descriptionMatch) {
+          // Extract context around the matched text in description
+          const matchIndex = broadcast.description.toLowerCase().indexOf(searchQuery);
+          const contextStart = Math.max(0, matchIndex - 20);
+          const contextEnd = Math.min(broadcast.description.length, matchIndex + searchQuery.length + 20);
+          matchedText = broadcast.description.substring(contextStart, contextEnd);
+          
+          // Add ellipsis if we're not starting from the beginning or ending at the end
+          if (contextStart > 0) {
+            matchedText = '...' + matchedText;
+          }
+          if (contextEnd < broadcast.description.length) {
+            matchedText = matchedText + '...';
+          }
+        }
+        
+        broadcast.matchedChunk = matchedText;
+        return true;
+      }
+      
+      return false;
+    });
   }
   
   // Filter by series
