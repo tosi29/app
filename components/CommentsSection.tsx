@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 import commentStyles from '../styles/Comments.module.css';
 
@@ -26,74 +26,34 @@ interface CommentsSectionProps {
 
 export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Sample data for comments (in a real app, this would come from an API or props)
-  const comments: Comment[] = [
-    { 
-      id: 1, 
-      episodeId: 1, 
-      text: '面白かったです！次回も楽しみにしています。', 
-      positiveScore: 0.8, // 0 to 1 where 1 is most positive
-      opinionScore: 0.3,  // 0 to 1 where 1 is pure opinion (vs reaction)
-      author: 'リスナー1',
-    },
-    { 
-      id: 2, 
-      episodeId: 1, 
-      text: 'もう少し技術的な内容があると良かったです。', 
-      positiveScore: 0.4, 
-      opinionScore: 0.9,
-      author: 'リスナー2',
-    },
-    { 
-      id: 3, 
-      episodeId: 2, 
-      text: 'わかりやすい説明をありがとうございます！', 
-      positiveScore: 0.9, 
-      opinionScore: 0.5,
-      author: 'リスナー3',
-    },
-    { 
-      id: 4, 
-      episodeId: 3, 
-      text: 'すごく勉強になりました。', 
-      positiveScore: 0.7, 
-      opinionScore: 0.6,
-      author: 'リスナー4',
-    },
-    { 
-      id: 5, 
-      episodeId: 4, 
-      text: 'ゲストのお話が特に参考になりました！', 
-      positiveScore: 0.8, 
-      opinionScore: 0.7,
-      author: 'リスナー5',
-    },
-    { 
-      id: 6, 
-      episodeId: 5, 
-      text: 'もっと詳しく聞きたかったです。', 
-      positiveScore: 0.5, 
-      opinionScore: 0.8,
-      author: 'リスナー6',
-    },
-    { 
-      id: 7, 
-      episodeId: 2, 
-      text: 'あまり理解できませんでした...', 
-      positiveScore: 0.2, 
-      opinionScore: 0.6,
-      author: 'リスナー7',
-    },
-    { 
-      id: 8, 
-      episodeId: 3, 
-      text: '素晴らしい内容でした！', 
-      positiveScore: 0.9, 
-      opinionScore: 0.2,
-      author: 'リスナー8',
-    },
-  ];
+  useEffect(() => {
+    const fetchComments = async () => {
+      setLoading(true);
+      try {
+        // Construct API URL with episodeId if it exists
+        const url = selectedEpisodeId 
+          ? `/api/comments?episodeId=${selectedEpisodeId}`
+          : '/api/comments';
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        // In a real app, you might want to show an error message to the user
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [selectedEpisodeId]);
 
   // Function to get episode title by id
   const getEpisodeTitle = (episodeId: number): string => {
@@ -113,10 +73,9 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     return series ? `commentDot-${series.toLowerCase().split(' ')[0]}` : '';
   };
 
-  // Filter comments if selectedEpisodeId is provided
-  const filteredComments = selectedEpisodeId 
-    ? comments.filter(comment => comment.episodeId === selectedEpisodeId)
-    : comments;
+  // Filter comments is no longer needed as the API handles this
+  // But we keep the filteredComments variable for compatibility
+  const filteredComments = comments;
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
@@ -141,6 +100,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           ? `エピソード #${selectedEpisodeId} へのリスナーからのコメント` 
           : 'リスナーからのコメントをグラフ上に表示しています'}
       </p>
+
+      {loading ? (
+        <p className={styles.description}>コメントを読み込んでいます...</p>
+      ) : (
 
       <div className={commentStyles.graphContainer}>
         <div className={commentStyles.graphAxes}>
@@ -248,6 +211,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           )}
         </div>
       </div>
+      )}
     </>
   );
 }

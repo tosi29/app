@@ -18,13 +18,19 @@ export default function Home() {
   const { tab, episodeId } = router.query;
   
   // Set active tab based on URL parameter
-  const [activeTab, setActiveTab] = useState<string>('broadcasts');
+  const [activeTab, setActiveTab] = useState<string>(
+    router.query.tab === 'comments' ? 'comments' : 'broadcasts'
+  );
   
   useEffect(() => {
-    if (tab === 'comments') {
-      setActiveTab('comments');
+    if (router.isReady) {
+      if (tab === 'comments') {
+        setActiveTab('comments');
+      } else {
+        setActiveTab('broadcasts');
+      }
     }
-  }, [tab]);
+  }, [router.isReady, tab]);
 
   // Handle tab change
   const handleTabChange = (tabId: string) => {
