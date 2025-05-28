@@ -183,6 +183,7 @@
   cursor: pointer;
   font-weight: bold;
   background-color: rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
 }
 
 .seriesHeader:hover {
@@ -199,10 +200,11 @@
   margin-right: 0.5rem;
   font-size: 0.8rem;
   width: 1rem;
+  transition: transform 0.2s;
 }
 
 .seriesRow {
-  transition: opacity 0.3s, max-height 0.3s;
+  transition: all 0.3s ease-in-out;
 }
 
 .series-basic {
