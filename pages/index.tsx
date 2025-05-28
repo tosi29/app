@@ -133,6 +133,13 @@ export default function Home() {
                         <a href="#" className={styles.link}>
                           再生
                         </a>
+                        {' | '}
+                        <button
+                          onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                          className={styles.link}
+                        >
+                          コメント
+                        </button>
                       </td>
                     </tr>
                   ))}
