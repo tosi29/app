@@ -87,7 +87,6 @@ export default function Home() {
 
     return (
       <>
-        <h1 className={styles.title}>過去の配信一覧</h1>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
