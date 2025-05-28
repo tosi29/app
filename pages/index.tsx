@@ -150,8 +150,6 @@ export default function Home() {
     // State for search form
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [selectedSeries, setSelectedSeries] = useState<string>('');
-    const [dateFrom, setDateFrom] = useState<string>('');
-    const [dateTo, setDateTo] = useState<string>('');
     
     // State for search results
     const [searchResults, setSearchResults] = useState<PastBroadcast[]>([]);
@@ -167,8 +165,6 @@ export default function Home() {
       const queryParams = new URLSearchParams();
       if (searchQuery) queryParams.append('query', searchQuery);
       if (selectedSeries) queryParams.append('series', selectedSeries);
-      if (dateFrom) queryParams.append('dateFrom', dateFrom);
-      if (dateTo) queryParams.append('dateTo', dateTo);
       
       try {
         // Call the API endpoint
@@ -213,30 +209,6 @@ export default function Home() {
                 <option value="Guest Series">Guest Series</option>
                 <option value="Community Series">Community Series</option>
               </select>
-            </div>
-            
-            <div className={searchStyles.formRow}>
-              <div className={searchStyles.formGroup}>
-                <label htmlFor="dateFrom">日付（から）</label>
-                <input
-                  type="date"
-                  id="dateFrom"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className={searchStyles.input}
-                />
-              </div>
-              
-              <div className={searchStyles.formGroup}>
-                <label htmlFor="dateTo">日付（まで）</label>
-                <input
-                  type="date"
-                  id="dateTo"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className={searchStyles.input}
-                />
-              </div>
             </div>
             
             <div className={searchStyles.buttonContainer}>

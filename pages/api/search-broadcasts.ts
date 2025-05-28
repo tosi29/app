@@ -25,7 +25,7 @@ export default function handler(
   res: NextApiResponse<PastBroadcast[]>
 ) {
   // Get search parameters from query
-  const { query, series, dateFrom, dateTo } = req.query;
+  const { query, series } = req.query;
   
   // Filter broadcasts based on search criteria
   let filteredBroadcasts = [...pastBroadcasts];
@@ -73,19 +73,6 @@ export default function handler(
   if (series && typeof series === 'string' && series.trim() !== '') {
     filteredBroadcasts = filteredBroadcasts.filter(broadcast => 
       broadcast.series.toLowerCase() === series.toLowerCase()
-    );
-  }
-  
-  // Filter by date range
-  if (dateFrom && typeof dateFrom === 'string' && dateFrom.trim() !== '') {
-    filteredBroadcasts = filteredBroadcasts.filter(broadcast => 
-      broadcast.date >= dateFrom
-    );
-  }
-  
-  if (dateTo && typeof dateTo === 'string' && dateTo.trim() !== '') {
-    filteredBroadcasts = filteredBroadcasts.filter(broadcast => 
-      broadcast.date <= dateTo
     );
   }
   
