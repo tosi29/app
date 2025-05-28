@@ -24,6 +24,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
+## Features
+
+### Broadcast Listing
+- View past broadcasts organized by series
+- Expand/collapse series groups
+- View broadcast details
+
+### Broadcast Search
+- Search broadcasts by keyword (in title or description)
+- Filter by series
+- Filter by date range
+- View search results in a table format
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
