@@ -154,6 +154,41 @@
   background-color: rgba(0, 0, 0, 0.02);
 }
 
+.seriesHeader {
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.seriesHeader:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.seriesToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.toggleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  width: 16px;
+  height: 16px;
+}
+
+.toggleIcon.expanded {
+  transform: rotate(0deg);
+}
+
+.seriesName {
+  font-weight: 600;
+}
+
 .series-basic {
   background-color: rgba(144, 238, 144, 0.1); /* Light green */
   border-left: 3px solid rgba(144, 238, 144, 0.7);
