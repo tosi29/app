@@ -254,35 +254,17 @@ export default function Home() {
             </h2>
             
             {searchResults.length > 0 ? (
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>日付</th>
-                    <th>シリーズ</th>
-                    <th>タイトル</th>
-                    <th>再生時間</th>
-                    <th>詳細</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {searchResults.map((broadcast) => (
-                    <tr key={broadcast.id}>
-                      <td>{broadcast.date}</td>
-                      <td>{broadcast.series}</td>
-                      <td>{broadcast.title}</td>
-                      <td>{broadcast.duration}</td>
-                      <td>
-                        <button
-                          onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.link}
-                        >
-                          詳細
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className={searchStyles.searchResults}>
+                {searchResults.map((broadcast) => (
+                  <div key={broadcast.id} className={searchStyles.resultCard}>
+                    <h3 className={searchStyles.resultTitle}>{broadcast.title}</h3>
+                    <div className={searchStyles.resultSeries}>{broadcast.series}</div>
+                    {broadcast.matchedChunk && (
+                      <div className={searchStyles.resultChunk}>{broadcast.matchedChunk}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
             ) : (
               <p className={searchStyles.noResults}>該当する配信はありません。</p>
             )}
