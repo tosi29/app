@@ -1,7 +1,5 @@
 # Next.js Application
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped manually.
-
 ## Getting Started
 
 First, install the dependencies:
