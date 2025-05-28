@@ -12,6 +12,8 @@ interface TabProps {
 }
 
 export default function Tabs({ active, tabs, onTabChange }: TabProps): React.ReactNode {
+  console.log('Tabs component - active tab:', active);
+  
   return (
     <div className={styles.tabsContainer}>
       <div className={styles.tabsHeader}>

@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
-import { GetStaticProps } from 'next'
 
 interface PastBroadcast {
   id: number;
@@ -14,22 +13,24 @@ interface PastBroadcast {
   series: string;
 }
 
-interface HomeProps {
-  pastBroadcasts: PastBroadcast[];
-}
-
-export default function Home({ pastBroadcasts }: HomeProps) {
+export default function Home() {
   const router = useRouter();
   const { tab, episodeId } = router.query;
   
   // Set active tab based on URL parameter
-  const [activeTab, setActiveTab] = useState<string>('broadcasts');
+  const [activeTab, setActiveTab] = useState<string>(
+    router.query.tab === 'comments' ? 'comments' : 'broadcasts'
+  );
   
   useEffect(() => {
-    if (tab === 'comments') {
-      setActiveTab('comments');
+    if (router.isReady) {
+      if (tab === 'comments') {
+        setActiveTab('comments');
+      } else {
+        setActiveTab('broadcasts');
+      }
     }
-  }, [tab]);
+  }, [router.isReady, tab]);
 
   // Handle tab change
   const handleTabChange = (tabId: string) => {
@@ -39,6 +40,15 @@ export default function Home({ pastBroadcasts }: HomeProps) {
       query: tabId === 'comments' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
+
+  // Sample data for past broadcasts
+  const pastBroadcasts: PastBroadcast[] = [
+    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series' },
+    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series' },
+    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series' },
+    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series' },
+    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series' },
+  ]
 
   // Content for the broadcasts tab
   const BroadcastsContent = () => (
@@ -129,34 +139,4 @@ export default function Home({ pastBroadcasts }: HomeProps) {
       </footer>
     </div>
   )
-}
-
-export const getStaticProps: GetStaticProps = async () => {
-  try {
-    // In a production environment, we'd use an absolute URL with proper protocol and domain
-    // For local development and SSG, we need to use a different approach
-    // This is a simplified version for this example
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const host = process.env.VERCEL_URL || 'localhost:3000';
-    const res = await fetch(`${protocol}://${host}/api/broadcasts`);
-    const pastBroadcasts = await res.json();
-
-    return {
-      props: {
-        pastBroadcasts,
-      },
-      // Revalidate the data every 10 seconds
-      revalidate: 10,
-    };
-  } catch (error) {
-    console.error('Error fetching broadcasts:', error);
-    
-    // Return empty data in case of an error
-    return {
-      props: {
-        pastBroadcasts: [],
-      },
-      revalidate: 10,
-    };
-  }
 }
