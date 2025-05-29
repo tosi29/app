@@ -137,8 +137,9 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.link}
+                          className={styles.commentButton}
                         >
+                          <span className={styles.commentIcon}>💬</span>
                           コメントを見る
                         </button>
                       </td>
@@ -245,8 +246,9 @@ export default function Home() {
                     <div className={searchStyles.resultActions}>
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                        className={styles.link}
+                        className={styles.commentButton}
                       >
+                        <span className={styles.commentIcon}>💬</span>
                         コメントを見る
                       </button>
                     </div>
