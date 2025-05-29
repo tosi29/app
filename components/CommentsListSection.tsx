@@ -26,7 +26,6 @@ export default function CommentsListSection({
 
   useEffect(() => {
     const fetchComments = async () => {
-      setLoading(true);
       try {
         // Construct API URL with episodeId if it exists
         const url = selectedEpisodeId 
@@ -34,29 +33,36 @@ export default function CommentsListSection({
           : '/api/comments';
         
         const response = await fetch(url);
+        
         if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         const data = await response.json();
         
         // Sort comments by feedback score (positiveScore) in descending order
         const sortedComments = data.sort((a: Comment, b: Comment) => {
-          // Calculate feedback score as positiveScore (higher is better feedback)
-          const feedbackScoreA = a.positiveScore;
-          const feedbackScoreB = b.positiveScore;
-          return feedbackScoreB - feedbackScoreA;
+          return b.positiveScore - a.positiveScore;
         });
         
         setComments(sortedComments);
+        
       } catch (error) {
         console.error('Error fetching comments:', error);
+        // Fallback to empty array
         setComments([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchComments();
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      fetchComments();
+    } else {
+      // For SSR, set loading to false and use empty array
+      setLoading(false);
+    }
   }, [selectedEpisodeId]);
 
   const formatFeedbackScore = (score: number): string => {
