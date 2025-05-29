@@ -125,8 +125,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   };
 
   // Handle feedback button clicks
-  const handleFeedback = (feedbackType: string): void => {
-    console.log(`Feedback "${feedbackType}" given to comment:`, selectedComment?.text);
+  const handleFeedback = (feedbackType: string, comment: Comment): void => {
+    console.log(`Feedback "${feedbackType}" given to comment:`, comment.text);
     // Here you could add API call to save feedback
     // For now, just log it
   };
@@ -237,33 +237,6 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   </p>
                   <p className={commentStyles.commentText}>{(selectedComment || hoveredComment)!.text}</p>
                   <p className={commentStyles.commentAuthor}>by {(selectedComment || hoveredComment)!.author}</p>
-                  
-                  {/* Feedback buttons - only show for selected comments */}
-                  {selectedComment && (
-                    <div className={commentStyles.feedbackContainer}>
-                      <button 
-                        className={commentStyles.feedbackButton}
-                        onClick={() => handleFeedback('empathy')}
-                        title="共感"
-                      >
-                        👍
-                      </button>
-                      <button 
-                        className={commentStyles.feedbackButton}
-                        onClick={() => handleFeedback('insight')}
-                        title="なるほど"
-                      >
-                        💡
-                      </button>
-                      <button 
-                        className={commentStyles.feedbackButton}
-                        onClick={() => handleFeedback('on-target')}
-                        title="的を射ている"
-                      >
-                        🎯
-                      </button>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -319,6 +292,40 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   </div>
                   <p className={commentStyles.commentItemText}>{comment.text}</p>
                   <p className={commentStyles.commentItemAuthor}>by {comment.author}</p>
+                  
+                  {/* Feedback buttons */}
+                  <div className={commentStyles.feedbackContainer}>
+                    <button 
+                      className={commentStyles.feedbackButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFeedback('empathy', comment);
+                      }}
+                      title="共感"
+                    >
+                      👍
+                    </button>
+                    <button 
+                      className={commentStyles.feedbackButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFeedback('insight', comment);
+                      }}
+                      title="なるほど"
+                    >
+                      💡
+                    </button>
+                    <button 
+                      className={commentStyles.feedbackButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFeedback('on-target', comment);
+                      }}
+                      title="的を射ている"
+                    >
+                      🎯
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
