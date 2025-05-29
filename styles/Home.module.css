@@ -147,7 +147,7 @@
 
 .table th,
 .table td {
-  padding: 1rem;
+  padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
 }
@@ -193,8 +193,8 @@
 .seriesToggle {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
+  gap: 0.375rem;
+  padding: 0.375rem 0;
 }
 
 .toggleIcon {
