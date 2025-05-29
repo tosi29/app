@@ -285,6 +285,9 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   <div className={commentStyles.commentItemHeader}>
                     <p className={commentStyles.commentItemEpisode}>
                       {getEpisodeTitle(comment.episodeId)}
+                      <span className={commentStyles.commentSeries}>
+                        ({getEpisodeSeries(comment.episodeId)})
+                      </span>
                     </p>
                     <span className={commentStyles.commentItemScore}>
                       {Math.round(comment.positiveScore * 100)}%
