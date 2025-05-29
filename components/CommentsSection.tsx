@@ -26,6 +26,7 @@ interface CommentsSectionProps {
 
 export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
+  const [hoveredCommentInList, setHoveredCommentInList] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const commentsListRef = useRef<HTMLDivElement>(null);
@@ -91,10 +92,34 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     setHoveredComment(null);
   };
 
+  // Handle click on comment dot - scroll to comment in list
+  const handleCommentClick = (comment: Comment): void => {
+    // Scroll to the selected comment in the list
+    if (commentsListRef.current) {
+      const commentElement = commentsListRef.current.querySelector(`[data-comment-id="${comment.id}"]`);
+      if (commentElement) {
+        commentElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
+  };
+
   // Handle click on comment item in the list
   const handleCommentItemClick = (comment: Comment): void => {
     // You could add specific behavior here for when items in the list are clicked
     console.log('Comment item clicked:', comment.text);
+  };
+
+  // Handle mouse enter on comment item in the list
+  const handleCommentItemMouseEnter = (comment: Comment): void => {
+    setHoveredCommentInList(comment);
+  };
+
+  // Handle mouse leave from comment item in the list
+  const handleCommentItemMouseLeave = (): void => {
+    setHoveredCommentInList(null);
   };
 
   // Handle feedback button clicks
@@ -159,15 +184,22 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   const x = 50 + comment.opinionScore * 500; // Scale to fit within the graph
                   const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
                   const seriesClass = getSeriesClassName(comment.episodeId);
+                  const isHighlighted = hoveredCommentInList?.id === comment.id;
                   
                   return (
                     <circle
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''}`}
+                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
+                        isHighlighted ? commentStyles.commentDotHighlighted : ''
+                      }`}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCommentClick(comment);
+                      }}
                     />
                   );
                 })}
@@ -240,6 +272,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   data-comment-id={comment.id}
                   className={commentStyles.commentItem}
                   onClick={() => handleCommentItemClick(comment)}
+                  onMouseEnter={() => handleCommentItemMouseEnter(comment)}
+                  onMouseLeave={handleCommentItemMouseLeave}
                 >
                   <div className={commentStyles.commentItemHeader}>
                     <p className={commentStyles.commentItemEpisode}>

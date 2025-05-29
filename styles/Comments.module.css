@@ -136,6 +136,13 @@
   filter: drop-shadow(0 0 6px rgba(var(--primary-color-rgb), 0.4));
 }
 
+.commentDotHighlighted {
+  r: 10;
+  stroke-width: 2;
+  stroke: #f59e0b; /* Amber color */
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4));
+}
+
 .commentTooltip {
   position: absolute;
   background-color: var(--card-background);
