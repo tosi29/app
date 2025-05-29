@@ -26,7 +26,6 @@ interface CommentsSectionProps {
 
 export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const commentsListRef = useRef<HTMLDivElement>(null);
@@ -84,44 +83,18 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
-    if (!selectedComment) {
-      setHoveredComment(comment);
-    }
+    setHoveredComment(comment);
   };
 
   // Handle mouse out from comment dot
   const handleMouseOut = (): void => {
-    if (!selectedComment) {
-      setHoveredComment(null);
-    }
-  };
-
-  // Handle click on comment dot
-  const handleCommentClick = (comment: Comment): void => {
-    setSelectedComment(comment);
     setHoveredComment(null);
-    
-    // Scroll to the selected comment in the list
-    if (commentsListRef.current) {
-      const commentElement = commentsListRef.current.querySelector(`[data-comment-id="${comment.id}"]`);
-      if (commentElement) {
-        commentElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-      }
-    }
   };
 
   // Handle click on comment item in the list
   const handleCommentItemClick = (comment: Comment): void => {
-    setSelectedComment(comment);
-    setHoveredComment(null);
-  };
-
-  // Handle click outside to close selected comment
-  const handleClickOutside = (): void => {
-    setSelectedComment(null);
+    // You could add specific behavior here for when items in the list are clicked
+    console.log('Comment item clicked:', comment.text);
   };
 
   // Handle feedback button clicks
@@ -150,10 +123,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
         <div className={commentStyles.commentsLayout}>
           {/* Left side: Graph */}
           <div className={commentStyles.graphSection}>
-            <div 
-              className={commentStyles.graphAxes}
-              onClick={handleClickOutside}
-            >
+            <div className={commentStyles.graphAxes}>
               <div className={commentStyles.yAxisLabel}>ポジティブ ↑</div>
               <div className={commentStyles.xAxisLabel}>← リアクション | 意見 →</div>
 
@@ -195,48 +165,39 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
-                        selectedComment?.id === comment.id ? commentStyles.commentDotSelected : ''
-                      }`}
+                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''}`}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCommentClick(comment);
-                      }}
                     />
                   );
                 })}
               </svg>
               
               {/* Comment tooltip with episode information */}
-              {(hoveredComment || selectedComment) && (
+              {hoveredComment && (
                 <div
                   className={`${commentStyles.commentTooltip} ${
-                    selectedComment ? commentStyles.commentTooltipInteractive : ''
-                  } ${
-                    (selectedComment || hoveredComment)!.opinionScore > 0.5
-                      ? ((selectedComment || hoveredComment)!.positiveScore > 0.5
+                    hoveredComment.opinionScore > 0.5
+                      ? (hoveredComment.positiveScore > 0.5
                         ? commentStyles['commentTooltip-bottomLeft']
                         : commentStyles['commentTooltip-topLeft'])
-                      : ((selectedComment || hoveredComment)!.positiveScore > 0.5
+                      : (hoveredComment.positiveScore > 0.5
                         ? commentStyles['commentTooltip-bottomRight']
                         : commentStyles['commentTooltip-topRight'])
                   }`}
                   style={{
-                    left: `${50 + (selectedComment || hoveredComment)!.opinionScore * 500}px`,
-                    top: `${550 - (selectedComment || hoveredComment)!.positiveScore * 500}px`,
+                    left: `${50 + hoveredComment.opinionScore * 500}px`,
+                    top: `${550 - hoveredComment.positiveScore * 500}px`,
                   }}
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <p className={commentStyles.commentEpisode}>
-                    {getEpisodeTitle((selectedComment || hoveredComment)!.episodeId)} 
+                    {getEpisodeTitle(hoveredComment.episodeId)} 
                     <span className={commentStyles.commentSeries}>
-                      ({getEpisodeSeries((selectedComment || hoveredComment)!.episodeId)})
+                      ({getEpisodeSeries(hoveredComment.episodeId)})
                     </span>
                   </p>
-                  <p className={commentStyles.commentText}>{(selectedComment || hoveredComment)!.text}</p>
-                  <p className={commentStyles.commentAuthor}>by {(selectedComment || hoveredComment)!.author}</p>
+                  <p className={commentStyles.commentText}>{hoveredComment.text}</p>
+                  <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
                 </div>
               )}
             </div>
@@ -277,9 +238,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 <div
                   key={comment.id}
                   data-comment-id={comment.id}
-                  className={`${commentStyles.commentItem} ${
-                    selectedComment?.id === comment.id ? commentStyles.selected : ''
-                  }`}
+                  className={commentStyles.commentItem}
                   onClick={() => handleCommentItemClick(comment)}
                 >
                   <div className={commentStyles.commentItemHeader}>
