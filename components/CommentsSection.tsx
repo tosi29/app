@@ -219,24 +219,24 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 <div className={commentStyles.feedbackContainer}>
                   <button 
                     className={commentStyles.feedbackButton}
-                    onClick={() => handleFeedback('共感')}
+                    onClick={() => handleFeedback('empathy')}
                     title="共感"
                   >
-                    👍 共感
+                    👍
                   </button>
                   <button 
                     className={commentStyles.feedbackButton}
-                    onClick={() => handleFeedback('鋭い！')}
-                    title="鋭い！"
+                    onClick={() => handleFeedback('insight')}
+                    title="なるほど"
                   >
-                    ⚡ 鋭い！
+                    💡
                   </button>
                   <button 
                     className={commentStyles.feedbackButton}
-                    onClick={() => handleFeedback('確かに！')}
-                    title="確かに！"
+                    onClick={() => handleFeedback('on-target')}
+                    title="的を射ている"
                   >
-                    ✅ 確かに！
+                    🎯
                   </button>
                 </div>
               )}
