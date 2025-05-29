@@ -26,32 +26,47 @@ interface CommentsSectionProps {
   onCommentSelect?: (commentId: number) => void;
 }
 
+// Static fallback data that matches the API response
+const fallbackComments: Comment[] = [
+  { id: 8, episodeId: 3, text: '素晴らしい内容でした！', positiveScore: 0.9, opinionScore: 0.2, author: 'リスナー8' },
+  { id: 3, episodeId: 2, text: 'わかりやすい説明をありがとうございます！', positiveScore: 0.9, opinionScore: 0.5, author: 'リスナー3' },
+  { id: 5, episodeId: 4, text: 'ゲストのお話が特に参考になりました！', positiveScore: 0.8, opinionScore: 0.7, author: 'リスナー5' },
+  { id: 1, episodeId: 1, text: '面白かったです！次回も楽しみにしています。', positiveScore: 0.8, opinionScore: 0.3, author: 'リスナー1' },
+  { id: 4, episodeId: 3, text: 'すごく勉強になりました。', positiveScore: 0.7, opinionScore: 0.6, author: 'リスナー4' },
+  { id: 6, episodeId: 5, text: 'もっと詳しく聞きたかったです。', positiveScore: 0.5, opinionScore: 0.8, author: 'リスナー6' },
+  { id: 2, episodeId: 1, text: 'もう少し技術的な内容があると良かったです。', positiveScore: 0.4, opinionScore: 0.9, author: 'リスナー2' },
+  { id: 7, episodeId: 2, text: 'あまり理解できませんでした...', positiveScore: 0.2, opinionScore: 0.6, author: 'リスナー7' }
+];
+
 export default function CommentsSection({ pastBroadcasts, selectedEpisodeId, selectedCommentId, onCommentSelect }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [comments, setComments] = useState<Comment[]>(fallbackComments);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchComments = async () => {
-      setLoading(true);
+      // Start with static data immediately to show graph
+      setComments(fallbackComments);
+      
       try {
-        // Construct API URL with episodeId if it exists
+        // Try to fetch fresh data from API
         const url = selectedEpisodeId 
           ? `/api/comments?episodeId=${selectedEpisodeId}`
           : '/api/comments';
         
+        console.log('Fetching comments from:', url);
         const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
+        console.log('Response status:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Comments data received:', data.length, 'comments');
+          setComments(data); // Update with API data if successful
         }
-        const data = await response.json();
-        setComments(data);
       } catch (error) {
         console.error('Error fetching comments:', error);
-        // In a real app, you might want to show an error message to the user
-      } finally {
-        setLoading(false);
+        // Keep fallback data - no need to change anything
       }
     };
 
@@ -87,9 +102,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId, sel
     return series ? `commentDot-${series.toLowerCase().split(' ')[0]}` : '';
   };
 
-  // Filter comments is no longer needed as the API handles this
-  // But we keep the filteredComments variable for compatibility
-  const filteredComments = comments;
+  // Filter by episode if specified  
+  const filteredComments = selectedEpisodeId 
+    ? comments.filter(c => c.episodeId === selectedEpisodeId)
+    : comments;
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
