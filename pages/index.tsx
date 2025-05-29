@@ -104,7 +104,9 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(broadcastsBySeries).map(([series, broadcasts]) => (
+              {Object.entries(broadcastsBySeries)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([series, broadcasts]) => (
                 <React.Fragment key={series}>
                   <tr 
                     className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
