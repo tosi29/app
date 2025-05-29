@@ -12,14 +12,12 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-top: 1.5rem;
+  padding: 1.5rem 1rem 1rem 1rem;
   position: sticky;
   top: 0;
-  background-color: var(--card-background);
+  background-color: var(--background-color);
   z-index: 10;
-  box-shadow: var(--shadow-md);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid transparent;
 }
 
 .main {
