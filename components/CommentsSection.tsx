@@ -84,16 +84,12 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
-    if (!selectedComment) {
-      setHoveredComment(comment);
-    }
+    setHoveredComment(comment);
   };
 
   // Handle mouse out from comment dot
   const handleMouseOut = (): void => {
-    if (!selectedComment) {
-      setHoveredComment(null);
-    }
+    setHoveredComment(null);
   };
 
   // Handle click on comment dot
@@ -210,33 +206,31 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               </svg>
               
               {/* Comment tooltip with episode information */}
-              {(hoveredComment || selectedComment) && (
+              {hoveredComment && (
                 <div
                   className={`${commentStyles.commentTooltip} ${
-                    selectedComment ? commentStyles.commentTooltipInteractive : ''
-                  } ${
-                    (selectedComment || hoveredComment)!.opinionScore > 0.5
-                      ? ((selectedComment || hoveredComment)!.positiveScore > 0.5
+                    hoveredComment.opinionScore > 0.5
+                      ? (hoveredComment.positiveScore > 0.5
                         ? commentStyles['commentTooltip-bottomLeft']
                         : commentStyles['commentTooltip-topLeft'])
-                      : ((selectedComment || hoveredComment)!.positiveScore > 0.5
+                      : (hoveredComment.positiveScore > 0.5
                         ? commentStyles['commentTooltip-bottomRight']
                         : commentStyles['commentTooltip-topRight'])
                   }`}
                   style={{
-                    left: `${50 + (selectedComment || hoveredComment)!.opinionScore * 500}px`,
-                    top: `${550 - (selectedComment || hoveredComment)!.positiveScore * 500}px`,
+                    left: `${50 + hoveredComment.opinionScore * 500}px`,
+                    top: `${550 - hoveredComment.positiveScore * 500}px`,
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className={commentStyles.commentEpisode}>
-                    {getEpisodeTitle((selectedComment || hoveredComment)!.episodeId)} 
+                    {getEpisodeTitle(hoveredComment.episodeId)} 
                     <span className={commentStyles.commentSeries}>
-                      ({getEpisodeSeries((selectedComment || hoveredComment)!.episodeId)})
+                      ({getEpisodeSeries(hoveredComment.episodeId)})
                     </span>
                   </p>
-                  <p className={commentStyles.commentText}>{(selectedComment || hoveredComment)!.text}</p>
-                  <p className={commentStyles.commentAuthor}>by {(selectedComment || hoveredComment)!.author}</p>
+                  <p className={commentStyles.commentText}>{hoveredComment.text}</p>
+                  <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
                 </div>
               )}
             </div>
