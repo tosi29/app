@@ -2,11 +2,11 @@
   width: 100%;
   max-width: 800px;
   margin: 2rem 0;
-  padding: 1.5rem;
-  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius);
   background-color: var(--card-background);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .searchForm {
@@ -33,19 +33,20 @@
 }
 
 .input, .select {
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
-  background-color: var(--background-color);
+  background-color: var(--card-background);
   color: var(--text-primary);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
 }
 
 .input:focus, .select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.15);
+  background-color: var(--card-background-hover);
 }
 
 .buttonContainer {
@@ -56,27 +57,29 @@
 }
 
 .searchButton, .backButton {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
+  transition: all 0.3s ease;
 }
 
 .searchButton {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;
+  box-shadow: var(--shadow-md);
 }
 
 .searchButton:hover {
-  background-color: var(--primary-color-dark);
+  background: linear-gradient(135deg, var(--primary-color-dark) 0%, var(--secondary-color) 100%);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
 }
 
 .searchButton:disabled {
-  background-color: var(--border-color);
+  background: var(--border-color);
   cursor: not-allowed;
   transform: none;
 }
@@ -107,15 +110,17 @@
 
 .resultCard {
   padding: 1.5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius);
   background-color: var(--card-background);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.3s;
+  transition: all 0.3s ease;
 }
 
 .resultCard:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: rgba(var(--primary-color-rgb), 0.2);
 }
 
 .resultTitle {

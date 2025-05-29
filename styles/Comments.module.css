@@ -2,12 +2,12 @@
   width: 100%;
   max-width: 1400px;
   margin: 2rem 0;
-  padding: 1.5rem;
-  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius);
   background-color: var(--card-background);
   overflow-x: auto;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .commentsLayout {
@@ -104,27 +104,27 @@
 .commentDot {
   fill: var(--primary-color);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   r: 8;
   stroke: white;
   stroke-width: 1;
 }
 
 .commentDot-basic {
-  fill: #4ade80; /* Green */
+  fill: var(--success-color);
 }
 
 .commentDot-guest {
-  fill: #60a5fa; /* Blue */
+  fill: var(--primary-color);
 }
 
 .commentDot-community {
-  fill: #f472b6; /* Pink */
+  fill: var(--accent-color);
 }
 
 .commentDot:hover {
   r: 10;
-  fill: #f43f5e;
+  fill: var(--secondary-color);
   stroke-width: 2;
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
 }
