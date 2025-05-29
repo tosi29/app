@@ -102,7 +102,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
+  margin: 1rem 2rem 0;
 }
 
 .resultCard {
@@ -176,5 +176,9 @@
   
   .searchButton, .backButton {
     width: 100%;
+  }
+  
+  .searchResults {
+    margin: 1rem 0.5rem 0;
   }
 }
