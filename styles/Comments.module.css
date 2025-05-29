@@ -20,8 +20,6 @@
   max-width: 450px;
   max-height: 800px;
   overflow-y: auto;
-  border: 2px solid red;
-  background-color: rgba(255, 0, 0, 0.1);
 }
 
 /* Mobile responsiveness for comments page */
@@ -40,9 +38,9 @@
 /* Comments list styles */
 .commentsList {
   padding: 1.5rem;
-  border: 3px solid blue;
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  background-color: rgba(0, 0, 255, 0.2);
+  background-color: var(--card-background);
   box-shadow: var(--shadow-md);
 }
 
