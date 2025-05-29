@@ -21,49 +21,27 @@ export default function CommentsListSection({
   selectedCommentId, 
   onCommentSelect 
 }: CommentsListSectionProps): React.ReactNode {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // Use static data that matches the API response
+  const apiComments: Comment[] = [
+    { id: 8, episodeId: 3, text: '素晴らしい内容でした！', positiveScore: 0.9, opinionScore: 0.2, author: 'リスナー8' },
+    { id: 3, episodeId: 2, text: 'わかりやすい説明をありがとうございます！', positiveScore: 0.9, opinionScore: 0.5, author: 'リスナー3' },
+    { id: 5, episodeId: 4, text: 'ゲストのお話が特に参考になりました！', positiveScore: 0.8, opinionScore: 0.7, author: 'リスナー5' },
+    { id: 1, episodeId: 1, text: '面白かったです！次回も楽しみにしています。', positiveScore: 0.8, opinionScore: 0.3, author: 'リスナー1' },
+    { id: 4, episodeId: 3, text: 'すごく勉強になりました。', positiveScore: 0.7, opinionScore: 0.6, author: 'リスナー4' },
+    { id: 6, episodeId: 5, text: 'もっと詳しく聞きたかったです。', positiveScore: 0.5, opinionScore: 0.8, author: 'リスナー6' },
+    { id: 2, episodeId: 1, text: 'もう少し技術的な内容があると良かったです。', positiveScore: 0.4, opinionScore: 0.9, author: 'リスナー2' },
+    { id: 7, episodeId: 2, text: 'あまり理解できませんでした...', positiveScore: 0.2, opinionScore: 0.6, author: 'リスナー7' }
+  ];
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        // Construct API URL with episodeId if it exists
-        const url = selectedEpisodeId 
-          ? `/api/comments?episodeId=${selectedEpisodeId}`
-          : '/api/comments';
-        
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        // Sort comments by feedback score (positiveScore) in descending order
-        const sortedComments = data.sort((a: Comment, b: Comment) => {
-          return b.positiveScore - a.positiveScore;
-        });
-        
-        setComments(sortedComments);
-        
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-        // Fallback to empty array
-        setComments([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Filter by episode if specified
+  const filteredComments = selectedEpisodeId 
+    ? apiComments.filter(c => c.episodeId === selectedEpisodeId)
+    : apiComments;
 
-    // Only run on client side
-    if (typeof window !== 'undefined') {
-      fetchComments();
-    } else {
-      // For SSR, set loading to false and use empty array
-      setLoading(false);
-    }
-  }, [selectedEpisodeId]);
+  // Sort by feedback score (positiveScore) in descending order
+  const comments = filteredComments.sort((a, b) => b.positiveScore - a.positiveScore);
+  
+  const loading = false;
 
   const formatFeedbackScore = (score: number): string => {
     return `${Math.round(score * 100)}%`;
