@@ -20,6 +20,9 @@ export default function Comments() {
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
 
+  // Parse episodeId safely
+  const selectedEpisodeId = episodeId && typeof episodeId === 'string' ? Number(episodeId) : undefined;
+
   useEffect(() => {
     // Fetch past broadcasts data (same as in index.tsx)
     const fetchBroadcasts = async () => {
@@ -54,7 +57,7 @@ export default function Comments() {
           <div className={commentStyles.commentsGraphSide}>
             <CommentsSection 
               pastBroadcasts={pastBroadcasts}
-              selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
+              selectedEpisodeId={selectedEpisodeId}
               selectedCommentId={selectedCommentId}
               onCommentSelect={handleCommentSelect}
             />
@@ -62,7 +65,7 @@ export default function Comments() {
           
           <div className={commentStyles.commentsListSide}>
             <CommentsListSection
-              selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
+              selectedEpisodeId={selectedEpisodeId}
               selectedCommentId={selectedCommentId}
               onCommentSelect={handleCommentSelect}
             />
