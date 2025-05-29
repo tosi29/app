@@ -98,7 +98,6 @@ export default function Home() {
             <thead>
               <tr>
                 <th>日付</th>
-                <th>シリーズ</th>
                 <th>タイトル</th>
                 <th>再生時間</th>
                 <th>リンク</th>
@@ -111,7 +110,7 @@ export default function Home() {
                     className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
                     onClick={() => toggleSeries(series)}
                   >
-                    <td colSpan={5}>
+                    <td colSpan={4}>
                       <div className={styles.seriesToggle}>
                         <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
                           {expandedSeries[series] ? '▼' : '▶'}
@@ -126,7 +125,6 @@ export default function Home() {
                       className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
                     >
                       <td>{broadcast.date}</td>
-                      <td>{broadcast.series}</td>
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
                       <td>
