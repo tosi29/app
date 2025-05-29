@@ -26,6 +26,7 @@ interface CommentsSectionProps {
 
 export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
+  const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -79,12 +80,34 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
-    setHoveredComment(comment);
+    if (!selectedComment) {
+      setHoveredComment(comment);
+    }
   };
 
   // Handle mouse out from comment dot
   const handleMouseOut = (): void => {
+    if (!selectedComment) {
+      setHoveredComment(null);
+    }
+  };
+
+  // Handle click on comment dot
+  const handleCommentClick = (comment: Comment): void => {
+    setSelectedComment(comment);
     setHoveredComment(null);
+  };
+
+  // Handle click outside to close selected comment
+  const handleClickOutside = (): void => {
+    setSelectedComment(null);
+  };
+
+  // Handle feedback button clicks
+  const handleFeedback = (feedbackType: string): void => {
+    console.log(`Feedback "${feedbackType}" given to comment:`, selectedComment?.text);
+    // Here you could add API call to save feedback
+    // For now, just log it
   };
 
   return (
@@ -103,7 +126,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       ) : (
 
       <div className={commentStyles.graphContainer}>
-        <div className={commentStyles.graphAxes}>
+        <div 
+          className={commentStyles.graphAxes}
+          onClick={handleClickOutside}
+        >
           <div className={commentStyles.yAxisLabel}>ポジティブ ↑</div>
           <div className={commentStyles.xAxisLabel}>← リアクション | 意見 →</div>
 
@@ -145,39 +171,75 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   key={comment.id}
                   cx={x}
                   cy={y}
-                  className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''}`}
+                  className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
+                    selectedComment?.id === comment.id ? commentStyles.commentDotSelected : ''
+                  }`}
                   onMouseOver={() => handleMouseOver(comment)}
                   onMouseOut={handleMouseOut}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCommentClick(comment);
+                  }}
                 />
               );
             })}
           </svg>
           
           {/* Comment tooltip with episode information */}
-          {hoveredComment && (
+          {(hoveredComment || selectedComment) && (
             <div
               className={`${commentStyles.commentTooltip} ${
-                hoveredComment.opinionScore > 0.5
-                  ? (hoveredComment.positiveScore > 0.5
+                selectedComment ? commentStyles.commentTooltipInteractive : ''
+              } ${
+                (selectedComment || hoveredComment)!.opinionScore > 0.5
+                  ? ((selectedComment || hoveredComment)!.positiveScore > 0.5
                     ? commentStyles['commentTooltip-bottomLeft']
                     : commentStyles['commentTooltip-topLeft'])
-                  : (hoveredComment.positiveScore > 0.5
+                  : ((selectedComment || hoveredComment)!.positiveScore > 0.5
                     ? commentStyles['commentTooltip-bottomRight']
                     : commentStyles['commentTooltip-topRight'])
               }`}
               style={{
-                left: `${50 + hoveredComment.opinionScore * 500}px`,
-                top: `${550 - hoveredComment.positiveScore * 500}px`,
+                left: `${50 + (selectedComment || hoveredComment)!.opinionScore * 500}px`,
+                top: `${550 - (selectedComment || hoveredComment)!.positiveScore * 500}px`,
               }}
+              onClick={(e) => e.stopPropagation()}
             >
               <p className={commentStyles.commentEpisode}>
-                {getEpisodeTitle(hoveredComment.episodeId)} 
+                {getEpisodeTitle((selectedComment || hoveredComment)!.episodeId)} 
                 <span className={commentStyles.commentSeries}>
-                  ({getEpisodeSeries(hoveredComment.episodeId)})
+                  ({getEpisodeSeries((selectedComment || hoveredComment)!.episodeId)})
                 </span>
               </p>
-              <p className={commentStyles.commentText}>{hoveredComment.text}</p>
-              <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
+              <p className={commentStyles.commentText}>{(selectedComment || hoveredComment)!.text}</p>
+              <p className={commentStyles.commentAuthor}>by {(selectedComment || hoveredComment)!.author}</p>
+              
+              {/* Feedback buttons - only show for selected comments */}
+              {selectedComment && (
+                <div className={commentStyles.feedbackContainer}>
+                  <button 
+                    className={commentStyles.feedbackButton}
+                    onClick={() => handleFeedback('empathy')}
+                    title="共感"
+                  >
+                    👍
+                  </button>
+                  <button 
+                    className={commentStyles.feedbackButton}
+                    onClick={() => handleFeedback('insight')}
+                    title="なるほど"
+                  >
+                    💡
+                  </button>
+                  <button 
+                    className={commentStyles.feedbackButton}
+                    onClick={() => handleFeedback('on-target')}
+                    title="的を射ている"
+                  >
+                    🎯
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
