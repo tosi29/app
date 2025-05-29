@@ -139,7 +139,7 @@ export default function Home() {
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                           className={styles.link}
                         >
-                          コメント
+                          コメントを見る
                         </button>
                       </td>
                     </tr>
@@ -247,7 +247,7 @@ export default function Home() {
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                         className={styles.link}
                       >
-                        詳細
+                        コメントを見る
                       </button>
                     </div>
                   </div>
@@ -266,7 +266,7 @@ export default function Home() {
   const tabs = [
     {
       id: 'broadcasts',
-      label: '過去の配信',
+      label: '配信一覧',
       content: <BroadcastsContent />
     },
     {
@@ -287,8 +287,8 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>過去の配信一覧 | Next.js App</title>
-        <meta name="description" content="過去の配信一覧ページ" />
+        <title>配信一覧 | Next.js App</title>
+        <meta name="description" content="配信一覧ページ" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
