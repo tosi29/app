@@ -22,9 +22,11 @@ interface PastBroadcast {
 interface CommentsSectionProps {
   pastBroadcasts: PastBroadcast[];
   selectedEpisodeId?: number;
+  selectedCommentId?: number | null;
+  onCommentSelect?: (commentId: number) => void;
 }
 
-export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
+export default function CommentsSection({ pastBroadcasts, selectedEpisodeId, selectedCommentId, onCommentSelect }: CommentsSectionProps): React.ReactNode {
   const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -55,6 +57,17 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
     fetchComments();
   }, [selectedEpisodeId]);
+
+  // Effect to sync selected comment from external selection
+  useEffect(() => {
+    if (selectedCommentId && comments.length > 0) {
+      const comment = comments.find(c => c.id === selectedCommentId);
+      if (comment) {
+        setSelectedComment(comment);
+        setHoveredComment(null);
+      }
+    }
+  }, [selectedCommentId, comments]);
 
   // Function to get episode title by id
   const getEpisodeTitle = (episodeId: number): string => {
@@ -96,6 +109,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   const handleCommentClick = (comment: Comment): void => {
     setSelectedComment(comment);
     setHoveredComment(null);
+    // Notify parent component about the selection
+    if (onCommentSelect) {
+      onCommentSelect(comment.id);
+    }
   };
 
   // Handle click outside to close selected comment

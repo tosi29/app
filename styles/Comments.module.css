@@ -1,3 +1,109 @@
+/* Comments page layout styles */
+.commentsPageLayout {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.commentsGraphSide {
+  flex: 1;
+  min-width: 400px;
+}
+
+.commentsListSide {
+  flex: 0 0 400px;
+  max-height: 800px;
+  overflow-y: auto;
+}
+
+/* Mobile responsiveness for comments page */
+@media (max-width: 1000px) {
+  .commentsPageLayout {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .commentsListSide {
+    flex: none;
+    max-height: 600px;
+  }
+}
+
+/* Comments list styles */
+.commentsList {
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  box-shadow: var(--shadow-md);
+}
+
+.commentsListTitle {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.commentItem {
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.commentItem:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-color);
+}
+
+.commentItem.selected {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-color);
+  border-width: 2px;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.commentEpisodeInfo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.commentFeedbackScore {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+.commentContent {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.commentAuthor {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  font-style: italic;
+}
+
+/* Graph container styles */
 .graphContainer {
   width: 100%;
   max-width: 700px;
