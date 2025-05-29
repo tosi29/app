@@ -121,11 +121,11 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   return (
     <>
-      <p className={styles.description}>
-        {selectedEpisodeId 
-          ? `エピソード #${selectedEpisodeId} へのリスナーからのコメント` 
-          : 'リスナーからのコメントをグラフ上に表示しています'}
-      </p>
+      {selectedEpisodeId && (
+        <p className={styles.description}>
+          エピソード #{selectedEpisodeId} へのリスナーからのコメント
+        </p>
+      )}
 
       {loading ? (
         <div className={styles.loadingContainer}>
