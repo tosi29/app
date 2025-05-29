@@ -255,6 +255,31 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 </div>
               )}
             </div>
+
+            <div className={commentStyles.legend}>
+              {!selectedEpisodeId && (
+                <>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
+                    <div>Basic Series</div>
+                  </div>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
+                    <div>Guest Series</div>
+                  </div>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
+                    <div>Community Series</div>
+                  </div>
+                </>
+              )}
+              {selectedEpisodeId && (
+                <div className={commentStyles.legendItem}>
+                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(selectedEpisodeId)]}`}></div>
+                  <div>{getEpisodeSeries(selectedEpisodeId)}</div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right side: Comments List */}
@@ -285,31 +310,6 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               ))}
             </div>
           </div>
-        </div>
-
-        <div className={commentStyles.legend}>
-          {!selectedEpisodeId && (
-            <>
-              <div className={commentStyles.legendItem}>
-                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
-                <div>Basic Series</div>
-              </div>
-              <div className={commentStyles.legendItem}>
-                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
-                <div>Guest Series</div>
-              </div>
-              <div className={commentStyles.legendItem}>
-                <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
-                <div>Community Series</div>
-              </div>
-            </>
-          )}
-          {selectedEpisodeId && (
-            <div className={commentStyles.legendItem}>
-              <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(selectedEpisodeId)]}`}></div>
-              <div>{getEpisodeSeries(selectedEpisodeId)}</div>
-            </div>
-          )}
         </div>
       </div>
       )}
