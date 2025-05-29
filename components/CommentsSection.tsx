@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/Home.module.css';
 import commentStyles from '../styles/Comments.module.css';
 
@@ -29,6 +29,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const commentsListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -99,6 +100,17 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   const handleCommentClick = (comment: Comment): void => {
     setSelectedComment(comment);
     setHoveredComment(null);
+    
+    // Scroll to the selected comment in the list
+    if (commentsListRef.current) {
+      const commentElement = commentsListRef.current.querySelector(`[data-comment-id="${comment.id}"]`);
+      if (commentElement) {
+        commentElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }
   };
 
   // Handle click on comment item in the list
@@ -284,13 +296,14 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
           {/* Right side: Comments List */}
           <div className={commentStyles.commentsListSection}>
-            <div className={commentStyles.commentsList}>
+            <div className={commentStyles.commentsList} ref={commentsListRef}>
               <h3 className={commentStyles.commentsListTitle}>
                 コメント一覧 (フィードバック順)
               </h3>
               {sortedComments.map((comment) => (
                 <div
                   key={comment.id}
+                  data-comment-id={comment.id}
                   className={`${commentStyles.commentItem} ${
                     selectedComment?.id === comment.id ? commentStyles.selected : ''
                   }`}
