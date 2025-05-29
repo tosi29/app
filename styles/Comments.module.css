@@ -62,8 +62,15 @@
   }
   
   .commentsList {
-    max-height: 400px;
-    padding: 0.75rem;
+    max-height: 600px;
+    padding: 1rem;
+  }
+  
+  @media (max-width: 700px) {
+    .commentsList {
+      max-height: 400px;
+      padding: 0.75rem;
+    }
   }
 }
 
