@@ -139,7 +139,7 @@ export default function Home() {
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                           className={styles.link}
                         >
-                          コメント
+                          コメントを見る
                         </button>
                       </td>
                     </tr>
@@ -247,7 +247,7 @@ export default function Home() {
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                         className={styles.link}
                       >
-                        詳細
+                        コメントを見る
                       </button>
                     </div>
                   </div>
