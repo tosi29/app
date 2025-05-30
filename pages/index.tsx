@@ -10,21 +10,47 @@ interface PastBroadcast {
   id: number;
   date: string;
   title: string;
-  description: string;
+  excerpt: string;
   series: string;
   duration: string;
-  matchedChunk?: string; // Optional field for matched text chunk
+  url: string;
 }
 
 export default function Home() {
   const router = useRouter();
   const { tab, episodeId } = router.query;
   
+  // State for broadcasts data
+  const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
+  const [isLoadingBroadcasts, setIsLoadingBroadcasts] = useState<boolean>(true);
+  
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
     router.query.tab === 'comments' ? 'comments' : 
     router.query.tab === 'search' ? 'search' : 'broadcasts'
   );
+  
+  // Fetch broadcasts data from API
+  useEffect(() => {
+    const fetchBroadcasts = async () => {
+      try {
+        setIsLoadingBroadcasts(true);
+        const response = await fetch('/api/broadcasts');
+        if (response.ok) {
+          const data = await response.json();
+          setPastBroadcasts(data);
+        } else {
+          console.error('Failed to fetch broadcasts');
+        }
+      } catch (error) {
+        console.error('Error fetching broadcasts:', error);
+      } finally {
+        setIsLoadingBroadcasts(false);
+      }
+    };
+
+    fetchBroadcasts();
+  }, []);
   
   useEffect(() => {
     if (router.isReady) {
@@ -41,21 +67,13 @@ export default function Home() {
   // Handle tab change
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    router.push({
+    // Use replace instead of push to prevent unnecessary history entries
+    router.replace({
       pathname: '/',
       query: tabId === 'comments' ? { tab: tabId } : 
              tabId === 'search' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
-
-  // Sample data for past broadcasts
-  const pastBroadcasts: PastBroadcast[] = [
-    { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', description: 'The first episode of our podcast series', series: 'Basic Series', duration: '25:30' },
-    { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', description: 'How to get started with our topic', series: 'Basic Series', duration: '31:45' },
-    { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', description: 'Deep dive into advanced techniques', series: 'Basic Series', duration: '42:18' },
-    { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', description: 'Interview with a special guest', series: 'Guest Series', duration: '38:22' },
-    { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', description: 'Answering questions from our community', series: 'Community Series', duration: '27:55' },
-  ]
 
   // Content for the broadcasts tab
   const BroadcastsContent = () => {
@@ -72,7 +90,7 @@ export default function Home() {
         grouped[broadcast.series].push(broadcast);
       });
       return grouped;
-    }, []);
+    }, [pastBroadcasts]);
 
     // Initialize all series as expanded when component mounts
     useEffect(() => {
@@ -93,25 +111,29 @@ export default function Home() {
 
     return (
       <>
+        {isLoadingBroadcasts ? (
+          <div className={styles.loading}>配信データを読み込み中...</div>
+        ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
                 <th>日付</th>
-                <th>シリーズ</th>
                 <th>タイトル</th>
                 <th>再生時間</th>
                 <th>リンク</th>
               </tr>
             </thead>
             <tbody>
-              {Object.entries(broadcastsBySeries).map(([series, broadcasts]) => (
+              {Object.entries(broadcastsBySeries)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([series, broadcasts]) => (
                 <React.Fragment key={series}>
                   <tr 
                     className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
                     onClick={() => toggleSeries(series)}
                   >
-                    <td colSpan={5}>
+                    <td colSpan={4}>
                       <div className={styles.seriesToggle}>
                         <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
                           {expandedSeries[series] ? '▼' : '▶'}
@@ -126,20 +148,20 @@ export default function Home() {
                       className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
                     >
                       <td>{broadcast.date}</td>
-                      <td>{broadcast.series}</td>
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
                       <td>
-                        <a href="#" className={styles.link}>
+                        <a href={broadcast.url} className={styles.link} target="_blank" rel="noopener noreferrer">
                           再生
                         </a>
                         {' | '}
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.link}
+                          className={styles.commentButton}
                         >
-                          コメント
+                          <span className={styles.commentIcon}>💬</span>
+                          コメントを見る
                         </button>
                       </td>
                     </tr>
@@ -149,6 +171,7 @@ export default function Home() {
             </tbody>
           </table>
         </div>
+        )}
       </>
     );
   };
@@ -199,7 +222,7 @@ export default function Home() {
                 id="searchQuery"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="タイトルまたは説明で検索"
+                placeholder="タイトルまたは概要で検索"
                 className={searchStyles.input}
               />
             </div>
@@ -239,15 +262,23 @@ export default function Home() {
                   <div key={broadcast.id} className={searchStyles.resultCard}>
                     <h3 className={searchStyles.resultTitle}>{broadcast.title}</h3>
                     <div className={searchStyles.resultSeries}>{broadcast.series}</div>
-                    {broadcast.matchedChunk && (
-                      <div className={searchStyles.resultChunk}>{broadcast.matchedChunk}</div>
-                    )}
+                    <div className={searchStyles.resultExcerpt}>{broadcast.excerpt}</div>
                     <div className={searchStyles.resultActions}>
+                      <a 
+                        href={broadcast.url} 
+                        className={styles.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        再生
+                      </a>
+                      {' | '}
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                        className={styles.link}
+                        className={styles.commentButton}
                       >
-                        詳細
+                        <span className={styles.commentIcon}>💬</span>
+                        コメントを見る
                       </button>
                     </div>
                   </div>
@@ -266,7 +297,7 @@ export default function Home() {
   const tabs = [
     {
       id: 'broadcasts',
-      label: '過去の配信',
+      label: '配信一覧',
       content: <BroadcastsContent />
     },
     {
@@ -280,6 +311,7 @@ export default function Home() {
       content: <CommentsSection 
                  pastBroadcasts={pastBroadcasts}
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
+                 key="comments-section" // Add a stable key to prevent remounting
                />
     }
   ];
@@ -287,8 +319,8 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>過去の配信一覧 | Next.js App</title>
-        <meta name="description" content="過去の配信一覧ページ" />
+        <title>配信一覧 | Next.js App</title>
+        <meta name="description" content="配信一覧ページ" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

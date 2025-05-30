@@ -92,7 +92,7 @@
 }
 
 .resultsTitle {
-  margin: 2rem 0 1rem;
+  margin: 2rem 2rem 1rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -102,7 +102,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
+  margin: 1rem 2rem 2rem;
 }
 
 .resultCard {
@@ -131,7 +131,7 @@
   margin-bottom: 1rem;
 }
 
-.resultChunk {
+.resultExcerpt {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-primary);
@@ -176,5 +176,13 @@
   
   .searchButton, .backButton {
     width: 100%;
+  }
+  
+  .resultsTitle {
+    margin: 2rem 0.5rem 1rem;
+  }
+  
+  .searchResults {
+    margin: 1rem 0.5rem 2rem;
   }
 }
