@@ -36,8 +36,11 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   // Sync dropdown state with selectedEpisodeId prop
   useEffect(() => {
-    setDropdownEpisodeId(selectedEpisodeId);
-  }, [selectedEpisodeId]);
+    // Only update the dropdown state if the selectedEpisodeId is different
+    if (selectedEpisodeId !== dropdownEpisodeId) {
+      setDropdownEpisodeId(selectedEpisodeId);
+    }
+  }, [selectedEpisodeId, dropdownEpisodeId]);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -141,12 +144,13 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
     setDropdownEpisodeId(episodeId);
     
-    // Update URL to maintain existing functionality
+    // Update URL to maintain existing functionality but use replace instead of push
+    // to prevent adding a new history entry and causing full page reload
     const newQuery = episodeId 
       ? { tab: 'comments', episodeId: episodeId.toString() }
       : { tab: 'comments' };
     
-    router.push({
+    router.replace({
       pathname: '/',
       query: newQuery
     }, undefined, { shallow: true });
