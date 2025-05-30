@@ -116,10 +116,10 @@ export default function Home() {
           <table className="w-full border-collapse border-spacing-0 mb-0">
             <thead>
               <tr>
-                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0 first:rounded-tl-lg">日付</th>
-                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0">タイトル</th>
-                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0">再生時間</th>
-                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0 last:rounded-tr-lg">リンク</th>
+                <th className="p-3 text-left border-b border-border bg-[rgba(0,0,0,0.02)] font-semibold text-text-primary sticky top-0 first:rounded-tl-lg">日付</th>
+                <th className="p-3 text-left border-b border-border bg-[rgba(0,0,0,0.02)] font-semibold text-text-primary sticky top-0">タイトル</th>
+                <th className="p-3 text-left border-b border-border bg-[rgba(0,0,0,0.02)] font-semibold text-text-primary sticky top-0">再生時間</th>
+                <th className="p-3 text-left border-b border-border bg-[rgba(0,0,0,0.02)] font-semibold text-text-primary sticky top-0 last:rounded-tr-lg">リンク</th>
               </tr>
             </thead>
             <tbody>
@@ -128,10 +128,10 @@ export default function Home() {
                 .map(([series, broadcasts]) => (
                 <React.Fragment key={series}>
                   <tr 
-                    className={`cursor-pointer font-semibold transition-colors duration-200 hover:bg-black/[0.05] ${
-                      series.toLowerCase().includes('basic') ? 'bg-green-100/30' : 
-                      series.toLowerCase().includes('guest') ? 'bg-blue-100/30' : 
-                      series.toLowerCase().includes('community') ? 'bg-pink-100/30' : ''
+                    className={`cursor-pointer font-semibold transition-colors duration-200 hover:bg-[rgba(0,0,0,0.05)] ${
+                      series.toLowerCase().includes('basic') ? 'series-basic' : 
+                      series.toLowerCase().includes('guest') ? 'series-guest' : 
+                      series.toLowerCase().includes('community') ? 'series-community' : ''
                     }`}
                     onClick={() => toggleSeries(series)}
                   >
@@ -147,24 +147,24 @@ export default function Home() {
                   {expandedSeries[series] && broadcasts.map((broadcast) => (
                     <tr 
                       key={broadcast.id} 
-                      className={`${
-                        broadcast.series.toLowerCase().includes('basic') ? 'bg-green-100/10' : 
-                        broadcast.series.toLowerCase().includes('guest') ? 'bg-blue-100/10' : 
-                        broadcast.series.toLowerCase().includes('community') ? 'bg-pink-100/10' : ''
-                      } hover:bg-black/[0.02]`}
+                      className={`hover:bg-[rgba(0,0,0,0.02)] ${
+                        broadcast.series.toLowerCase().includes('basic') ? 'bg-[rgba(144,238,144,0.05)]' : 
+                        broadcast.series.toLowerCase().includes('guest') ? 'bg-[rgba(173,216,230,0.05)]' : 
+                        broadcast.series.toLowerCase().includes('community') ? 'bg-[rgba(255,182,193,0.05)]' : ''
+                      }`}
                     >
                       <td className="p-3 border-b border-border">{broadcast.date}</td>
                       <td className="p-3 border-b border-border">{broadcast.title}</td>
                       <td className="p-3 border-b border-border">{broadcast.duration}</td>
                       <td className="p-3 border-b border-border">
-                        <a href={broadcast.url} className="text-primary hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">
+                        <a href={broadcast.url} className="text-primary hover:text-accent transition-colors duration-200 mr-2" target="_blank" rel="noopener noreferrer">
                           再生
                         </a>
                         {' | '}
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-br from-indigo-600 to-purple-500 text-white no-underline rounded-md border-none text-sm font-semibold cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-px relative overflow-hidden"
+                          className="comment-button ml-2"
                         >
                           <span className="flex items-center">💬</span>
                           コメントを見る

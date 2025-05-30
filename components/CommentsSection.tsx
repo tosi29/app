@@ -257,13 +257,15 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      className={`fill-primary cursor-pointer transition-all duration-300 r-2 stroke-white stroke-1 hover:r-[10px] hover:fill-rose-500 hover:stroke-2 hover:drop-shadow-md ${
-                        selectedComment?.id === comment.id ? 'r-[10px] stroke-3 stroke-primary filter-drop-shadow-primary' : ''
-                      } ${
-                        seriesClass === 'commentDot-basic' ? 'fill-green-400' : 
-                        seriesClass === 'commentDot-guest' ? 'fill-blue-400' : 
-                        seriesClass === 'commentDot-community' ? 'fill-pink-400' : ''
+                      r={selectedComment?.id === comment.id ? 10 : 5}
+                      className={`cursor-pointer transition-all duration-300 hover:stroke-white hover:stroke-2 hover:r-[10px] ${
+                        selectedComment?.id === comment.id ? 'stroke-white stroke-2 filter drop-shadow-lg' : 'stroke-white stroke-1'
                       }`}
+                      style={{
+                        fill: seriesClass === 'commentDot-basic' ? 'rgba(144, 238, 144, 0.7)' : 
+                              seriesClass === 'commentDot-guest' ? 'rgba(173, 216, 230, 0.7)' : 
+                              seriesClass === 'commentDot-community' ? 'rgba(255, 182, 193, 0.7)' : 'var(--primary-color)'
+                      }}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
                       onClick={(e) => {

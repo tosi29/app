@@ -35,6 +35,33 @@
   a:hover {
     @apply text-accent;
   }
+
+  /* Add these specific styles for the table */
+  .series-basic {
+    background-color: rgba(144, 238, 144, 0.1); /* Light green */
+    border-left: 3px solid rgba(144, 238, 144, 0.7);
+  }
+  
+  .series-guest {
+    background-color: rgba(173, 216, 230, 0.1); /* Light blue */
+    border-left: 3px solid rgba(173, 216, 230, 0.7);
+  }
+  
+  .series-community {
+    background-color: rgba(255, 182, 193, 0.1); /* Light pink */
+    border-left: 3px solid rgba(255, 182, 193, 0.7);
+  }
+}
+
+/* Override button styling */
+.comment-button {
+  @apply inline-flex items-center gap-1.5 px-4 py-2 text-white no-underline rounded-md border-none text-sm font-semibold cursor-pointer transition-all duration-300 shadow-sm overflow-hidden relative;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.comment-button:hover {
+  @apply shadow-md -translate-y-px;
+  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
 }
 
 /* Animation keyframes */
