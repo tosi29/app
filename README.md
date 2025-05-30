@@ -35,6 +35,27 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 - Filter by date range
 - View search results in a table format
 
+### Development
+
+#### Linting
+This project uses SuperLinter with ReviewDog integration for code quality checks on pull requests:
+
+- JavaScript/TypeScript: ESLint with Next.js configuration
+- CSS: Stylelint with standard configuration
+- Automated PR comments for lint issues
+
+To run linting locally:
+```bash
+# JavaScript/TypeScript linting
+npm run lint
+
+# CSS linting
+npm run lint:style
+
+# Type checking
+npm run type-check
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
