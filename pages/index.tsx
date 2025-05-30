@@ -1,8 +1,6 @@
 import Head from 'next/head'
 import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import styles from '../styles/Home.module.css'
-import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
 
@@ -112,16 +110,16 @@ export default function Home() {
     return (
       <>
         {isLoadingBroadcasts ? (
-          <div className={styles.loading}>配信データを読み込み中...</div>
+          <div className="text-center py-8 text-lg text-text-secondary">配信データを読み込み中...</div>
         ) : (
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
+        <div className="w-full max-w-[1000px] my-6 overflow-x-auto rounded-lg shadow-md bg-card">
+          <table className="w-full border-collapse border-spacing-0 mb-0">
             <thead>
               <tr>
-                <th>日付</th>
-                <th>タイトル</th>
-                <th>再生時間</th>
-                <th>リンク</th>
+                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0 first:rounded-tl-lg">日付</th>
+                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0">タイトル</th>
+                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0">再生時間</th>
+                <th className="p-3 text-left border-b border-border bg-black/[0.02] font-semibold text-text-primary sticky top-0 last:rounded-tr-lg">リンク</th>
               </tr>
             </thead>
             <tbody>
@@ -130,37 +128,45 @@ export default function Home() {
                 .map(([series, broadcasts]) => (
                 <React.Fragment key={series}>
                   <tr 
-                    className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
+                    className={`cursor-pointer font-semibold transition-colors duration-200 hover:bg-black/[0.05] ${
+                      series.toLowerCase().includes('basic') ? 'bg-green-100/30' : 
+                      series.toLowerCase().includes('guest') ? 'bg-blue-100/30' : 
+                      series.toLowerCase().includes('community') ? 'bg-pink-100/30' : ''
+                    }`}
                     onClick={() => toggleSeries(series)}
                   >
-                    <td colSpan={4}>
-                      <div className={styles.seriesToggle}>
-                        <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
+                    <td colSpan={4} className="p-3 border-b border-border">
+                      <div className="flex items-center gap-1.5 py-1.5">
+                        <span className={`inline-flex items-center justify-center text-xs w-4 h-4 transition-transform duration-200 ${expandedSeries[series] ? 'rotate-0' : ''}`}>
                           {expandedSeries[series] ? '▼' : '▶'}
                         </span>
-                        <span className={styles.seriesName}>{series} ({broadcasts.length})</span>
+                        <span className="font-semibold">{series} ({broadcasts.length})</span>
                       </div>
                     </td>
                   </tr>
                   {expandedSeries[series] && broadcasts.map((broadcast) => (
                     <tr 
                       key={broadcast.id} 
-                      className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
+                      className={`${
+                        broadcast.series.toLowerCase().includes('basic') ? 'bg-green-100/10' : 
+                        broadcast.series.toLowerCase().includes('guest') ? 'bg-blue-100/10' : 
+                        broadcast.series.toLowerCase().includes('community') ? 'bg-pink-100/10' : ''
+                      } hover:bg-black/[0.02]`}
                     >
-                      <td>{broadcast.date}</td>
-                      <td>{broadcast.title}</td>
-                      <td>{broadcast.duration}</td>
-                      <td>
-                        <a href={broadcast.url} className={styles.link} target="_blank" rel="noopener noreferrer">
+                      <td className="p-3 border-b border-border">{broadcast.date}</td>
+                      <td className="p-3 border-b border-border">{broadcast.title}</td>
+                      <td className="p-3 border-b border-border">{broadcast.duration}</td>
+                      <td className="p-3 border-b border-border">
+                        <a href={broadcast.url} className="text-primary hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">
                           再生
                         </a>
                         {' | '}
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.commentButton}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-br from-indigo-600 to-purple-500 text-white no-underline rounded-md border-none text-sm font-semibold cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-px relative overflow-hidden"
                         >
-                          <span className={styles.commentIcon}>💬</span>
+                          <span className="flex items-center">💬</span>
                           コメントを見る
                         </button>
                       </td>
@@ -213,27 +219,27 @@ export default function Home() {
     
     return (
       <>
-        <div className={searchStyles.searchContainer}>
-          <form onSubmit={handleSearch} className={searchStyles.searchForm}>
-            <div className={searchStyles.formGroup}>
-              <label htmlFor="searchQuery">検索キーワード</label>
+        <div className="w-full max-w-[600px] mb-8">
+          <form onSubmit={handleSearch} className="p-6 border border-border rounded-lg bg-card shadow-md">
+            <div className="mb-4">
+              <label htmlFor="searchQuery" className="block mb-2 font-medium">検索キーワード</label>
               <input
                 type="text"
                 id="searchQuery"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="タイトルまたは概要で検索"
-                className={searchStyles.input}
+                className="w-full p-3 border border-border rounded-md bg-background text-text-primary"
               />
             </div>
             
-            <div className={searchStyles.formGroup}>
-              <label htmlFor="series">シリーズ</label>
+            <div className="mb-4">
+              <label htmlFor="series" className="block mb-2 font-medium">シリーズ</label>
               <select
                 id="series"
                 value={selectedSeries}
                 onChange={(e) => setSelectedSeries(e.target.value)}
-                className={searchStyles.select}
+                className="w-full p-3 border border-border rounded-md bg-background text-text-primary appearance-none"
               >
                 <option value="">すべて</option>
                 <option value="Basic Series">Basic Series</option>
@@ -242,8 +248,8 @@ export default function Home() {
               </select>
             </div>
             
-            <div className={searchStyles.buttonContainer}>
-              <button type="submit" className={searchStyles.searchButton} disabled={isLoading}>
+            <div className="flex justify-center mt-6">
+              <button type="submit" className="px-6 py-3 bg-primary text-white border-none rounded-lg text-base font-medium cursor-pointer transition-all duration-300 hover:bg-primary-dark hover:-translate-y-px" disabled={isLoading}>
                 {isLoading ? '検索中...' : '検索'}
               </button>
             </div>
@@ -251,22 +257,22 @@ export default function Home() {
         </div>
         
         {isSearched && (
-          <div className={styles.tableContainer}>
-            <h2 className={searchStyles.resultsTitle}>
+          <div className="w-full max-w-[1000px] mt-6">
+            <h2 className="text-xl font-semibold mb-4 text-center">
               検索結果: {searchResults.length}件
             </h2>
             
             {searchResults.length > 0 ? (
-              <div className={searchStyles.searchResults}>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {searchResults.map((broadcast) => (
-                  <div key={broadcast.id} className={searchStyles.resultCard}>
-                    <h3 className={searchStyles.resultTitle}>{broadcast.title}</h3>
-                    <div className={searchStyles.resultSeries}>{broadcast.series}</div>
-                    <div className={searchStyles.resultExcerpt}>{broadcast.excerpt}</div>
-                    <div className={searchStyles.resultActions}>
+                  <div key={broadcast.id} className="p-5 border border-border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow">
+                    <h3 className="text-lg font-semibold mb-2">{broadcast.title}</h3>
+                    <div className="text-sm text-text-secondary mb-2">{broadcast.series}</div>
+                    <div className="text-base mb-4 line-clamp-3">{broadcast.excerpt}</div>
+                    <div className="flex gap-2 mt-auto">
                       <a 
                         href={broadcast.url} 
-                        className={styles.link} 
+                        className="text-primary hover:text-accent transition-colors duration-200" 
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
@@ -275,9 +281,9 @@ export default function Home() {
                       {' | '}
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                        className={styles.commentButton}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-br from-indigo-600 to-purple-500 text-white no-underline rounded-md border-none text-sm font-semibold cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-px"
                       >
-                        <span className={styles.commentIcon}>💬</span>
+                        <span className="flex items-center">💬</span>
                         コメントを見る
                       </button>
                     </div>
@@ -285,7 +291,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <p className={searchStyles.noResults}>該当する配信はありません。</p>
+              <p className="text-center text-text-secondary my-8">該当する配信はありません。</p>
             )}
           </div>
         )}
@@ -317,14 +323,14 @@ export default function Home() {
   ];
 
   return (
-    <div className={styles.container}>
+    <div className="min-h-screen p-0 md:p-4 flex flex-col justify-start items-center bg-background">
       <Head>
         <title>配信一覧 | Next.js App</title>
         <meta name="description" content="配信一覧ページ" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.tabsSection}>
+      <div className="w-full flex justify-center py-6 px-4 sticky top-0 bg-background z-10 border-b border-transparent">
         <Tabs 
           active={activeTab} 
           tabs={tabs} 
@@ -332,7 +338,7 @@ export default function Home() {
         />
       </div>
 
-      <main className={styles.main}>
+      <main className="py-8 md:py-10 px-4 flex-1 flex flex-col justify-start items-center w-full max-w-[1200px]">
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
     </div>
