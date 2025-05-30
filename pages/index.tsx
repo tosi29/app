@@ -5,7 +5,15 @@ import styles from '../styles/Home.module.css'
 import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
-import { PastBroadcast } from '../lib/broadcastData'
+
+interface PastBroadcast {
+  id: number;
+  date: string;
+  title: string;
+  excerpt: string;
+  series: string;
+  duration: string;
+}
 
 export default function Home() {
   const router = useRouter();
