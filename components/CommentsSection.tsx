@@ -15,7 +15,6 @@ interface PastBroadcast {
   id: number;
   date: string;
   title: string;
-  description: string;
   series: string;
 }
 
@@ -130,14 +129,14 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   return (
     <>
       {selectedEpisodeId && (
-        <p className={styles.description}>
+        <p className={commentStyles.commentsListTitle} style={{ textAlign: 'center', marginBottom: '1rem' }}>
           エピソード #{selectedEpisodeId} へのリスナーからのコメント
         </p>
       )}
 
       {loading ? (
         <div className={styles.loadingContainer}>
-          <p className={styles.description}>コメントを読み込んでいます...</p>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
           <div className={styles.loadingIndicator}></div>
         </div>
       ) : (

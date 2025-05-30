@@ -79,16 +79,8 @@
   transform: translateY(-1px);
 }
 
-.title,
-.description {
+.title {
   text-align: center;
-}
-
-.description {
-  line-height: 1.5;
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
 }
 
 .loadingContainer {
