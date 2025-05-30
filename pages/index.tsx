@@ -161,7 +161,7 @@ export default function Home() {
                           target="_blank" 
                           rel="noopener noreferrer"
                         >
-                          再生
+                          <span className="text-primary">再生</span>
                         </a>
                         {' | '}
                         <button
@@ -283,7 +283,7 @@ export default function Home() {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        再生
+                        <span className="text-primary">再生</span>
                       </a>
                       {' | '}
                       <button
@@ -330,7 +330,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen p-0 flex flex-col justify-start items-center bg-background">
+    <div className="min-h-screen flex flex-col justify-start items-center bg-background">
       <Head>
         <title>配信一覧 | Next.js App</title>
         <meta name="description" content="配信一覧ページ" />
@@ -345,7 +345,7 @@ export default function Home() {
         />
       </div>
 
-      <main className="py-8 px-0 flex-1 flex flex-col justify-start items-center w-full max-w-[1200px]">
+      <main className="py-8 flex-1 flex flex-col justify-start items-center w-full max-w-[1200px]">
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
     </div>

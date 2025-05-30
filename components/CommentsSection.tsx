@@ -251,7 +251,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
                   const seriesClass = getSeriesClassName(comment.episodeId);
                   
-                  let dotClasses = "r-4 cursor-pointer transition-all duration-200 hover:r-5 hover:stroke-white hover:stroke-2";
+                  let dotClasses = "cursor-pointer transition-all duration-200 hover:stroke-white";
                   
                   // Add series-specific classes
                   if (seriesClass === 'series-basic') {
@@ -264,7 +264,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   
                   // Add selected class
                   if (selectedComment?.id === comment.id) {
-                    dotClasses += " r-6 stroke-2 fill-white";
+                    dotClasses += " fill-white";
                     
                     if (seriesClass === 'series-basic') {
                       dotClasses += " stroke-green-500";
@@ -280,6 +280,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       key={comment.id}
                       cx={x}
                       cy={y}
+                      r={selectedComment?.id === comment.id ? 6 : 4}
+                      strokeWidth={selectedComment?.id === comment.id ? 2 : 1}
                       className={dotClasses}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
