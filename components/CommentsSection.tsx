@@ -36,35 +36,53 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
   // Sync dropdown state with selectedEpisodeId prop
   useEffect(() => {
-    setDropdownEpisodeId(selectedEpisodeId);
-  }, [selectedEpisodeId]);
+    // Only update the dropdown state if the selectedEpisodeId is different
+    if (selectedEpisodeId !== dropdownEpisodeId) {
+      setDropdownEpisodeId(selectedEpisodeId);
+    }
+  }, [selectedEpisodeId, dropdownEpisodeId]);
+
+  // Use a ref to keep track of the latest request
+  const latestRequestIdRef = useRef<number>(0);
 
   useEffect(() => {
+    // Set loading state immediately when dropdown changes
+    setLoading(true);
+    
     const fetchComments = async () => {
-      setLoading(true);
+      // Generate a unique request ID to track this specific request
+      const thisRequestId = latestRequestIdRef.current + 1;
+      latestRequestIdRef.current = thisRequestId;
+      
       try {
-        // Use dropdownEpisodeId for API call to sync with dropdown selection
-        const effectiveEpisodeId = dropdownEpisodeId || selectedEpisodeId;
-        const url = effectiveEpisodeId 
-          ? `/api/comments?episodeId=${effectiveEpisodeId}`
+        // Use dropdownEpisodeId as the single source of truth for data fetching
+        const url = dropdownEpisodeId 
+          ? `/api/comments?episodeId=${dropdownEpisodeId}`
           : '/api/comments';
         
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        const data = await response.json();
-        setComments(data);
+        
+        // Only update state if this is still the latest request
+        if (thisRequestId === latestRequestIdRef.current) {
+          const data = await response.json();
+          setComments(data);
+          setLoading(false);
+        }
       } catch (error) {
-        console.error('Error fetching comments:', error);
-        // In a real app, you might want to show an error message to the user
-      } finally {
-        setLoading(false);
+        // Only update error state if this is still the latest request
+        if (thisRequestId === latestRequestIdRef.current) {
+          console.error('Error fetching comments:', error);
+          setLoading(false);
+          // In a real app, you might want to show an error message to the user
+        }
       }
     };
 
     fetchComments();
-  }, [selectedEpisodeId, dropdownEpisodeId]);
+  }, [dropdownEpisodeId]); // Only depend on dropdownEpisodeId
 
   // Function to get episode title by id
   const getEpisodeTitle = (episodeId: number): string => {
@@ -139,14 +157,21 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   // Handle dropdown change
   const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
+    
+    // Clear existing comments and show loading state immediately
+    setComments([]);
+    setLoading(true);
+    
+    // Update dropdown state
     setDropdownEpisodeId(episodeId);
     
-    // Update URL to maintain existing functionality
+    // Update URL to maintain existing functionality but use replace instead of push
+    // to prevent adding a new history entry and causing full page reload
     const newQuery = episodeId 
       ? { tab: 'comments', episodeId: episodeId.toString() }
       : { tab: 'comments' };
     
-    router.push({
+    router.replace({
       pathname: '/',
       query: newQuery
     }, undefined, { shallow: true });
@@ -185,6 +210,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
         <div className={styles.loadingContainer}>
           <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
           <div className={styles.loadingIndicator}></div>
+        </div>
+      ) : comments.length === 0 ? (
+        <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
+          コメントはありません
         </div>
       ) : (
 

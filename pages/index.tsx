@@ -66,7 +66,8 @@ export default function Home() {
   // Handle tab change
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    router.push({
+    // Use replace instead of push to prevent unnecessary history entries
+    router.replace({
       pathname: '/',
       query: tabId === 'comments' ? { tab: tabId } : 
              tabId === 'search' ? { tab: tabId } : {}
@@ -300,6 +301,7 @@ export default function Home() {
       content: <CommentsSection 
                  pastBroadcasts={pastBroadcasts}
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
+                 key="comments-section" // Add a stable key to prevent remounting
                />
     }
   ];
