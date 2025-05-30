@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import commentStyles from '../styles/Comments.module.css';
 
@@ -28,15 +29,24 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
   const commentsListRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
+
+  // Sync dropdown state with selectedEpisodeId prop
+  useEffect(() => {
+    setDropdownEpisodeId(selectedEpisodeId);
+  }, [selectedEpisodeId]);
 
   useEffect(() => {
     const fetchComments = async () => {
       setLoading(true);
       try {
-        // Construct API URL with episodeId if it exists
-        const url = selectedEpisodeId 
-          ? `/api/comments?episodeId=${selectedEpisodeId}`
+        // Use dropdownEpisodeId for API call to sync with dropdown selection
+        const effectiveEpisodeId = dropdownEpisodeId || selectedEpisodeId;
+        const url = effectiveEpisodeId 
+          ? `/api/comments?episodeId=${effectiveEpisodeId}`
           : '/api/comments';
         
         const response = await fetch(url);
@@ -54,7 +64,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     };
 
     fetchComments();
-  }, [selectedEpisodeId]);
+  }, [selectedEpisodeId, dropdownEpisodeId]);
 
   // Function to get episode title by id
   const getEpisodeTitle = (episodeId: number): string => {
@@ -126,13 +136,50 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     // For now, just log it
   };
 
+  // Handle dropdown change
+  const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
+    setDropdownEpisodeId(episodeId);
+    
+    // Update URL to maintain existing functionality
+    const newQuery = episodeId 
+      ? { tab: 'comments', episodeId: episodeId.toString() }
+      : { tab: 'comments' };
+    
+    router.push({
+      pathname: '/',
+      query: newQuery
+    }, undefined, { shallow: true });
+  };
+
   return (
     <>
-      {selectedEpisodeId && (
-        <p className={commentStyles.commentsListTitle} style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          エピソード #{selectedEpisodeId} へのリスナーからのコメント
-        </p>
-      )}
+      {/* Dropdown filter for episodes */}
+      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+        <label htmlFor="episode-filter" style={{ marginRight: '0.5rem', fontWeight: '600' }}>
+          配信で絞り込み:
+        </label>
+        <select
+          id="episode-filter"
+          value={dropdownEpisodeId || ''}
+          onChange={handleDropdownChange}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid var(--border-color)',
+            backgroundColor: 'var(--background-color)',
+            color: 'var(--text-primary)',
+            fontSize: '0.9rem'
+          }}
+        >
+          <option value="">すべて</option>
+          {pastBroadcasts.map((broadcast) => (
+            <option key={broadcast.id} value={broadcast.id}>
+              {broadcast.title}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {loading ? (
         <div className={styles.loadingContainer}>
@@ -235,7 +282,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
             </div>
 
             <div className={commentStyles.legend}>
-              {!selectedEpisodeId && (
+              {!dropdownEpisodeId && (
                 <>
                   <div className={commentStyles.legendItem}>
                     <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
@@ -251,10 +298,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   </div>
                 </>
               )}
-              {selectedEpisodeId && (
+              {dropdownEpisodeId && (
                 <div className={commentStyles.legendItem}>
-                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(selectedEpisodeId)]}`}></div>
-                  <div>{getEpisodeSeries(selectedEpisodeId)}</div>
+                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(dropdownEpisodeId)]}`}></div>
+                  <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
                 </div>
               )}
             </div>
