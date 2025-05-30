@@ -13,6 +13,7 @@ interface PastBroadcast {
   excerpt: string;
   series: string;
   duration: string;
+  url: string;
 }
 
 export default function Home() {
@@ -149,7 +150,7 @@ export default function Home() {
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
                       <td>
-                        <a href="#" className={styles.link}>
+                        <a href={broadcast.url} className={styles.link} target="_blank" rel="noopener noreferrer">
                           再生
                         </a>
                         {' | '}
@@ -262,6 +263,15 @@ export default function Home() {
                     <div className={searchStyles.resultSeries}>{broadcast.series}</div>
                     <div className={searchStyles.resultExcerpt}>{broadcast.excerpt}</div>
                     <div className={searchStyles.resultActions}>
+                      <a 
+                        href={broadcast.url} 
+                        className={styles.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        再生
+                      </a>
+                      {' | '}
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                         className={styles.commentButton}
