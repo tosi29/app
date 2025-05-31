@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import styles from '../styles/Home.module.css';
+import commentStyles from '../styles/Comments.module.css';
 
 interface Comment {
   id: number;
@@ -178,15 +180,22 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   return (
     <>
       {/* Dropdown filter for episodes */}
-      <div className="mb-4 text-center">
-        <label htmlFor="episode-filter" className="mr-2 font-semibold">
+      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+        <label htmlFor="episode-filter" style={{ marginRight: '0.5rem', fontWeight: '600' }}>
           配信で絞り込み:
         </label>
         <select
           id="episode-filter"
           value={dropdownEpisodeId || ''}
           onChange={handleDropdownChange}
-          className="p-2 rounded border border-border bg-background text-text-primary text-sm"
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid var(--border-color)',
+            backgroundColor: 'var(--background-color)',
+            color: 'var(--text-primary)',
+            fontSize: '0.9rem'
+          }}
         >
           <option value="">すべて</option>
           {pastBroadcasts.map((broadcast) => (
@@ -198,28 +207,28 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center gap-4 my-8">
-          <p className="text-center text-base text-text-secondary">コメントを読み込んでいます...</p>
-          <div className="w-10 h-10 border-3 border-t-primary rounded-full animate-spin"></div>
+        <div className={styles.loadingContainer}>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
+          <div className={styles.loadingIndicator}></div>
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center my-8 text-text-secondary">
+        <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
           コメントはありません
         </div>
       ) : (
 
-      <div className="w-full max-w-[1400px] my-8 p-6 border border-border rounded-lg bg-card overflow-x-auto shadow-md">
-        <div className="flex gap-8 w-full md:flex-row flex-col">
+      <div className={commentStyles.graphContainer}>
+        <div className={commentStyles.commentsLayout}>
           {/* Left side: Graph */}
-          <div className="flex-1 min-w-0">
+          <div className={commentStyles.graphSection}>
             <div 
-              className="relative w-[600px] h-[600px] mx-auto sm:scale-100 sm:origin-top-left xs:scale-75 xs:origin-top-left"
+              className={commentStyles.graphAxes}
               onClick={handleClickOutside}
             >
-              <div className="absolute top-1/2 left-[-40px] transform -translate-y-1/2 -rotate-90 text-sm text-text-secondary font-medium">ポジティブ ↑</div>
-              <div className="absolute bottom-[10px] left-1/2 transform -translate-x-1/2 text-sm text-text-secondary font-medium">← リアクション | 意見 →</div>
+              <div className={commentStyles.yAxisLabel}>ポジティブ ↑</div>
+              <div className={commentStyles.xAxisLabel}>← リアクション | 意見 →</div>
 
-              <svg width="600" height="600" className="bg-black/[0.02] rounded transition-all duration-300 hover:shadow-sm">
+              <svg width="600" height="600" className={commentStyles.graph}>
                 {/* X-axis line */}
                 <line x1="50" y1="550" x2="550" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
                 
@@ -257,15 +266,9 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      r={selectedComment?.id === comment.id ? 10 : 5}
-                      className={`cursor-pointer transition-all duration-300 hover:stroke-white hover:stroke-2 hover:r-[10px] ${
-                        selectedComment?.id === comment.id ? 'stroke-white stroke-2 filter drop-shadow-lg' : 'stroke-white stroke-1'
+                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
+                        selectedComment?.id === comment.id ? commentStyles.commentDotSelected : ''
                       }`}
-                      style={{
-                        fill: seriesClass === 'commentDot-basic' ? 'rgba(144, 238, 144, 0.7)' : 
-                              seriesClass === 'commentDot-guest' ? 'rgba(173, 216, 230, 0.7)' : 
-                              seriesClass === 'commentDot-community' ? 'rgba(255, 182, 193, 0.7)' : 'var(--primary-color)'
-                      }}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
                       onClick={(e) => {
@@ -280,14 +283,14 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               {/* Comment tooltip with episode information */}
               {hoveredComment && (
                 <div
-                  className={`absolute bg-card border border-border rounded-lg p-3 w-[250px] shadow-lg z-10 transition-all duration-200 ${
+                  className={`${commentStyles.commentTooltip} ${
                     hoveredComment.opinionScore > 0.5
                       ? (hoveredComment.positiveScore > 0.5
-                        ? 'translate-y-[10px] -translate-x-1/2' // bottom-left
-                        : '-translate-y-full -translate-x-1/2 -translate-y-[10px]') // top-left
+                        ? commentStyles['commentTooltip-bottomLeft']
+                        : commentStyles['commentTooltip-topLeft'])
                       : (hoveredComment.positiveScore > 0.5
-                        ? 'translate-y-[10px] translate-x-1/2' // bottom-right
-                        : '-translate-y-full translate-x-1/2 -translate-y-[10px]') // top-right
+                        ? commentStyles['commentTooltip-bottomRight']
+                        : commentStyles['commentTooltip-topRight'])
                   }`}
                   style={{
                     left: `${50 + hoveredComment.opinionScore * 500}px`,
@@ -295,81 +298,77 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <p className="text-sm text-text-secondary mb-1">
+                  <p className={commentStyles.commentEpisode}>
                     {getEpisodeTitle(hoveredComment.episodeId)} 
-                    <span className="ml-1 text-xs text-text-muted">
+                    <span className={commentStyles.commentSeries}>
                       ({getEpisodeSeries(hoveredComment.episodeId)})
                     </span>
                   </p>
-                  <p className="text-base mb-2">{hoveredComment.text}</p>
-                  <p className="text-xs text-text-muted italic">by {hoveredComment.author}</p>
+                  <p className={commentStyles.commentText}>{hoveredComment.text}</p>
+                  <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
                 </div>
               )}
             </div>
 
-            <div className="flex justify-center mt-4 gap-4 flex-wrap">
+            <div className={commentStyles.legend}>
               {!dropdownEpisodeId && (
                 <>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-400"></div>
-                    <div className="text-sm">Basic Series</div>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
+                    <div>Basic Series</div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-400"></div>
-                    <div className="text-sm">Guest Series</div>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
+                    <div>Guest Series</div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-pink-400"></div>
-                    <div className="text-sm">Community Series</div>
+                  <div className={commentStyles.legendItem}>
+                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
+                    <div>Community Series</div>
                   </div>
                 </>
               )}
               {dropdownEpisodeId && (
-                <div className="flex items-center gap-2">
-                  <div className={`w-4 h-4 rounded-full ${
-                    getSeriesClassName(dropdownEpisodeId) === 'commentDot-basic' ? 'bg-green-400' : 
-                    getSeriesClassName(dropdownEpisodeId) === 'commentDot-guest' ? 'bg-blue-400' : 
-                    getSeriesClassName(dropdownEpisodeId) === 'commentDot-community' ? 'bg-pink-400' : 'bg-primary'
-                  }`}></div>
-                  <div className="text-sm">{getEpisodeSeries(dropdownEpisodeId)}</div>
+                <div className={commentStyles.legendItem}>
+                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(dropdownEpisodeId)]}`}></div>
+                  <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
                 </div>
               )}
             </div>
           </div>
 
           {/* Right side: Comments List */}
-          <div className="flex-1 min-w-0">
-            <div className="p-4 overflow-y-auto max-h-[600px]" ref={commentsListRef}>
-              <h3 className="text-lg font-semibold mb-4 pb-2 border-b border-border">
+          <div className={commentStyles.commentsListSection}>
+            <div className={commentStyles.commentsList} ref={commentsListRef}>
+              <h3 className={commentStyles.commentsListTitle}>
                 コメント一覧 (フィードバック順)
               </h3>
               {sortedComments.map((comment) => (
                 <div
                   key={comment.id}
                   data-comment-id={comment.id}
-                  className={`p-4 mb-3 rounded-lg border border-border bg-white transition-all cursor-pointer hover:shadow-md ${
-                    selectedComment?.id === comment.id ? 'border-primary-dark shadow-md' : ''
+                  className={`${commentStyles.commentItem} ${
+                    selectedComment?.id === comment.id ? commentStyles.selected : ''
                   }`}
                   onClick={() => handleCommentItemClick(comment)}
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <p className="text-sm text-text-secondary mb-1">
+                  <div className={commentStyles.commentItemHeader}>
+                    <p className={commentStyles.commentItemEpisode}>
                       {getEpisodeTitle(comment.episodeId)}
-                      <span className="ml-1 text-xs text-text-muted">
+                      <span className={commentStyles.commentSeries}>
                         ({getEpisodeSeries(comment.episodeId)})
                       </span>
                     </p>
-                    <span className="text-xs font-medium bg-gray-100 px-2 py-1 rounded-full">
+                    <span className={commentStyles.commentItemScore}>
                       {Math.round(comment.positiveScore * 100)}%
                     </span>
                   </div>
-                  <p className="text-base mb-2">{comment.text}</p>
-                  <p className="text-xs text-text-muted italic text-right">by {comment.author}</p>
+                  <p className={commentStyles.commentItemText}>{comment.text}</p>
+                  <p className={commentStyles.commentItemAuthor}>by {comment.author}</p>
                   
                   {/* Feedback buttons */}
-                  <div className="flex gap-2 mt-2 flex-wrap">
+                  <div className={commentStyles.feedbackContainer}>
                     <button 
-                      className="px-2 py-1 border border-border rounded bg-background text-text-primary text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-px active:translate-y-0"
+                      className={commentStyles.feedbackButton}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('empathy', comment);
@@ -379,7 +378,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       👍
                     </button>
                     <button 
-                      className="px-2 py-1 border border-border rounded bg-background text-text-primary text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-px active:translate-y-0"
+                      className={commentStyles.feedbackButton}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('insight', comment);
@@ -389,7 +388,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       💡
                     </button>
                     <button 
-                      className="px-2 py-1 border border-border rounded bg-background text-text-primary text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-primary hover:text-white hover:border-primary hover:-translate-y-px active:translate-y-0"
+                      className={commentStyles.feedbackButton}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('on-target', comment);

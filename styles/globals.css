@@ -1,11 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Define CSS variables that match the tailwind theme */
 :root {
   --primary-color: #3b82f6;
-  --primary-color-dark: #2563eb;
   --primary-color-rgb: 59, 130, 246;
   --secondary-color: #6366f1;
   --accent-color: #8b5cf6;
@@ -15,58 +9,35 @@
   --text-secondary: #666666;
   --text-muted: #888888;
   --border-color: #e5e7eb;
+  --border-radius: 8px;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --border-radius: 8px;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", 
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-/* Custom styles that can't be easily replaced with Tailwind */
-@layer base {
-  html {
-    @apply font-sans bg-background text-text-primary;
-    line-height: 1.6;
-  }
-  
-  a {
-    @apply text-primary transition-colors duration-200 no-underline;
-  }
-  
-  a:hover {
-    @apply text-accent;
-  }
-
-  /* Add these specific styles for the table */
-  .series-basic {
-    background-color: rgba(144, 238, 144, 0.1); /* Light green */
-    border-left: 3px solid rgba(144, 238, 144, 0.7);
-  }
-  
-  .series-guest {
-    background-color: rgba(173, 216, 230, 0.1); /* Light blue */
-    border-left: 3px solid rgba(173, 216, 230, 0.7);
-  }
-  
-  .series-community {
-    background-color: rgba(255, 182, 193, 0.1); /* Light pink */
-    border-left: 3px solid rgba(255, 182, 193, 0.7);
-  }
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
-/* Override button styling */
-.comment-button {
-  @apply inline-flex items-center gap-1.5 px-4 py-2 text-white no-underline rounded-md border-none text-sm font-semibold cursor-pointer transition-all duration-300 shadow-sm overflow-hidden relative;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
 }
 
-.comment-button:hover {
-  @apply shadow-md -translate-y-px;
-  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+a:hover {
+  color: var(--accent-color);
 }
 
-/* Animation keyframes */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+* {
+  box-sizing: border-box;
 }
