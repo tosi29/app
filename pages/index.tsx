@@ -161,7 +161,7 @@ export default function Home() {
                           target="_blank" 
                           rel="noopener noreferrer"
                         >
-                          <span className="text-primary">再生</span>
+                          再生
                         </a>
                         {' | '}
                         <button
@@ -283,7 +283,7 @@ export default function Home() {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        <span className="text-primary">再生</span>
+                        再生
                       </a>
                       {' | '}
                       <button
