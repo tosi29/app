@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --primary-color: #3b82f6;
   --primary-color-rgb: 59, 130, 246;
@@ -18,26 +22,21 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: var(--font-sans);
-  background-color: var(--background-color);
-  color: var(--text-primary);
-  line-height: 1.6;
-}
+@layer base {
+  html,
+  body {
+    @apply p-0 m-0 font-sans bg-background text-text-primary leading-relaxed;
+  }
 
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-}
+  a {
+    @apply text-primary no-underline transition-colors duration-200 ease-in-out;
+  }
 
-a:hover {
-  color: var(--accent-color);
-}
+  a:hover {
+    @apply text-accent;
+  }
 
-* {
-  box-sizing: border-box;
+  * {
+    @apply box-border;
+  }
 }

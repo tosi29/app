@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import styles from '../styles/Home.module.css';
-import commentStyles from '../styles/Comments.module.css';
 
 interface Comment {
   id: number;
@@ -99,7 +97,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   // Function to get series CSS class name
   const getSeriesClassName = (episodeId: number): string => {
     const series = getEpisodeSeries(episodeId);
-    return series ? `commentDot-${series.toLowerCase().split(' ')[0]}` : '';
+    return series ? `series-${series.toLowerCase().split(' ')[0]}` : '';
   };
 
   // Filter comments is no longer needed as the API handles this
@@ -180,22 +178,15 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   return (
     <>
       {/* Dropdown filter for episodes */}
-      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-        <label htmlFor="episode-filter" style={{ marginRight: '0.5rem', fontWeight: '600' }}>
+      <div className="mb-4 text-center">
+        <label htmlFor="episode-filter" className="mr-2 font-semibold">
           配信で絞り込み:
         </label>
         <select
           id="episode-filter"
           value={dropdownEpisodeId || ''}
           onChange={handleDropdownChange}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '4px',
-            border: '1px solid var(--border-color)',
-            backgroundColor: 'var(--background-color)',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem'
-          }}
+          className="p-2 rounded border border-border-color bg-background text-text-primary text-sm"
         >
           <option value="">すべて</option>
           {pastBroadcasts.map((broadcast) => (
@@ -207,53 +198,52 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       </div>
 
       {loading ? (
-        <div className={styles.loadingContainer}>
-          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
-          <div className={styles.loadingIndicator}></div>
+        <div className="flex flex-col items-center gap-4 my-8">
+          <p className="text-center text-base text-text-secondary">コメントを読み込んでいます...</p>
+          <div className="w-10 h-10 border-3 border-opacity-10 rounded-full border-t-primary animate-spin"></div>
         </div>
       ) : comments.length === 0 ? (
-        <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
+        <div className="text-center my-8 text-text-secondary">
           コメントはありません
         </div>
       ) : (
-
-      <div className={commentStyles.graphContainer}>
-        <div className={commentStyles.commentsLayout}>
+      <div className="w-full max-w-[1400px] my-8 p-6 border border-border-color rounded bg-card overflow-x-auto shadow-md">
+        <div className="flex gap-8 w-full">
           {/* Left side: Graph */}
-          <div className={commentStyles.graphSection}>
+          <div className="flex-1 min-w-0">
             <div 
-              className={commentStyles.graphAxes}
+              className="relative w-[600px] h-[600px] mx-auto"
               onClick={handleClickOutside}
             >
-              <div className={commentStyles.yAxisLabel}>ポジティブ ↑</div>
-              <div className={commentStyles.xAxisLabel}>← リアクション | 意見 →</div>
+              <div className="absolute left-1/2 -top-6 transform -translate-x-1/2 font-semibold text-text-secondary">ポジティブ ↑</div>
+              <div className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 font-semibold text-text-secondary">← リアクション | 意見 →</div>
 
-              <svg width="600" height="600" className={commentStyles.graph}>
+              <svg width="600" height="600" className="graph">
                 {/* X-axis line */}
-                <line x1="50" y1="550" x2="550" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
+                <line x1="50" y1="550" x2="550" y2="550" stroke="#666666" strokeWidth="1.5" />
                 
                 {/* Y-axis line */}
-                <line x1="50" y1="50" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
+                <line x1="50" y1="50" x2="50" y2="550" stroke="#666666" strokeWidth="1.5" />
                 
                 {/* X-axis label ticks */}
-                <line x1="50" y1="550" x2="50" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="50" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0</text>
+                <line x1="50" y1="550" x2="50" y2="560" stroke="#666666" strokeWidth="1.5" />
+                <text x="50" y="575" textAnchor="middle" fontSize="12" fill="#666666">0</text>
                 
-                <line x1="300" y1="550" x2="300" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="300" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0.5</text>
+                <line x1="300" y1="550" x2="300" y2="560" stroke="#666666" strokeWidth="1.5" />
+                <text x="300" y="575" textAnchor="middle" fontSize="12" fill="#666666">0.5</text>
                 
-                <line x1="550" y1="550" x2="550" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="550" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">1.0</text>
+                <line x1="550" y1="550" x2="550" y2="560" stroke="#666666" strokeWidth="1.5" />
+                <text x="550" y="575" textAnchor="middle" fontSize="12" fill="#666666">1.0</text>
                 
                 {/* Y-axis label ticks */}
-                <line x1="40" y1="550" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="555" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0</text>
+                <line x1="40" y1="550" x2="50" y2="550" stroke="#666666" strokeWidth="1.5" />
+                <text x="35" y="555" textAnchor="end" fontSize="12" fill="#666666">0</text>
                 
-                <line x1="40" y1="300" x2="50" y2="300" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="305" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0.5</text>
+                <line x1="40" y1="300" x2="50" y2="300" stroke="#666666" strokeWidth="1.5" />
+                <text x="35" y="305" textAnchor="end" fontSize="12" fill="#666666">0.5</text>
                 
-                <line x1="40" y1="50" x2="50" y2="50" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="55" textAnchor="end" fontSize="12" fill="var(--text-secondary)">1.0</text>
+                <line x1="40" y1="50" x2="50" y2="50" stroke="#666666" strokeWidth="1.5" />
+                <text x="35" y="55" textAnchor="end" fontSize="12" fill="#666666">1.0</text>
                 
                 {/* Plot comment dots */}
                 {filteredComments.map((comment) => {
@@ -261,14 +251,38 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
                   const seriesClass = getSeriesClassName(comment.episodeId);
                   
+                  let dotClasses = "cursor-pointer transition-all duration-200 hover:stroke-white";
+                  
+                  // Add series-specific classes
+                  if (seriesClass === 'series-basic') {
+                    dotClasses += " fill-green-100 stroke-green-300";
+                  } else if (seriesClass === 'series-guest') {
+                    dotClasses += " fill-blue-100 stroke-blue-300";
+                  } else if (seriesClass === 'series-community') {
+                    dotClasses += " fill-pink-100 stroke-pink-300";
+                  }
+                  
+                  // Add selected class
+                  if (selectedComment?.id === comment.id) {
+                    dotClasses += " fill-white";
+                    
+                    if (seriesClass === 'series-basic') {
+                      dotClasses += " stroke-green-500";
+                    } else if (seriesClass === 'series-guest') {
+                      dotClasses += " stroke-blue-500";
+                    } else if (seriesClass === 'series-community') {
+                      dotClasses += " stroke-pink-500";
+                    }
+                  }
+                  
                   return (
                     <circle
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
-                        selectedComment?.id === comment.id ? commentStyles.commentDotSelected : ''
-                      }`}
+                      r={selectedComment?.id === comment.id ? 6 : 4}
+                      strokeWidth={selectedComment?.id === comment.id ? 2 : 1}
+                      className={dotClasses}
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
                       onClick={(e) => {
@@ -283,53 +297,57 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               {/* Comment tooltip with episode information */}
               {hoveredComment && (
                 <div
-                  className={`${commentStyles.commentTooltip} ${
-                    hoveredComment.opinionScore > 0.5
+                  className={`absolute z-10 p-3 bg-white shadow-lg rounded-lg border border-border-color max-w-xs
+                    ${hoveredComment.opinionScore > 0.5
                       ? (hoveredComment.positiveScore > 0.5
-                        ? commentStyles['commentTooltip-bottomLeft']
-                        : commentStyles['commentTooltip-topLeft'])
+                        ? "translate-x-4 translate-y-4" // Bottom Left
+                        : "translate-x-4 -translate-y-full -mt-4") // Top Left
                       : (hoveredComment.positiveScore > 0.5
-                        ? commentStyles['commentTooltip-bottomRight']
-                        : commentStyles['commentTooltip-topRight'])
-                  }`}
+                        ? "-translate-x-full translate-y-4 -ml-4" // Bottom Right
+                        : "-translate-x-full -translate-y-full -ml-4 -mt-4") // Top Right
+                    }`}
                   style={{
                     left: `${50 + hoveredComment.opinionScore * 500}px`,
                     top: `${550 - hoveredComment.positiveScore * 500}px`,
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <p className={commentStyles.commentEpisode}>
+                  <p className="text-sm font-medium mb-1">
                     {getEpisodeTitle(hoveredComment.episodeId)} 
-                    <span className={commentStyles.commentSeries}>
+                    <span className="text-text-secondary text-xs ml-1">
                       ({getEpisodeSeries(hoveredComment.episodeId)})
                     </span>
                   </p>
-                  <p className={commentStyles.commentText}>{hoveredComment.text}</p>
-                  <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
+                  <p className="text-text-primary mb-2 text-sm">{hoveredComment.text}</p>
+                  <p className="m-0 text-xs text-text-muted text-right italic">by {hoveredComment.author}</p>
                 </div>
               )}
             </div>
 
-            <div className={commentStyles.legend}>
+            <div className="flex justify-center gap-4 mt-4">
               {!dropdownEpisodeId && (
                 <>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-green-100 border-2 border-green-300"></div>
                     <div>Basic Series</div>
                   </div>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-100 border-2 border-blue-300"></div>
                     <div>Guest Series</div>
                   </div>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-pink-100 border-2 border-pink-300"></div>
                     <div>Community Series</div>
                   </div>
                 </>
               )}
               {dropdownEpisodeId && (
-                <div className={commentStyles.legendItem}>
-                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(dropdownEpisodeId)]}`}></div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded-full ${
+                    getSeriesClassName(dropdownEpisodeId) === 'series-basic' ? 'bg-green-100 border-2 border-green-300' :
+                    getSeriesClassName(dropdownEpisodeId) === 'series-guest' ? 'bg-blue-100 border-2 border-blue-300' :
+                    'bg-pink-100 border-2 border-pink-300'
+                  }`}></div>
                   <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
                 </div>
               )}
@@ -337,38 +355,37 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           </div>
 
           {/* Right side: Comments List */}
-          <div className={commentStyles.commentsListSection}>
-            <div className={commentStyles.commentsList} ref={commentsListRef}>
-              <h3 className={commentStyles.commentsListTitle}>
+          <div className="flex-1 min-w-0">
+            <div className="max-h-[600px] overflow-y-auto p-3 rounded bg-card" ref={commentsListRef}>
+              <h3 className="m-0 mb-4 text-lg font-semibold text-text-primary pb-2 border-b border-border-color">
                 コメント一覧 (フィードバック順)
               </h3>
               {sortedComments.map((comment) => (
                 <div
                   key={comment.id}
                   data-comment-id={comment.id}
-                  className={`${commentStyles.commentItem} ${
-                    selectedComment?.id === comment.id ? commentStyles.selected : ''
-                  }`}
+                  className={`p-3 mb-2 border rounded bg-background cursor-pointer transition-all duration-200 hover:border-primary hover:shadow-sm hover:-translate-y-px
+                    ${selectedComment?.id === comment.id ? 'border-primary shadow-sm bg-opacity-50' : 'border-border-color'}`}
                   onClick={() => handleCommentItemClick(comment)}
                 >
-                  <div className={commentStyles.commentItemHeader}>
-                    <p className={commentStyles.commentItemEpisode}>
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="m-0 text-sm font-medium">
                       {getEpisodeTitle(comment.episodeId)}
-                      <span className={commentStyles.commentSeries}>
+                      <span className="text-text-secondary text-xs ml-1">
                         ({getEpisodeSeries(comment.episodeId)})
                       </span>
                     </p>
-                    <span className={commentStyles.commentItemScore}>
+                    <span className="text-xs font-mono bg-gray-100 px-1.5 py-0.5 rounded">
                       {Math.round(comment.positiveScore * 100)}%
                     </span>
                   </div>
-                  <p className={commentStyles.commentItemText}>{comment.text}</p>
-                  <p className={commentStyles.commentItemAuthor}>by {comment.author}</p>
+                  <p className="my-2 text-text-primary">{comment.text}</p>
+                  <p className="text-right text-xs text-text-muted mb-2">by {comment.author}</p>
                   
                   {/* Feedback buttons */}
-                  <div className={commentStyles.feedbackContainer}>
+                  <div className="flex justify-end gap-2">
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('empathy', comment);
@@ -378,7 +395,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       👍
                     </button>
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('insight', comment);
@@ -388,7 +405,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       💡
                     </button>
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 rounded-full transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('on-target', comment);
