@@ -9,25 +9,27 @@ interface PastBroadcast {
   series: string;
   duration: string;
   url: string;
+  youtube_video_id: string;
+  spotify_episode_id: string;
 }
 
 // Sample data for past broadcasts
 const pastBroadcasts: PastBroadcast[] = [
-  { id: 1, date: '2023-04-15', title: 'Episode 1: Introduction', excerpt: 'The first episode of our podcast series', series: 'Basic Series', duration: '25:30', url: 'https://example.com/watch?id=1' },
-  { id: 2, date: '2023-04-22', title: 'Episode 2: Getting Started', excerpt: 'How to get started with our topic', series: 'Basic Series', duration: '31:45', url: 'https://example.com/watch?id=2' },
-  { id: 3, date: '2023-04-29', title: 'Episode 3: Advanced Techniques', excerpt: 'Deep dive into advanced techniques', series: 'Basic Series', duration: '42:18', url: 'https://example.com/watch?id=3' },
-  { id: 4, date: '2023-05-06', title: 'Episode 4: Special Guest Interview', excerpt: 'Interview with a special guest', series: 'Guest Series', duration: '38:22', url: 'https://example.com/watch?id=4' },
-  { id: 5, date: '2023-05-13', title: 'Episode 5: Community Questions', excerpt: 'Answering questions from our community', series: 'Community Series', duration: '27:55', url: 'https://example.com/watch?id=5' },
-  { id: 6, date: '2023-05-20', title: 'Episode 6: Data Analysis Fundamentals', excerpt: 'Understanding the basics of data analysis and visualization', series: 'Basic Series', duration: '33:12', url: 'https://example.com/watch?id=6' },
-  { id: 7, date: '2023-05-27', title: 'Episode 7: Industry Expert Panel', excerpt: 'Panel discussion with leading industry experts', series: 'Guest Series', duration: '45:18', url: 'https://example.com/watch?id=7' },
-  { id: 8, date: '2023-06-03', title: 'Episode 8: User Feedback Session', excerpt: 'Addressing user questions and feedback from our community', series: 'Community Series', duration: '29:44', url: 'https://example.com/watch?id=8' },
-  { id: 9, date: '2023-06-10', title: 'Episode 9: Best Practices Guide', excerpt: 'Essential best practices and common pitfalls to avoid', series: 'Basic Series', duration: '37:21', url: 'https://example.com/watch?id=9' },
-  { id: 10, date: '2023-06-17', title: 'Episode 10: Special Achievement Milestone', excerpt: 'Celebrating our 10th episode with special guests and reflections', series: 'Guest Series', duration: '52:15', url: 'https://example.com/watch?id=10' },
-  { id: 11, date: '2023-06-24', title: 'Episode 11: Live Q&A Session', excerpt: 'Interactive live session answering real-time community questions', series: 'Community Series', duration: '41:33', url: 'https://example.com/watch?id=11' },
-  { id: 12, date: '2023-07-01', title: 'Episode 12: Advanced Implementation Strategies', excerpt: 'Advanced techniques for real-world implementation scenarios', series: 'Basic Series', duration: '39:07', url: 'https://example.com/watch?id=12' },
-  { id: 13, date: '2023-07-08', title: 'Episode 13: Innovation Showcase', excerpt: 'Featuring innovative approaches from guest innovators', series: 'Guest Series', duration: '44:52', url: 'https://example.com/watch?id=13' },
-  { id: 14, date: '2023-07-15', title: 'Episode 14: Community Success Stories', excerpt: 'Highlighting success stories and achievements from our community', series: 'Community Series', duration: '35:28', url: 'https://example.com/watch?id=14' },
-  { id: 15, date: '2023-07-22', title: 'Episode 15: Future Trends and Predictions', excerpt: 'Exploring future trends and making predictions for the industry', series: 'Basic Series', duration: '40:19', url: 'https://example.com/watch?id=15' },
+  { id: 1, date: '2018-11-29', title: '吉田松陰が脱藩した衝撃の理由！', excerpt: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！', series: '吉田松陰', duration: '15:56', url: 'https://www.youtube.com/watch?v=VMpjzAA6hNI', youtube_video_id: 'VMpjzAA6hNI', spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i' },
+  { id: 2, date: '2019-01-23', title: '吉田松陰の「感化力」がすごい！', excerpt: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！', series: '吉田松陰', duration: '12:51', url: 'https://www.youtube.com/watch?v=2xDAjrniULM', youtube_video_id: '2xDAjrniULM', spotify_episode_id: '2Y7WBA51rsihKPeQR304qP' },
+  { id: 3, date: '2019-01-23', title: '黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', excerpt: '吉田松陰シリーズ: 黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', series: '吉田松陰', duration: '13:52', url: 'https://www.youtube.com/watch?v=Mzr3fk1ExGA', youtube_video_id: 'Mzr3fk1ExGA', spotify_episode_id: '5jhl7KJu2QDZgPMDqxtMzV' },
+  { id: 4, date: '2019-01-23', title: 'もし吉田松陰に人生相談ができたら・・・？', excerpt: '吉田松陰シリーズ: もし吉田松陰に人生相談ができたら・・・？', series: '吉田松陰', duration: '16:21', url: 'https://www.youtube.com/watch?v=2cJi5iIOCyU', youtube_video_id: '2cJi5iIOCyU', spotify_episode_id: '2RgEvZnXOrP0zEePtnLCvN' },
+  { id: 5, date: '2019-01-23', title: 'スパルタ人の壮絶な一生！まさにスパルタ教育', excerpt: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育', series: 'スパルタ', duration: '21:39', url: 'https://www.youtube.com/watch?v=J_kARj-FuPw', youtube_video_id: 'J_kARj-FuPw', spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK' },
+  { id: 6, date: '2019-01-23', title: 'スパルタでイケてる男の基準！', excerpt: 'スパルタシリーズ: スパルタでイケてる男の基準！', series: 'スパルタ', duration: '8:56', url: 'https://www.youtube.com/watch?v=X0_q7MB3jaQ', youtube_video_id: 'X0_q7MB3jaQ', spotify_episode_id: '3QczCyKWjJeoKRMSxWLG3X' },
+  { id: 7, date: '2019-01-23', title: 'スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', excerpt: 'スパルタシリーズ: スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', series: 'スパルタ', duration: '18:39', url: 'https://www.youtube.com/watch?v=Pkqx0O-sv4Y', youtube_video_id: 'Pkqx0O-sv4Y', spotify_episode_id: '5SH0KXiFyyilqdTbSvT2QG' },
+  { id: 8, date: '2019-01-23', title: 'スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', excerpt: 'スパルタシリーズ: スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', series: 'スパルタ', duration: '5:09', url: 'https://www.youtube.com/watch?v=kjenu0OuI2o', youtube_video_id: 'kjenu0OuI2o', spotify_episode_id: '73j4TNFb4JXMeHAMNEiKDI' },
+  { id: 9, date: '2019-01-23', title: 'スパルタとアテネを比較して考える！脳筋VS頭脳、勝つのはどっち？', excerpt: 'スパルタシリーズ: スパルタとアテネを比較して考える！脳筋VS頭脳、勝つのはどっち？', series: 'スパルタ', duration: '17:49', url: 'https://www.youtube.com/watch?v=2kPwhNmKUXM', youtube_video_id: '2kPwhNmKUXM', spotify_episode_id: '5u4DpzSINLMa4jHwCqGiyX' },
+  { id: 10, date: '2019-01-23', title: 'アテネはどうすればスパルタに勝てたのか？頭脳が脳筋に負ける時', excerpt: 'スパルタシリーズ: アテネはどうすればスパルタに勝てたのか？頭脳が脳筋に負ける時', series: 'スパルタ', duration: '11:42', url: 'https://www.youtube.com/watch?v=eN0sIq332OU', youtube_video_id: 'eN0sIq332OU', spotify_episode_id: '1cbt8XcdV5p8P4x9J9bMsQ' },
+  { id: 11, date: '2019-01-23', title: '草食系男子がスパルタ漢にお悩み相談するとしたら？', excerpt: 'スパルタシリーズ: 草食系男子がスパルタ漢にお悩み相談するとしたら？', series: 'スパルタ', duration: '12:48', url: 'https://www.youtube.com/watch?v=Y88fPSzdcYA', youtube_video_id: 'Y88fPSzdcYA', spotify_episode_id: '6tO5pCxTSv8XmAX7F3BzRo' },
+  { id: 12, date: '2019-02-07', title: 'インターネットの本当の凄さ ― 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: インターネットの本当の凄さ ― 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '13:36', url: 'https://www.youtube.com/watch?v=Opb5REyVsNk', youtube_video_id: 'Opb5REyVsNk', spotify_episode_id: '5Fq3DFgW7KEKJuZ0UTUIUN' },
+  { id: 13, date: '2019-02-14', title: '文字、爆誕。ー 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: 文字、爆誕。ー 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '14:11', url: 'https://www.youtube.com/watch?v=6vSclc0N5Ic', youtube_video_id: '6vSclc0N5Ic', spotify_episode_id: '6POSde1JgN7ZzlXNSowcRb' },
+  { id: 14, date: '2019-02-21', title: '炎上の元祖！活版印刷 ― 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: 炎上の元祖！活版印刷 ― 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '12:55', url: 'https://www.youtube.com/watch?v=FWwpeRyhHe4', youtube_video_id: 'FWwpeRyhHe4', spotify_episode_id: '0lmLznEl2QEVcV2UnVA31V' },
+  { id: 15, date: '2019-03-01', title: 'マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '16:35', url: 'https://www.youtube.com/watch?v=EC_g2ReW-r4', youtube_video_id: 'EC_g2ReW-r4', spotify_episode_id: '4quyVSN2mBwCLrAqMsTEDB' },
 ];
 
 export default function handler(
