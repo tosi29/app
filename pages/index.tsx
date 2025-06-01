@@ -14,6 +14,8 @@ interface PastBroadcast {
   series: string;
   duration: string;
   url: string;
+  youtube_video_id: string;
+  spotify_episode_id: string;
 }
 
 export default function Home() {
