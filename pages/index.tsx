@@ -5,7 +5,6 @@ import styles from '../styles/Home.module.css'
 import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
-import YouTube from '../components/YouTube'
 
 interface PastBroadcast {
   id: number;
@@ -314,16 +313,6 @@ export default function Home() {
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
                  key="comments-section" // Add a stable key to prevent remounting
                />
-    },
-    {
-      id: 'youtube',
-      label: 'YouTube',
-      content: (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>YouTube埋め込みテスト</h2>
-          <YouTube videoId="WIT_1Ih43Jo" startTime={754} />
-        </div>
-      )
     }
   ];
 
