@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
+import YouTube from '../components/YouTube'
 
 interface PastBroadcast {
   id: number;
@@ -25,6 +26,9 @@ export default function Home() {
   // State for broadcasts data
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
   const [isLoadingBroadcasts, setIsLoadingBroadcasts] = useState<boolean>(true);
+  
+  // State for currently playing broadcast
+  const [playingBroadcast, setPlayingBroadcast] = useState<PastBroadcast | null>(null);
   
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
@@ -75,6 +79,16 @@ export default function Home() {
       query: tabId === 'comments' ? { tab: tabId } : 
              tabId === 'search' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
+  };
+
+  // Handle play button click
+  const handlePlayBroadcast = (broadcast: PastBroadcast) => {
+    setPlayingBroadcast(broadcast);
+  };
+
+  // Handle stop/close player
+  const handleStopPlayer = () => {
+    setPlayingBroadcast(null);
   };
 
   // Content for the broadcasts tab
@@ -153,9 +167,20 @@ export default function Home() {
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
                       <td>
-                        <a href={broadcast.url} className={styles.link} target="_blank" rel="noopener noreferrer">
+                        <button
+                          type="button"
+                          onClick={() => handlePlayBroadcast(broadcast)}
+                          className={styles.link}
+                          style={{ 
+                            background: 'none', 
+                            border: 'none', 
+                            color: 'inherit',
+                            textDecoration: 'underline',
+                            cursor: 'pointer'
+                          }}
+                        >
                           再生
-                        </a>
+                        </button>
                         {' | '}
                         <button
                           type="button"
@@ -266,14 +291,20 @@ export default function Home() {
                     <div className={searchStyles.resultSeries}>{broadcast.series}</div>
                     <div className={searchStyles.resultExcerpt}>{broadcast.excerpt}</div>
                     <div className={searchStyles.resultActions}>
-                      <a 
-                        href={broadcast.url} 
-                        className={styles.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => handlePlayBroadcast(broadcast)}
+                        className={styles.link}
+                        style={{ 
+                          background: 'none', 
+                          border: 'none', 
+                          color: 'inherit',
+                          textDecoration: 'underline',
+                          cursor: 'pointer'
+                        }}
                       >
                         再生
-                      </a>
+                      </button>
                       {' | '}
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
@@ -333,6 +364,31 @@ export default function Home() {
           onTabChange={handleTabChange} 
         />
       </div>
+
+      {playingBroadcast && (
+        <div className={styles.playerSection}>
+          <div className={styles.playerHeader}>
+            <h3>再生中: {playingBroadcast.title}</h3>
+            <button
+              type="button"
+              onClick={handleStopPlayer}
+              className={styles.closeButton}
+              style={{
+                background: '#ff4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              ✕ 閉じる
+            </button>
+          </div>
+          <YouTube videoId={playingBroadcast.youtube_video_id} />
+        </div>
+      )}
 
       <main className={styles.main}>
         {tabs.find(tab => tab.id === activeTab)?.content}

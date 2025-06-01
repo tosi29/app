@@ -294,3 +294,53 @@
   font-size: 1rem;
   opacity: 0.9;
 }
+
+.playerSection {
+  width: 100%;
+  max-width: 1000px;
+  margin: 1rem 0 2rem 0;
+  padding: 1.5rem;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--primary-color);
+}
+
+.playerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playerHeader h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  flex: 1;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+@media (max-width: 600px) {
+  .playerSection {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .playerHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .closeButton {
+    margin-left: 0;
+    width: 100%;
+  }
+}
