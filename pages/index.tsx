@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
+import SpotifyPodcastEmbed from '../components/SpotifyPodcastEmbed'
 
 interface PastBroadcast {
   id: number;
@@ -25,6 +26,9 @@ export default function Home() {
   // State for broadcasts data
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
   const [isLoadingBroadcasts, setIsLoadingBroadcasts] = useState<boolean>(true);
+  
+  // State for tracking visible Spotify embeds
+  const [visibleEmbeds, setVisibleEmbeds] = useState<Set<number>>(new Set());
   
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
@@ -75,6 +79,19 @@ export default function Home() {
       query: tabId === 'comments' ? { tab: tabId } : 
              tabId === 'search' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
+  };
+
+  // Toggle Spotify embed visibility
+  const toggleEmbedVisibility = (broadcastId: number) => {
+    setVisibleEmbeds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(broadcastId)) {
+        newSet.delete(broadcastId);
+      } else {
+        newSet.add(broadcastId);
+      }
+      return newSet;
+    });
   };
 
   // Content for the broadcasts tab
@@ -145,28 +162,43 @@ export default function Home() {
                     </td>
                   </tr>
                   {expandedSeries[series] && broadcasts.map((broadcast) => (
-                    <tr 
-                      key={broadcast.id} 
-                      className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
-                    >
-                      <td>{broadcast.date}</td>
-                      <td>{broadcast.title}</td>
-                      <td>{broadcast.duration}</td>
-                      <td>
-                        <a href={broadcast.url} className={styles.link} target="_blank" rel="noopener noreferrer">
-                          再生
-                        </a>
-                        {' | '}
-                        <button
-                          type="button"
-                          onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.commentButton}
-                        >
-                          <span className={styles.commentIcon}>💬</span>
-                          コメントを見る
-                        </button>
-                      </td>
-                    </tr>
+                    <React.Fragment key={broadcast.id}>
+                      <tr 
+                        className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
+                      >
+                        <td>{broadcast.date}</td>
+                        <td>{broadcast.title}</td>
+                        <td>{broadcast.duration}</td>
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => toggleEmbedVisibility(broadcast.id)}
+                            className={styles.link}
+                          >
+                            {visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                          </button>
+                          {' | '}
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                            className={styles.commentButton}
+                          >
+                            <span className={styles.commentIcon}>💬</span>
+                            コメントを見る
+                          </button>
+                        </td>
+                      </tr>
+                      {visibleEmbeds.has(broadcast.id) && (
+                        <tr className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}>
+                          <td colSpan={4}>
+                            <SpotifyPodcastEmbed 
+                              episodeId={broadcast.spotify_episode_id}
+                              height="200"
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                 </React.Fragment>
               ))}
@@ -266,14 +298,13 @@ export default function Home() {
                     <div className={searchStyles.resultSeries}>{broadcast.series}</div>
                     <div className={searchStyles.resultExcerpt}>{broadcast.excerpt}</div>
                     <div className={searchStyles.resultActions}>
-                      <a 
-                        href={broadcast.url} 
-                        className={styles.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => toggleEmbedVisibility(broadcast.id)}
+                        className={styles.link}
                       >
-                        再生
-                      </a>
+                        {visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                      </button>
                       {' | '}
                       <button
                         onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
@@ -283,6 +314,14 @@ export default function Home() {
                         コメントを見る
                       </button>
                     </div>
+                    {visibleEmbeds.has(broadcast.id) && (
+                      <div style={{ marginTop: '1rem' }}>
+                        <SpotifyPodcastEmbed 
+                          episodeId={broadcast.spotify_episode_id}
+                          height="200"
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
