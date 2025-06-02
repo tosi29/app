@@ -213,21 +213,21 @@
 }
 
 .series-basic {
-  background-color: rgba(144, 238, 144, 0.5); /* Much more visible green */
-  border-left: 4px solid rgba(144, 238, 144, 0.9);
-  border-top: 2px solid rgba(144, 238, 144, 0.6);
+  background-color: rgba(34, 197, 94, 0.15); /* Saturated green with visible background */
+  border-left: 4px solid rgba(34, 197, 94, 0.8);
+  border-top: 2px solid rgba(34, 197, 94, 0.5);
 }
 
 .series-guest {
-  background-color: rgba(173, 216, 230, 0.5); /* Much more visible blue */
-  border-left: 4px solid rgba(173, 216, 230, 0.9);
-  border-top: 2px solid rgba(173, 216, 230, 0.6);
+  background-color: rgba(59, 130, 246, 0.15); /* Saturated blue with visible background */
+  border-left: 4px solid rgba(59, 130, 246, 0.8);
+  border-top: 2px solid rgba(59, 130, 246, 0.5);
 }
 
 .series-community {
-  background-color: rgba(255, 182, 193, 0.5); /* Much more visible pink */
-  border-left: 4px solid rgba(255, 182, 193, 0.9);
-  border-top: 2px solid rgba(255, 182, 193, 0.6);
+  background-color: rgba(236, 72, 153, 0.15); /* Saturated pink with visible background */
+  border-left: 4px solid rgba(236, 72, 153, 0.8);
+  border-top: 2px solid rgba(236, 72, 153, 0.5);
 }
 
 .link {
