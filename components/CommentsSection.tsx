@@ -96,10 +96,27 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     return broadcast ? broadcast.series : '';
   };
 
+  // Function to map series names to color types
+  const getSeriesColorType = (seriesName: string): string => {
+    // Get all unique series from broadcasts
+    const allSeries = Array.from(new Set(pastBroadcasts.map(b => b.series)));
+    const colorTypes = ['basic', 'guest', 'community'];
+    
+    // Sort series alphabetically for consistent assignment
+    const sortedSeries = allSeries.sort();
+    const seriesIndex = sortedSeries.indexOf(seriesName);
+    
+    // Assign color type cyclically
+    return seriesIndex >= 0 ? colorTypes[seriesIndex % colorTypes.length] : 'basic';
+  };
+
   // Function to get series CSS class name
   const getSeriesClassName = (episodeId: number): string => {
     const series = getEpisodeSeries(episodeId);
-    return series ? `commentDot-${series.toLowerCase().split(' ')[0]}` : '';
+    if (!series) return '';
+    
+    const colorType = getSeriesColorType(series);
+    return `commentDot-${colorType}`;
   };
 
   // Filter comments is no longer needed as the API handles this
@@ -311,23 +328,21 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
             </div>
 
             <div className={commentStyles.legend}>
-              {!dropdownEpisodeId && (
-                <>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-basic"]}`}></div>
-                    <div>Basic Series</div>
-                  </div>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-guest"]}`}></div>
-                    <div>Guest Series</div>
-                  </div>
-                  <div className={commentStyles.legendItem}>
-                    <div className={`${commentStyles.legendColorBox} ${commentStyles["commentDot-community"]}`}></div>
-                    <div>Community Series</div>
-                  </div>
-                </>
-              )}
-              {dropdownEpisodeId && (
+              {!dropdownEpisodeId ? (
+                // Show all series when no filter is applied
+                Array.from(new Set(pastBroadcasts.map(b => b.series)))
+                  .sort()
+                  .map(series => {
+                    const colorType = getSeriesColorType(series);
+                    return (
+                      <div key={series} className={commentStyles.legendItem}>
+                        <div className={`${commentStyles.legendColorBox} ${commentStyles[`commentDot-${colorType}`]}`}></div>
+                        <div>{series}</div>
+                      </div>
+                    );
+                  })
+              ) : (
+                // Show only the selected episode's series when filtered
                 <div className={commentStyles.legendItem}>
                   <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(dropdownEpisodeId)]}`}></div>
                   <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
