@@ -68,6 +68,30 @@ const BroadcastsContent = React.memo(({
     }));
   }, []);
 
+  // Expand all series
+  const expandAllSeries = useCallback(() => {
+    const allExpandedState: Record<string, boolean> = {};
+    Object.keys(broadcastsBySeries).forEach(series => {
+      allExpandedState[series] = true;
+    });
+    setExpandedSeries(allExpandedState);
+  }, [broadcastsBySeries]);
+
+  // Collapse all series
+  const collapseAllSeries = useCallback(() => {
+    const allCollapsedState: Record<string, boolean> = {};
+    Object.keys(broadcastsBySeries).forEach(series => {
+      allCollapsedState[series] = false;
+    });
+    setExpandedSeries(allCollapsedState);
+  }, [broadcastsBySeries]);
+
+  // Check if all series are expanded
+  const allExpanded = useMemo(() => {
+    const seriesKeys = Object.keys(broadcastsBySeries);
+    return seriesKeys.length > 0 && seriesKeys.every(series => expandedSeries[series]);
+  }, [broadcastsBySeries, expandedSeries]);
+
   // Get series list and create color mapping
   const seriesList = useMemo(() => Object.keys(broadcastsBySeries), [broadcastsBySeries]);
   
@@ -83,8 +107,18 @@ const BroadcastsContent = React.memo(({
       {isLoadingBroadcasts ? (
         <div className={styles.loading}>配信データを読み込み中...</div>
       ) : (
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
+      <>
+        <div className={styles.toggleAllContainer}>
+          <button
+            type="button"
+            onClick={allExpanded ? collapseAllSeries : expandAllSeries}
+            className={styles.toggleAllButton}
+          >
+            {allExpanded ? 'すべて閉じる' : 'すべて開く'}
+          </button>
+        </div>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
           <thead>
             <tr>
               <th>日付</th>
@@ -161,6 +195,7 @@ const BroadcastsContent = React.memo(({
           </tbody>
         </table>
       </div>
+      </>
       )}
     </>
   );

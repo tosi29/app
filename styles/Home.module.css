@@ -32,6 +32,31 @@
   box-shadow: var(--shadow-sm);
 }
 
+.toggleAllContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.toggleAllButton {
+  padding: 0.5rem 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.toggleAllButton:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
 /* Mobile responsiveness for global toggle */
 @media (max-width: 768px) {
   .tabsSection {
