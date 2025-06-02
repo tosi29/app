@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { RetrievalResult, RetrieveApiResponse } from '../../types/retrieve';
 
-// Define the PastBroadcast interface
+// Define the PastBroadcast interface (for internal data transformation)
 interface PastBroadcast {
   id: number;
   date: string;
@@ -32,9 +33,27 @@ const pastBroadcasts: PastBroadcast[] = [
   { id: 15, date: '2019-03-01', title: 'マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '16:35', url: 'https://www.youtube.com/watch?v=EC_g2ReW-r4', youtube_video_id: 'EC_g2ReW-r4', spotify_episode_id: '4quyVSN2mBwCLrAqMsTEDB' },
 ];
 
+// Function to transform PastBroadcast to RetrievalResult
+function transformToRetrievalResult(broadcast: PastBroadcast, score: number = 1.0): RetrievalResult {
+  return {
+    content: {
+      text: broadcast.excerpt,
+      type: "TEXT"
+    },
+    metadata: {
+      series_name: broadcast.series,
+      series_number: broadcast.id.toString(),
+      label: `${broadcast.series}シリーズ`,
+      title: broadcast.title,
+      url: broadcast.url
+    },
+    score: score
+  };
+}
+
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PastBroadcast[]>
+  res: NextApiResponse<RetrieveApiResponse>
 ) {
   // Get search parameters from query
   const { query } = req.query;
@@ -53,6 +72,17 @@ export default function handler(
     });
   }
   
-  // Return filtered broadcasts
-  res.status(200).json(filteredBroadcasts);
+  // Transform to RetrievalResult format with scores based on relevance
+  const retrievalResults = filteredBroadcasts.map((broadcast, index) => {
+    // Calculate score based on position in results (higher = more relevant)
+    const score = Math.max(0.1, 1.0 - (index * 0.05));
+    return transformToRetrievalResult(broadcast, score);
+  });
+  
+  // Return in new format
+  const response: RetrieveApiResponse = {
+    retrievalResults: retrievalResults
+  };
+  
+  res.status(200).json(response);
 }
