@@ -182,7 +182,6 @@ const SearchContent = React.memo(({
 }) => {
   // State for search form
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedSeries, setSelectedSeries] = useState<string>('');
   
   // State for search results
   const [searchResults, setSearchResults] = useState<PastBroadcast[]>([]);
@@ -197,7 +196,6 @@ const SearchContent = React.memo(({
     // Build query parameters
     const queryParams = new URLSearchParams();
     if (searchQuery) queryParams.append('query', searchQuery);
-    if (selectedSeries) queryParams.append('series', selectedSeries);
     
     try {
       // Call the API endpoint
@@ -211,7 +209,7 @@ const SearchContent = React.memo(({
     } finally {
       setIsLoading(false);
     }
-  }, [searchQuery, selectedSeries]);
+  }, [searchQuery]);
   
   return (
     <>
@@ -227,21 +225,6 @@ const SearchContent = React.memo(({
               placeholder="タイトルまたは概要で検索"
               className={searchStyles.input}
             />
-          </div>
-          
-          <div className={searchStyles.formGroup}>
-            <label htmlFor="series">シリーズ</label>
-            <select
-              id="series"
-              value={selectedSeries}
-              onChange={(e) => setSelectedSeries(e.target.value)}
-              className={searchStyles.select}
-            >
-              <option value="">すべて</option>
-              <option value="Basic Series">Basic Series</option>
-              <option value="Guest Series">Guest Series</option>
-              <option value="Community Series">Community Series</option>
-            </select>
           </div>
           
           <div className={searchStyles.buttonContainer}>
