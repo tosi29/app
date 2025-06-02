@@ -1,6 +1,34 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// Define the PastBroadcast interface
+// Define the new types according to the specification
+type Content = {
+  text: string;
+  type: "TEXT";
+};
+
+type Metadata = {
+  episode_id: string;
+  series_name: string;
+  series_number: string;
+  label?: string;
+  title: string;
+  duration: number;
+  position?: number;
+  spotify_episode_id?: string;
+  youtube_video_id?: string;
+};
+
+type RetrievalResult = {
+  content: Content;
+  metadata: Metadata;
+  score: number;
+};
+
+type RetrieveApiResponse = {
+  retrievalResults: RetrievalResult[];
+};
+
+// Legacy interface for internal data conversion
 interface PastBroadcast {
   id: number;
   date: string;
@@ -32,9 +60,35 @@ const pastBroadcasts: PastBroadcast[] = [
   { id: 15, date: '2019-03-01', title: 'マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '16:35', url: 'https://www.youtube.com/watch?v=EC_g2ReW-r4', youtube_video_id: 'EC_g2ReW-r4', spotify_episode_id: '4quyVSN2mBwCLrAqMsTEDB' },
 ];
 
+// Helper function to convert MM:SS duration string to seconds
+function durationToSeconds(duration: string): number {
+  const [minutes, seconds] = duration.split(':').map(Number);
+  return minutes * 60 + seconds;
+}
+
+// Helper function to convert PastBroadcast to RetrievalResult
+function convertToRetrievalResult(broadcast: PastBroadcast, score: number = 1.0): RetrievalResult {
+  return {
+    content: {
+      text: broadcast.excerpt,
+      type: "TEXT"
+    },
+    metadata: {
+      episode_id: broadcast.id.toString(),
+      series_name: broadcast.series,
+      series_number: "1", // Default series number - could be enhanced to parse from data
+      title: broadcast.title,
+      duration: durationToSeconds(broadcast.duration),
+      spotify_episode_id: broadcast.spotify_episode_id,
+      youtube_video_id: broadcast.youtube_video_id
+    },
+    score: score
+  };
+}
+
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PastBroadcast[]>
+  res: NextApiResponse<RetrieveApiResponse>
 ) {
   // Get search parameters from query
   const { query } = req.query;
@@ -53,6 +107,17 @@ export default function handler(
     });
   }
   
-  // Return filtered broadcasts
-  res.status(200).json(filteredBroadcasts);
+  // Convert to new format with search relevance scores
+  const retrievalResults: RetrievalResult[] = filteredBroadcasts.map((broadcast, index) => {
+    // Generate a mock relevance score (higher for earlier results)
+    const score = Math.max(0.1, 1.0 - (index * 0.05));
+    return convertToRetrievalResult(broadcast, score);
+  });
+  
+  // Return in new format
+  const response: RetrieveApiResponse = {
+    retrievalResults: retrievalResults
+  };
+  
+  res.status(200).json(response);
 }

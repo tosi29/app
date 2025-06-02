@@ -20,6 +20,54 @@ interface PastBroadcast {
   spotify_episode_id: string;
 }
 
+// New search API types
+type Content = {
+  text: string;
+  type: "TEXT";
+};
+
+type Metadata = {
+  episode_id: string;
+  series_name: string;
+  series_number: string;
+  label?: string;
+  title: string;
+  duration: number;
+  position?: number;
+  spotify_episode_id?: string;
+  youtube_video_id?: string;
+};
+
+type RetrievalResult = {
+  content: Content;
+  metadata: Metadata;
+  score: number;
+};
+
+type RetrieveApiResponse = {
+  retrievalResults: RetrievalResult[];
+};
+
+// Helper function to convert RetrievalResult to PastBroadcast for frontend compatibility
+function convertRetrievalResultToPastBroadcast(result: RetrievalResult): PastBroadcast {
+  // Convert duration from seconds back to MM:SS format for display
+  const minutes = Math.floor(result.metadata.duration / 60);
+  const seconds = result.metadata.duration % 60;
+  const durationString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  
+  return {
+    id: parseInt(result.metadata.episode_id),
+    date: '', // Not available in new format
+    title: result.metadata.title,
+    excerpt: result.content.text,
+    series: result.metadata.series_name,
+    duration: durationString,
+    url: '', // Not available in new format
+    youtube_video_id: result.metadata.youtube_video_id || '',
+    spotify_episode_id: result.metadata.spotify_episode_id || ''
+  };
+}
+
 // BroadcastsContent component extracted to prevent recreation on every render
 const BroadcastsContent = React.memo(({ 
   pastBroadcasts, 
@@ -200,9 +248,11 @@ const SearchContent = React.memo(({
     try {
       // Call the API endpoint
       const response = await fetch(`/api/search-broadcasts?${queryParams.toString()}`);
-      const data = await response.json();
+      const data: RetrieveApiResponse = await response.json();
       
-      setSearchResults(data);
+      // Convert RetrievalResult[] to PastBroadcast[] for frontend compatibility
+      const convertedResults = data.retrievalResults.map(convertRetrievalResultToPastBroadcast);
+      setSearchResults(convertedResults);
       setIsSearched(true);
     } catch (error) {
       console.error('Error searching broadcasts:', error);
