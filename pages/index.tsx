@@ -68,6 +68,16 @@ const BroadcastsContent = React.memo(({
     }));
   }, []);
 
+  // Get series list and create color mapping
+  const seriesList = useMemo(() => Object.keys(broadcastsBySeries), [broadcastsBySeries]);
+  
+  // Function to get series color class based on index
+  const getSeriesColorClass = useCallback((series: string) => {
+    const index = seriesList.indexOf(series);
+    const colorClasses = ['seriesColor0', 'seriesColor1', 'seriesColor2'];
+    return styles[colorClasses[index % colorClasses.length]];
+  }, [seriesList]);
+
   return (
     <>
       {isLoadingBroadcasts ? (
@@ -89,7 +99,7 @@ const BroadcastsContent = React.memo(({
               .map(([series, broadcasts]) => (
               <React.Fragment key={series}>
                 <tr 
-                  className={`${styles.seriesHeader} ${styles[`series-${series.toLowerCase().split(' ')[0]}`]}`}
+                  className={`${styles.seriesHeader} ${getSeriesColorClass(series)}`}
                   onClick={() => toggleSeries(series)}
                 >
                   <td colSpan={4}>
@@ -103,9 +113,7 @@ const BroadcastsContent = React.memo(({
                 </tr>
                 {expandedSeries[series] && broadcasts.map((broadcast) => (
                   <React.Fragment key={broadcast.id}>
-                    <tr 
-                      className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}
-                    >
+                    <tr>
                       <td>{broadcast.date}</td>
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
@@ -129,7 +137,7 @@ const BroadcastsContent = React.memo(({
                       </td>
                     </tr>
                     {visibleEmbeds.has(broadcast.id) && (
-                      <tr className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}>
+                      <tr>
                         <td colSpan={4}>
                           {embedType === 'spotify' ? (
                             <SpotifyPodcastEmbed 
