@@ -27,8 +27,7 @@ const BroadcastsContent = React.memo(({
   visibleEmbeds, 
   toggleEmbedVisibility, 
   router,
-  embedType,
-  setEmbedType
+  embedType
 }: {
   pastBroadcasts: PastBroadcast[];
   isLoadingBroadcasts: boolean;
@@ -36,7 +35,6 @@ const BroadcastsContent = React.memo(({
   toggleEmbedVisibility: (id: number) => void;
   router: any;
   embedType: 'youtube' | 'spotify';
-  setEmbedType: (type: 'youtube' | 'spotify') => void;
 }) => {
   // State to track which series are expanded
   const [expandedSeries, setExpandedSeries] = useState<Record<string, boolean>>({});
@@ -76,36 +74,6 @@ const BroadcastsContent = React.memo(({
         <div className={styles.loading}>配信データを読み込み中...</div>
       ) : (
       <div className={styles.tableContainer}>
-        <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: 'var(--card-background)', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)' }}>
-          <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
-          <button
-            onClick={() => setEmbedType('spotify')}
-            style={{
-              marginRight: '0.5rem',
-              padding: '0.5rem 1rem',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--border-radius)',
-              backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
-              color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
-          >
-            Spotify
-          </button>
-          <button
-            onClick={() => setEmbedType('youtube')}
-            style={{
-              padding: '0.5rem 1rem',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--border-radius)',
-              backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
-              color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
-          >
-            YouTube
-          </button>
-        </div>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -197,14 +165,12 @@ const SearchContent = React.memo(({
   visibleEmbeds, 
   toggleEmbedVisibility, 
   router,
-  embedType,
-  setEmbedType
+  embedType
 }: {
   visibleEmbeds: Set<number>;
   toggleEmbedVisibility: (id: number) => void;
   router: any;
   embedType: 'youtube' | 'spotify';
-  setEmbedType: (type: 'youtube' | 'spotify') => void;
 }) => {
   // State for search form
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -280,36 +246,6 @@ const SearchContent = React.memo(({
       
       {isSearched && (
         <div className={styles.tableContainer}>
-          <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: 'var(--card-background)', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)' }}>
-            <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
-            <button
-              onClick={() => setEmbedType('spotify')}
-              style={{
-                marginRight: '0.5rem',
-                padding: '0.5rem 1rem',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--border-radius)',
-                backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
-                color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
-                cursor: 'pointer'
-              }}
-            >
-              Spotify
-            </button>
-            <button
-              onClick={() => setEmbedType('youtube')}
-              style={{
-                padding: '0.5rem 1rem',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--border-radius)',
-                backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
-                color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
-                cursor: 'pointer'
-              }}
-            >
-              YouTube
-            </button>
-          </div>
           <h2 className={searchStyles.resultsTitle}>
             検索結果: {searchResults.length}件
           </h2>
@@ -458,7 +394,6 @@ export default function Home() {
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
                 embedType={embedType}
-                setEmbedType={setEmbedType}
               />
     },
     {
@@ -469,7 +404,6 @@ export default function Home() {
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
                 embedType={embedType}
-                setEmbedType={setEmbedType}
               />
     },
     {
@@ -497,6 +431,36 @@ export default function Home() {
           tabs={tabs} 
           onTabChange={handleTabChange} 
         />
+        <div className={styles.globalToggle}>
+          <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
+          <button
+            onClick={() => setEmbedType('spotify')}
+            style={{
+              marginRight: '0.5rem',
+              padding: '0.5rem 1rem',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--border-radius)',
+              backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
+              color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
+              cursor: 'pointer'
+            }}
+          >
+            Spotify
+          </button>
+          <button
+            onClick={() => setEmbedType('youtube')}
+            style={{
+              padding: '0.5rem 1rem',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--border-radius)',
+              backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
+              color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
+              cursor: 'pointer'
+            }}
+          >
+            YouTube
+          </button>
+        </div>
       </div>
 
       <main className={styles.main}>
