@@ -6,6 +6,7 @@ import searchStyles from '../styles/Search.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
 import SpotifyPodcastEmbed from '../components/SpotifyPodcastEmbed'
+import YouTube from '../components/YouTube'
 
 interface PastBroadcast {
   id: number;
@@ -25,13 +26,17 @@ const BroadcastsContent = React.memo(({
   isLoadingBroadcasts, 
   visibleEmbeds, 
   toggleEmbedVisibility, 
-  router 
+  router,
+  embedType,
+  setEmbedType
 }: {
   pastBroadcasts: PastBroadcast[];
   isLoadingBroadcasts: boolean;
   visibleEmbeds: Set<number>;
   toggleEmbedVisibility: (id: number) => void;
   router: any;
+  embedType: 'youtube' | 'spotify';
+  setEmbedType: (type: 'youtube' | 'spotify') => void;
 }) => {
   // State to track which series are expanded
   const [expandedSeries, setExpandedSeries] = useState<Record<string, boolean>>({});
@@ -71,6 +76,36 @@ const BroadcastsContent = React.memo(({
         <div className={styles.loading}>配信データを読み込み中...</div>
       ) : (
       <div className={styles.tableContainer}>
+        <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: 'var(--card-background)', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)' }}>
+          <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
+          <button
+            onClick={() => setEmbedType('spotify')}
+            style={{
+              marginRight: '0.5rem',
+              padding: '0.5rem 1rem',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--border-radius)',
+              backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
+              color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
+              cursor: 'pointer'
+            }}
+          >
+            Spotify
+          </button>
+          <button
+            onClick={() => setEmbedType('youtube')}
+            style={{
+              padding: '0.5rem 1rem',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--border-radius)',
+              backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
+              color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
+              cursor: 'pointer'
+            }}
+          >
+            YouTube
+          </button>
+        </div>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -128,10 +163,18 @@ const BroadcastsContent = React.memo(({
                     {visibleEmbeds.has(broadcast.id) && (
                       <tr className={styles[`series-${broadcast.series.toLowerCase().split(' ')[0]}`]}>
                         <td colSpan={4}>
-                          <SpotifyPodcastEmbed 
-                            episodeId={broadcast.spotify_episode_id}
-                            height="200"
-                          />
+                          {embedType === 'spotify' ? (
+                            <SpotifyPodcastEmbed 
+                              episodeId={broadcast.spotify_episode_id}
+                              height="200"
+                            />
+                          ) : (
+                            <YouTube 
+                              videoId={broadcast.youtube_video_id}
+                              width={560}
+                              height={315}
+                            />
+                          )}
                         </td>
                       </tr>
                     )}
@@ -153,11 +196,15 @@ BroadcastsContent.displayName = 'BroadcastsContent';
 const SearchContent = React.memo(({ 
   visibleEmbeds, 
   toggleEmbedVisibility, 
-  router 
+  router,
+  embedType,
+  setEmbedType
 }: {
   visibleEmbeds: Set<number>;
   toggleEmbedVisibility: (id: number) => void;
   router: any;
+  embedType: 'youtube' | 'spotify';
+  setEmbedType: (type: 'youtube' | 'spotify') => void;
 }) => {
   // State for search form
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -233,6 +280,36 @@ const SearchContent = React.memo(({
       
       {isSearched && (
         <div className={styles.tableContainer}>
+          <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: 'var(--card-background)', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)' }}>
+            <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
+            <button
+              onClick={() => setEmbedType('spotify')}
+              style={{
+                marginRight: '0.5rem',
+                padding: '0.5rem 1rem',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--border-radius)',
+                backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
+                color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              Spotify
+            </button>
+            <button
+              onClick={() => setEmbedType('youtube')}
+              style={{
+                padding: '0.5rem 1rem',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--border-radius)',
+                backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
+                color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
+                cursor: 'pointer'
+              }}
+            >
+              YouTube
+            </button>
+          </div>
           <h2 className={searchStyles.resultsTitle}>
             検索結果: {searchResults.length}件
           </h2>
@@ -263,10 +340,18 @@ const SearchContent = React.memo(({
                   </div>
                   {visibleEmbeds.has(broadcast.id) && (
                     <div style={{ marginTop: '1rem' }}>
-                      <SpotifyPodcastEmbed 
-                        episodeId={broadcast.spotify_episode_id}
-                        height="200"
-                      />
+                      {embedType === 'spotify' ? (
+                        <SpotifyPodcastEmbed 
+                          episodeId={broadcast.spotify_episode_id}
+                          height="200"
+                        />
+                      ) : (
+                        <YouTube 
+                          videoId={broadcast.youtube_video_id}
+                          width={560}
+                          height={315}
+                        />
+                      )}
                     </div>
                   )}
                 </div>
@@ -291,8 +376,11 @@ export default function Home() {
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
   const [isLoadingBroadcasts, setIsLoadingBroadcasts] = useState<boolean>(true);
   
-  // State for tracking visible Spotify embeds
+  // State for tracking visible embeds
   const [visibleEmbeds, setVisibleEmbeds] = useState<Set<number>>(new Set());
+  
+  // State for tracking embed type preference (YouTube or Spotify)
+  const [embedType, setEmbedType] = useState<'youtube' | 'spotify'>('spotify');
   
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
@@ -369,6 +457,8 @@ export default function Home() {
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
+                embedType={embedType}
+                setEmbedType={setEmbedType}
               />
     },
     {
@@ -378,6 +468,8 @@ export default function Home() {
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
+                embedType={embedType}
+                setEmbedType={setEmbedType}
               />
     },
     {
