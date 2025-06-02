@@ -37,7 +37,7 @@ export default function handler(
   res: NextApiResponse<PastBroadcast[]>
 ) {
   // Get search parameters from query
-  const { query, series } = req.query;
+  const { query } = req.query;
   
   // Filter broadcasts based on search criteria
   let filteredBroadcasts = [...pastBroadcasts];
@@ -51,13 +51,6 @@ export default function handler(
       
       return titleMatch || excerptMatch;
     });
-  }
-  
-  // Filter by series
-  if (series && typeof series === 'string' && series.trim() !== '') {
-    filteredBroadcasts = filteredBroadcasts.filter(broadcast => 
-      broadcast.series.toLowerCase() === series.toLowerCase()
-    );
   }
   
   // Return filtered broadcasts
