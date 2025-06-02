@@ -212,19 +212,19 @@
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
-.series-basic {
+.seriesColor0 {
   background-color: rgba(34, 197, 94, 0.15); /* Saturated green with visible background */
   border-left: 4px solid rgba(34, 197, 94, 0.8);
   border-top: 2px solid rgba(34, 197, 94, 0.5);
 }
 
-.series-guest {
+.seriesColor1 {
   background-color: rgba(59, 130, 246, 0.15); /* Saturated blue with visible background */
   border-left: 4px solid rgba(59, 130, 246, 0.8);
   border-top: 2px solid rgba(59, 130, 246, 0.5);
 }
 
-.series-community {
+.seriesColor2 {
   background-color: rgba(236, 72, 153, 0.15); /* Saturated pink with visible background */
   border-left: 4px solid rgba(236, 72, 153, 0.8);
   border-top: 2px solid rgba(236, 72, 153, 0.5);
