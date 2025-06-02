@@ -189,6 +189,28 @@ const SearchContent = React.memo(({
   const [isSearched, setIsSearched] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
+  // State for available series
+  const [availableSeries, setAvailableSeries] = useState<string[]>([]);
+  const [isLoadingSeries, setIsLoadingSeries] = useState<boolean>(true);
+  
+  // Fetch available series when component mounts
+  useEffect(() => {
+    const fetchSeries = async () => {
+      try {
+        setIsLoadingSeries(true);
+        const response = await fetch('/api/series');
+        const series = await response.json();
+        setAvailableSeries(series);
+      } catch (error) {
+        console.error('Error fetching series:', error);
+      } finally {
+        setIsLoadingSeries(false);
+      }
+    };
+    
+    fetchSeries();
+  }, []);
+  
   // Handle search form submission
   const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,11 +258,14 @@ const SearchContent = React.memo(({
               value={selectedSeries}
               onChange={(e) => setSelectedSeries(e.target.value)}
               className={searchStyles.select}
+              disabled={isLoadingSeries}
             >
               <option value="">すべて</option>
-              <option value="Basic Series">Basic Series</option>
-              <option value="Guest Series">Guest Series</option>
-              <option value="Community Series">Community Series</option>
+              {availableSeries.map((series) => (
+                <option key={series} value={series}>
+                  {series}
+                </option>
+              ))}
             </select>
           </div>
           
