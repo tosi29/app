@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from '../styles/Home.module.css';
-import SpotifyPodcastEmbed from './SpotifyPodcastEmbed';
-import YouTube from './YouTube';
+import BroadcastEmbed from './BroadcastEmbed';
 import { PastBroadcast } from '../types/broadcast';
 
 interface BroadcastsContentProps {
@@ -273,18 +272,11 @@ const BroadcastsContent = React.memo(({
                           {visibleEmbeds.has(broadcast.id) && (
                             <tr>
                               <td colSpan={5}>
-                                {embedType === 'spotify' ? (
-                                  <SpotifyPodcastEmbed 
-                                    episodeId={broadcast.spotify_episode_id}
-                                    height="152"
-                                  />
-                                ) : (
-                                  <YouTube 
-                                    videoId={broadcast.youtube_video_id}
-                                    width={560}
-                                    height={315}
-                                  />
-                                )}
+                                <BroadcastEmbed 
+                                  broadcast={broadcast}
+                                  embedType={embedType}
+                                  height="152"
+                                />
                               </td>
                             </tr>
                           )}
@@ -329,18 +321,11 @@ const BroadcastsContent = React.memo(({
                       {visibleEmbeds.has(broadcast.id) && (
                         <tr>
                           <td colSpan={5}>
-                            {embedType === 'spotify' ? (
-                              <SpotifyPodcastEmbed 
-                                episodeId={broadcast.spotify_episode_id}
-                                height="152"
-                              />
-                            ) : (
-                              <YouTube 
-                                videoId={broadcast.youtube_video_id}
-                                width={560}
-                                height={315}
-                              />
-                            )}
+                            <BroadcastEmbed 
+                              broadcast={broadcast}
+                              embedType={embedType}
+                              height="152"
+                            />
                           </td>
                         </tr>
                       )}

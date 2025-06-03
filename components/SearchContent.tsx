@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styles from '../styles/Home.module.css';
 import searchStyles from '../styles/Search.module.css';
-import SpotifyPodcastEmbed from './SpotifyPodcastEmbed';
-import YouTube from './YouTube';
+import BroadcastEmbed from './BroadcastEmbed';
 import { PastBroadcast } from '../types/broadcast';
 import { NextRouter } from 'next/router';
 
@@ -108,18 +107,11 @@ const SearchContent = React.memo(({
                   </div>
                   {visibleEmbeds.has(broadcast.id) && (
                     <div style={{ marginTop: '1rem' }}>
-                      {embedType === 'spotify' ? (
-                        <SpotifyPodcastEmbed 
-                          episodeId={broadcast.spotify_episode_id}
-                          height="152"
-                        />
-                      ) : (
-                        <YouTube 
-                          videoId={broadcast.youtube_video_id}
-                          width={560}
-                          height={315}
-                        />
-                      )}
+                      <BroadcastEmbed 
+                        broadcast={broadcast}
+                        embedType={embedType}
+                        height="152"
+                      />
                     </div>
                   )}
                 </div>
