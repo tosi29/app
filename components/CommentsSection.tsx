@@ -197,22 +197,15 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   return (
     <>
       {/* Dropdown filter for episodes */}
-      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-        <label htmlFor="episode-filter" style={{ marginRight: '0.5rem', fontWeight: '600' }}>
+      <div className={commentStyles.filterContainer}>
+        <label htmlFor="episode-filter" className={commentStyles.filterLabel}>
           配信で絞り込み:
         </label>
         <select
           id="episode-filter"
           value={dropdownEpisodeId || ''}
           onChange={handleDropdownChange}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '4px',
-            border: '1px solid var(--border-color)',
-            backgroundColor: 'var(--background-color)',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem'
-          }}
+          className={commentStyles.filterSelect}
         >
           <option value="">すべて</option>
           {pastBroadcasts.map((broadcast) => (
