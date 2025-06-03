@@ -122,17 +122,18 @@ const BroadcastsContent = React.memo(({
                           type="button"
                           onClick={() => toggleEmbedVisibility(broadcast.id)}
                           className={styles.link}
+                          aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
                         >
-                          {visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                          {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
                         </button>
                         {' | '}
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                           className={styles.commentButton}
+                          aria-label="コメントを見る"
                         >
                           <span className={styles.commentIcon}>💬</span>
-                          コメントを見る
                         </button>
                       </td>
                     </tr>
@@ -253,16 +254,17 @@ const SearchContent = React.memo(({
                       type="button"
                       onClick={() => toggleEmbedVisibility(broadcast.id)}
                       className={styles.link}
+                      aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
                     >
-                      {visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                      {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
                     </button>
                     {' | '}
                     <button
                       onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
                       className={styles.commentButton}
+                      aria-label="コメントを見る"
                     >
                       <span className={styles.commentIcon}>💬</span>
-                      コメントを見る
                     </button>
                   </div>
                   {visibleEmbeds.has(broadcast.id) && (
