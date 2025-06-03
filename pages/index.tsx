@@ -421,7 +421,6 @@ const SearchContent = React.memo(({
       <div className={searchStyles.searchContainer}>
         <form onSubmit={handleSearch} className={searchStyles.searchForm}>
           <div className={searchStyles.formGroup}>
-            <label htmlFor="searchQuery">検索キーワード</label>
             <div className={searchStyles.inputButtonContainer}>
               <input
                 type="text"
