@@ -291,7 +291,7 @@ const BroadcastsContent = React.memo(({
                                 {embedType === 'spotify' ? (
                                   <SpotifyPodcastEmbed 
                                     episodeId={broadcast.spotify_episode_id}
-                                    height="200"
+                                    height="152"
                                   />
                                 ) : (
                                   <YouTube 
@@ -347,7 +347,7 @@ const BroadcastsContent = React.memo(({
                             {embedType === 'spotify' ? (
                               <SpotifyPodcastEmbed 
                                 episodeId={broadcast.spotify_episode_id}
-                                height="200"
+                                height="152"
                               />
                             ) : (
                               <YouTube 
