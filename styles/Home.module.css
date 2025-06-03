@@ -30,6 +30,49 @@
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+  gap: 0.75rem;
+}
+
+.toggleLabel {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.toggleButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toggleButton:hover {
+  background-color: var(--overlay-medium);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.toggleButton.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggleButton:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.toggleButton:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* Mobile responsiveness for global toggle */
@@ -43,6 +86,13 @@
   .globalToggle {
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .toggleLabel {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -133,7 +183,7 @@
 }
 
 .code {
-  background: rgba(0, 0, 0, 0.02);
+  background: var(--overlay-light);
   border-radius: var(--border-radius);
   padding: 0.75rem;
   font-size: 1rem;
@@ -193,7 +243,7 @@
 }
 
 .table tr:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--overlay-light);
 }
 
 .seriesHeader {
@@ -362,6 +412,15 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+.iconButton:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.iconButton:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Display controls styles */
 .displayControls {
   display: flex;
@@ -402,14 +461,24 @@
 }
 
 .controlButton:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--overlay-medium);
   border-color: var(--primary-color);
+  transform: translateY(-1px);
 }
 
 .controlButton.active {
   background-color: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
+}
+
+.controlButton:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.controlButton:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* Sortable header styles */
@@ -420,7 +489,7 @@
 }
 
 .sortableHeader:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--overlay-medium);
   color: var(--primary-color);
 }
 

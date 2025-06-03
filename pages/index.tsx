@@ -136,31 +136,16 @@ export default function Home() {
           onTabChange={handleTabChange} 
         />
         <div className={styles.globalToggle}>
-          <label style={{ marginRight: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>再生プラットフォーム:</label>
+          <label className={styles.toggleLabel}>再生プラットフォーム:</label>
           <button
             onClick={() => setEmbedType('spotify')}
-            style={{
-              marginRight: '0.5rem',
-              padding: '0.5rem 1rem',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--border-radius)',
-              backgroundColor: embedType === 'spotify' ? 'var(--primary-color)' : 'var(--card-background)',
-              color: embedType === 'spotify' ? 'white' : 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
+            className={`${styles.toggleButton} ${embedType === 'spotify' ? styles.active : ''}`}
           >
             Spotify
           </button>
           <button
             onClick={() => setEmbedType('youtube')}
-            style={{
-              padding: '0.5rem 1rem',
-              border: '1px solid var(--border-color)',
-              borderRadius: 'var(--border-radius)',
-              backgroundColor: embedType === 'youtube' ? 'var(--primary-color)' : 'var(--card-background)',
-              color: embedType === 'youtube' ? 'white' : 'var(--text-primary)',
-              cursor: 'pointer'
-            }}
+            className={`${styles.toggleButton} ${embedType === 'youtube' ? styles.active : ''}`}
           >
             YouTube
           </button>
