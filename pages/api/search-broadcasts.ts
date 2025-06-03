@@ -13,6 +13,7 @@ interface PastBroadcast {
   url: string;
   youtube_video_id: string;
   spotify_episode_id: string;
+  likeCount?: number;
 }
 
 // Helper function to convert seconds to MM:SS format
