@@ -4,11 +4,12 @@ import searchStyles from '../styles/Search.module.css';
 import SpotifyPodcastEmbed from './SpotifyPodcastEmbed';
 import YouTube from './YouTube';
 import { PastBroadcast } from '../types/broadcast';
+import { NextRouter } from 'next/router';
 
 interface SearchContentProps {
   visibleEmbeds: Set<number>;
   toggleEmbedVisibility: (id: number) => void;
-  router: any;
+  router: NextRouter;
   embedType: 'youtube' | 'spotify';
 }
 
