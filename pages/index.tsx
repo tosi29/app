@@ -422,20 +422,19 @@ const SearchContent = React.memo(({
         <form onSubmit={handleSearch} className={searchStyles.searchForm}>
           <div className={searchStyles.formGroup}>
             <label htmlFor="searchQuery">検索キーワード</label>
-            <input
-              type="text"
-              id="searchQuery"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="タイトルまたは概要で検索"
-              className={searchStyles.input}
-            />
-          </div>
-          
-          <div className={searchStyles.buttonContainer}>
-            <button type="submit" className={searchStyles.searchButton} disabled={isLoading}>
-              {isLoading ? '検索中...' : '検索'}
-            </button>
+            <div className={searchStyles.inputButtonContainer}>
+              <input
+                type="text"
+                id="searchQuery"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="タイトルまたは概要で検索"
+                className={searchStyles.input}
+              />
+              <button type="submit" className={searchStyles.searchButton} disabled={isLoading}>
+                {isLoading ? '検索中...' : '検索'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
