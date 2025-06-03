@@ -133,7 +133,7 @@
 }
 
 .graph {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--overlay-light);
   border-radius: var(--border-radius);
   transition: all 0.3s;
 }
@@ -289,7 +289,7 @@
   align-items: center;
   font-size: 0.875rem;
   color: var(--text-secondary);
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--overlay-light);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   border: 1px solid var(--border-color);
@@ -346,6 +346,15 @@
 
 .feedbackButton:active {
   transform: translateY(0);
+}
+
+.feedbackButton:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.feedbackButton:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .commentsList {
