@@ -26,7 +26,7 @@ function secondsToMMSS(seconds: number): string {
 function convertToPastBroadcast(result: RetrievalResult): PastBroadcast {
   const metadata = result.metadata;
   return {
-    id: parseInt(metadata.episode_id),
+    id: parseInt(metadata.episode_id, 10),
     date: '2019-01-23', // Default date for compatibility - could be enhanced later
     title: metadata.title,
     excerpt: result.content.text,
