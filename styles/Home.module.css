@@ -169,7 +169,7 @@
 }
 
 .table th {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.08);
   font-weight: 600;
   color: var(--text-primary);
   position: sticky;
