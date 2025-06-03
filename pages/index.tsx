@@ -478,7 +478,7 @@ const SearchContent = React.memo(({
                       {embedType === 'spotify' ? (
                         <SpotifyPodcastEmbed 
                           episodeId={broadcast.spotify_episode_id}
-                          height="200"
+                          height="152"
                         />
                       ) : (
                         <YouTube 
