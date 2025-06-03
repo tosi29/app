@@ -18,6 +18,7 @@ interface PastBroadcast {
   url: string;
   youtube_video_id: string;
   spotify_episode_id: string;
+  likesCount?: number;
 }
 
 // BroadcastsContent component extracted to prevent recreation on every render
@@ -90,6 +91,7 @@ const BroadcastsContent = React.memo(({
               <th>日付</th>
               <th>タイトル</th>
               <th>再生時間</th>
+              <th>👍</th>
               <th>リンク</th>
             </tr>
           </thead>
@@ -102,7 +104,7 @@ const BroadcastsContent = React.memo(({
                   className={`${styles.seriesHeader} ${getSeriesColorClass(series)}`}
                   onClick={() => toggleSeries(series)}
                 >
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <div className={styles.seriesToggle}>
                       <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
                         {expandedSeries[series] ? '▼' : '▶'}
@@ -117,6 +119,7 @@ const BroadcastsContent = React.memo(({
                       <td>{broadcast.date}</td>
                       <td>{broadcast.title}</td>
                       <td>{broadcast.duration}</td>
+                      <td>{broadcast.likesCount ? broadcast.likesCount.toLocaleString() : ''}</td>
                       <td>
                         <button
                           type="button"
@@ -138,7 +141,7 @@ const BroadcastsContent = React.memo(({
                     </tr>
                     {visibleEmbeds.has(broadcast.id) && (
                       <tr>
-                        <td colSpan={4}>
+                        <td colSpan={5}>
                           {embedType === 'spotify' ? (
                             <SpotifyPodcastEmbed 
                               episodeId={broadcast.spotify_episode_id}

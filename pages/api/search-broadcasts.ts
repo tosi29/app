@@ -11,15 +11,16 @@ interface PastBroadcast {
   url: string;
   youtube_video_id: string;
   spotify_episode_id: string;
+  likesCount?: number;
 }
 
 // Sample data for past broadcasts
 const pastBroadcasts: PastBroadcast[] = [
-  { id: 1, date: '2018-11-29', title: '吉田松陰が脱藩した衝撃の理由！', excerpt: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！', series: '吉田松陰', duration: '15:56', url: 'https://www.youtube.com/watch?v=VMpjzAA6hNI', youtube_video_id: 'VMpjzAA6hNI', spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i' },
-  { id: 2, date: '2019-01-23', title: '吉田松陰の「感化力」がすごい！', excerpt: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！', series: '吉田松陰', duration: '12:51', url: 'https://www.youtube.com/watch?v=2xDAjrniULM', youtube_video_id: '2xDAjrniULM', spotify_episode_id: '2Y7WBA51rsihKPeQR304qP' },
+  { id: 1, date: '2018-11-29', title: '吉田松陰が脱藩した衝撃の理由！', excerpt: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！', series: '吉田松陰', duration: '15:56', url: 'https://www.youtube.com/watch?v=VMpjzAA6hNI', youtube_video_id: 'VMpjzAA6hNI', spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i', likesCount: 245 },
+  { id: 2, date: '2019-01-23', title: '吉田松陰の「感化力」がすごい！', excerpt: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！', series: '吉田松陰', duration: '12:51', url: 'https://www.youtube.com/watch?v=2xDAjrniULM', youtube_video_id: '2xDAjrniULM', spotify_episode_id: '2Y7WBA51rsihKPeQR304qP', likesCount: 312 },
   { id: 3, date: '2019-01-23', title: '黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', excerpt: '吉田松陰シリーズ: 黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', series: '吉田松陰', duration: '13:52', url: 'https://www.youtube.com/watch?v=Mzr3fk1ExGA', youtube_video_id: 'Mzr3fk1ExGA', spotify_episode_id: '5jhl7KJu2QDZgPMDqxtMzV' },
   { id: 4, date: '2019-01-23', title: 'もし吉田松陰に人生相談ができたら・・・？', excerpt: '吉田松陰シリーズ: もし吉田松陰に人生相談ができたら・・・？', series: '吉田松陰', duration: '16:21', url: 'https://www.youtube.com/watch?v=2cJi5iIOCyU', youtube_video_id: '2cJi5iIOCyU', spotify_episode_id: '2RgEvZnXOrP0zEePtnLCvN' },
-  { id: 5, date: '2019-01-23', title: 'スパルタ人の壮絶な一生！まさにスパルタ教育', excerpt: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育', series: 'スパルタ', duration: '21:39', url: 'https://www.youtube.com/watch?v=J_kARj-FuPw', youtube_video_id: 'J_kARj-FuPw', spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK' },
+  { id: 5, date: '2019-01-23', title: 'スパルタ人の壮絶な一生！まさにスパルタ教育', excerpt: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育', series: 'スパルタ', duration: '21:39', url: 'https://www.youtube.com/watch?v=J_kARj-FuPw', youtube_video_id: 'J_kARj-FuPw', spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK', likesCount: 421 },
   { id: 6, date: '2019-01-23', title: 'スパルタでイケてる男の基準！', excerpt: 'スパルタシリーズ: スパルタでイケてる男の基準！', series: 'スパルタ', duration: '8:56', url: 'https://www.youtube.com/watch?v=X0_q7MB3jaQ', youtube_video_id: 'X0_q7MB3jaQ', spotify_episode_id: '3QczCyKWjJeoKRMSxWLG3X' },
   { id: 7, date: '2019-01-23', title: 'スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', excerpt: 'スパルタシリーズ: スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', series: 'スパルタ', duration: '18:39', url: 'https://www.youtube.com/watch?v=Pkqx0O-sv4Y', youtube_video_id: 'Pkqx0O-sv4Y', spotify_episode_id: '5SH0KXiFyyilqdTbSvT2QG' },
   { id: 8, date: '2019-01-23', title: 'スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', excerpt: 'スパルタシリーズ: スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', series: 'スパルタ', duration: '5:09', url: 'https://www.youtube.com/watch?v=kjenu0OuI2o', youtube_video_id: 'kjenu0OuI2o', spotify_episode_id: '73j4TNFb4JXMeHAMNEiKDI' },
