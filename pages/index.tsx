@@ -121,19 +121,19 @@ const BroadcastsContent = React.memo(({
                         <button
                           type="button"
                           onClick={() => toggleEmbedVisibility(broadcast.id)}
-                          className={styles.link}
+                          className={styles.iconButton}
                           aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
                         >
                           {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
                         </button>
-                        {' | '}
+                        {' '}
                         <button
                           type="button"
                           onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                          className={styles.commentButton}
+                          className={styles.iconButton}
                           aria-label="コメントを見る"
                         >
-                          <span className={styles.commentIcon}>💬</span>
+                          💬
                         </button>
                       </td>
                     </tr>
@@ -253,18 +253,18 @@ const SearchContent = React.memo(({
                     <button
                       type="button"
                       onClick={() => toggleEmbedVisibility(broadcast.id)}
-                      className={styles.link}
+                      className={styles.iconButton}
                       aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
                     >
                       {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
                     </button>
-                    {' | '}
+                    {' '}
                     <button
                       onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
-                      className={styles.commentButton}
+                      className={styles.iconButton}
                       aria-label="コメントを見る"
                     >
-                      <span className={styles.commentIcon}>💬</span>
+                      💬
                     </button>
                   </div>
                   {visibleEmbeds.has(broadcast.id) && (
