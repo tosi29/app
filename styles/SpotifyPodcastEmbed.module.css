@@ -2,7 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 1rem 0;
+  margin: 0.25rem 0;
 }
 
 .spotifyIframe {
@@ -15,7 +15,7 @@
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .embedContainer {
-    margin: 0.75rem 0;
+    margin: 0.125rem 0;
   }
   
   .spotifyIframe {

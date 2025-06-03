@@ -28,10 +28,10 @@ export default function SpotifyDemo() {
           />
           
           <h2>Custom Dimensions</h2>
-          <p>Episode ID: 2CFobdwT9eTKOubZkc0Uag, Height: 200px</p>
+          <p>Episode ID: 2CFobdwT9eTKOubZkc0Uag, Height: 152px (optimized)</p>
           <SpotifyPodcastEmbed 
             episodeId="2CFobdwT9eTKOubZkc0Uag"
-            height="200"
+            height="152"
           />
         </section>
       </main>
