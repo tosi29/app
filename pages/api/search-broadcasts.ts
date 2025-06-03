@@ -23,7 +23,7 @@ function secondsToMMSS(seconds: number): string {
 }
 
 // Function to convert RetrievalResult to PastBroadcast for API compatibility
-function convertToPastBroadcast(result: RetrievalResult, index: number): PastBroadcast {
+function convertToPastBroadcast(result: RetrievalResult): PastBroadcast {
   const metadata = result.metadata;
   return {
     id: parseInt(metadata.episode_id),
