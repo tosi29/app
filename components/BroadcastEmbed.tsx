@@ -6,7 +6,7 @@ import { PastBroadcast } from '../types/broadcast';
 interface BroadcastEmbedProps {
   broadcast: PastBroadcast;
   embedType: 'youtube' | 'spotify';
-  height?: string | number;
+  height?: number;
   width?: number;
 }
 
@@ -20,7 +20,7 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
     return (
       <SpotifyPodcastEmbed 
         episodeId={broadcast.spotify_episode_id}
-        height={typeof height === 'number' ? height.toString() : height || "152"}
+        height={(height || 152).toString()}
       />
     );
   } else {
@@ -28,7 +28,7 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
       <YouTube 
         videoId={broadcast.youtube_video_id}
         width={width || 560}
-        height={typeof height === 'string' ? parseInt(height, 10) : height || 315}
+        height={height || 315}
       />
     );
   }

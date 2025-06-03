@@ -275,7 +275,7 @@ const BroadcastsContent = React.memo(({
                                 <BroadcastEmbed 
                                   broadcast={broadcast}
                                   embedType={embedType}
-                                  height="152"
+                                  height={152}
                                 />
                               </td>
                             </tr>
@@ -324,7 +324,7 @@ const BroadcastsContent = React.memo(({
                             <BroadcastEmbed 
                               broadcast={broadcast}
                               embedType={embedType}
-                              height="152"
+                              height={152}
                             />
                           </td>
                         </tr>
