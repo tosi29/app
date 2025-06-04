@@ -20,6 +20,38 @@
   z-index: 10;
   border-bottom: 1px solid transparent;
   gap: 2rem;
+  position: relative;
+}
+
+.settingsIcon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settingsIcon:hover {
+  background-color: var(--overlay-light);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.settingsIcon:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.settingsIcon:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .globalToggle {
@@ -521,5 +553,11 @@
   
   .controlGroup {
     justify-content: center;
+  }
+
+  .settingsIcon {
+    right: 0.5rem;
+    font-size: 1.25rem;
+    padding: 0.375rem;
   }
 }

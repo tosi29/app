@@ -7,6 +7,7 @@ import CommentsSection from '../components/CommentsSection'
 import BroadcastsContent from '../components/BroadcastsContent'
 import PopularBroadcastsContent from '../components/PopularBroadcastsContent'
 import SearchContent from '../components/SearchContent'
+import SettingsModal from '../components/SettingsModal'
 import { PastBroadcast } from '../types/broadcast'
 
 export default function Home() {
@@ -22,6 +23,9 @@ export default function Home() {
   
   // State for tracking embed type preference (YouTube or Spotify)
   const [embedType, setEmbedType] = useState<'youtube' | 'spotify'>('spotify');
+  
+  // State for settings modal
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
@@ -150,26 +154,25 @@ export default function Home() {
           tabs={tabs} 
           onTabChange={handleTabChange} 
         />
-        <div className={styles.globalToggle}>
-          <label className={styles.toggleLabel}>再生プラットフォーム:</label>
-          <button
-            onClick={() => setEmbedType('spotify')}
-            className={`${styles.toggleButton} ${embedType === 'spotify' ? styles.active : ''}`}
-          >
-            Spotify
-          </button>
-          <button
-            onClick={() => setEmbedType('youtube')}
-            className={`${styles.toggleButton} ${embedType === 'youtube' ? styles.active : ''}`}
-          >
-            YouTube
-          </button>
-        </div>
+        <button
+          className={styles.settingsIcon}
+          onClick={() => setIsSettingsOpen(true)}
+          aria-label="設定を開く"
+        >
+          ⚙️
+        </button>
       </div>
 
       <main className={styles.main}>
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
+      
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        embedType={embedType}
+        onEmbedTypeChange={setEmbedType}
+      />
     </div>
   )
 }
