@@ -113,13 +113,13 @@ export default function PopularBroadcastsContent({
                 className={styles.sortableHeader}
                 onClick={() => handleSort('viewCount')}
               >
-                再生回数 {sortColumn === 'viewCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+                再生 {sortColumn === 'viewCount' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
               <th 
                 className={styles.sortableHeader}
                 onClick={() => handleSort('commentCount')}
               >
-                コメント数 {sortColumn === 'commentCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+                コメント {sortColumn === 'commentCount' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
               <th 
                 className={styles.sortableHeader}
