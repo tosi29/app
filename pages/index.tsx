@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
 import BroadcastsContent from '../components/BroadcastsContent'
+import PopularBroadcastsContent from '../components/PopularBroadcastsContent'
 import SearchContent from '../components/SearchContent'
 import { PastBroadcast } from '../types/broadcast'
 
@@ -25,7 +26,8 @@ export default function Home() {
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
     router.query.tab === 'comments' ? 'comments' : 
-    router.query.tab === 'search' ? 'search' : 'broadcasts'
+    router.query.tab === 'search' ? 'search' :
+    router.query.tab === 'popular' ? 'popular' : 'broadcasts'
   );
   
   // Fetch broadcasts data from API
@@ -56,6 +58,8 @@ export default function Home() {
         setActiveTab('comments');
       } else if (tab === 'search') {
         setActiveTab('search');
+      } else if (tab === 'popular') {
+        setActiveTab('popular');
       } else {
         setActiveTab('broadcasts');
       }
@@ -69,7 +73,8 @@ export default function Home() {
     router.replace({
       pathname: '/',
       query: tabId === 'comments' ? { tab: tabId } : 
-             tabId === 'search' ? { tab: tabId } : {}
+             tabId === 'search' ? { tab: tabId } : 
+             tabId === 'popular' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
 
@@ -94,6 +99,16 @@ export default function Home() {
       content: <BroadcastsContent 
                 pastBroadcasts={pastBroadcasts}
                 isLoadingBroadcasts={isLoadingBroadcasts}
+                visibleEmbeds={visibleEmbeds}
+                toggleEmbedVisibility={toggleEmbedVisibility}
+                router={router}
+                embedType={embedType}
+              />
+    },
+    {
+      id: 'popular',
+      label: '人気の配信',
+      content: <PopularBroadcastsContent 
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
