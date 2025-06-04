@@ -176,6 +176,7 @@ const BroadcastsContent = React.memo(({
           </div>
 
           <div className={styles.tableContainer}>
+            {/* Desktop table view */}
             <table className={styles.table}>
               <thead>
                 <tr>
@@ -321,6 +322,128 @@ const BroadcastsContent = React.memo(({
                 )}
               </tbody>
             </table>
+
+            {/* Mobile card view */}
+            <div className={styles.mobileCardList}>
+              {groupDisplayMode ? (
+                // Group display mode for mobile
+                Object.entries(broadcastsBySeries)
+                  .sort(([a], [b]) => a.localeCompare(b))
+                  .map(([series, broadcasts]) => (
+                  <div key={series}>
+                    <div 
+                      className={styles.mobileCardSeries}
+                      onClick={() => toggleSeries(series)}
+                    >
+                      <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
+                        {expandedSeries[series] ? '▼' : '▶'}
+                      </span>
+                      <span>{series} ({broadcasts.length})</span>
+                    </div>
+                    {expandedSeries[series] && broadcasts.map((broadcast) => (
+                      <div key={broadcast.id} className={styles.mobileCard}>
+                        <div className={styles.mobileCardContent}>
+                          <div className={styles.mobileCardRow}>
+                            <span className={styles.mobileCardLabel}>日付</span>
+                            <span className={styles.mobileCardValue}>{broadcast.date}</span>
+                          </div>
+                          <div className={styles.mobileCardRow}>
+                            <span className={styles.mobileCardLabel}>タイトル</span>
+                            <span className={`${styles.mobileCardValue} ${styles.mobileCardTitle}`}>
+                              {broadcast.title}
+                            </span>
+                          </div>
+                          <div className={styles.mobileCardRow}>
+                            <span className={styles.mobileCardLabel}>再生時間</span>
+                            <span className={styles.mobileCardValue}>{broadcast.duration}</span>
+                          </div>
+                          <div className={styles.mobileCardActions}>
+                            <button
+                              type="button"
+                              onClick={() => toggleEmbedVisibility(broadcast.id)}
+                              className={styles.iconButton}
+                              aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                            >
+                              {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                              className={styles.iconButton}
+                              aria-label="コメントを見る"
+                            >
+                              💬
+                            </button>
+                          </div>
+                        </div>
+                        {visibleEmbeds.has(broadcast.id) && (
+                          <div className={styles.mobileCardEmbed}>
+                            <BroadcastEmbed 
+                              broadcast={broadcast}
+                              embedType={embedType}
+                              height={152}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))
+              ) : (
+                // List display mode for mobile
+                sortedBroadcasts.map((broadcast) => (
+                  <div key={broadcast.id} className={styles.mobileCard}>
+                    <div className={styles.mobileCardContent}>
+                      <div className={styles.mobileCardRow}>
+                        <span className={styles.mobileCardLabel}>日付</span>
+                        <span className={styles.mobileCardValue}>{broadcast.date}</span>
+                      </div>
+                      <div className={styles.mobileCardRow}>
+                        <span className={styles.mobileCardLabel}>シリーズ</span>
+                        <span className={styles.mobileCardValue}>{broadcast.series}</span>
+                      </div>
+                      <div className={styles.mobileCardRow}>
+                        <span className={styles.mobileCardLabel}>タイトル</span>
+                        <span className={`${styles.mobileCardValue} ${styles.mobileCardTitle}`}>
+                          {broadcast.title}
+                        </span>
+                      </div>
+                      <div className={styles.mobileCardRow}>
+                        <span className={styles.mobileCardLabel}>再生時間</span>
+                        <span className={styles.mobileCardValue}>{broadcast.duration}</span>
+                      </div>
+                      <div className={styles.mobileCardActions}>
+                        <button
+                          type="button"
+                          onClick={() => toggleEmbedVisibility(broadcast.id)}
+                          className={styles.iconButton}
+                          aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                        >
+                          {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                          className={styles.iconButton}
+                          aria-label="コメントを見る"
+                        >
+                          💬
+                        </button>
+                      </div>
+                    </div>
+                    {visibleEmbeds.has(broadcast.id) && (
+                      <div className={styles.mobileCardEmbed}>
+                        <BroadcastEmbed 
+                          broadcast={broadcast}
+                          embedType={embedType}
+                          height={152}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </>
       )}

@@ -173,7 +173,8 @@
 /* Mobile responsiveness */
 @media (max-width: 600px) {
   .searchContainer {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    margin: 1rem 0.5rem;
   }
   
   .formRow {
@@ -188,6 +189,14 @@
   
   .searchButton, .backButton {
     width: 100%;
+    min-height: 44px;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .input, .select {
+    min-height: 44px;
+    font-size: 1rem;
   }
   
   .resultsTitle {

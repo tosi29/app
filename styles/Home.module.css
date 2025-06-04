@@ -80,19 +80,42 @@
   .tabsSection {
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
+    padding: 1rem 0.75rem;
   }
   
   .globalToggle {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
+    padding: 0.75rem;
   }
   
   .toggleLabel {
     width: 100%;
     text-align: center;
     margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .toggleButton {
+    min-height: 44px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabsSection {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .globalToggle {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .toggleButton {
+    width: 100%;
   }
 }
 
@@ -517,9 +540,139 @@
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
+    padding: 0.75rem;
+    margin: 0.75rem 0;
   }
   
   .controlGroup {
     justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .controlButton {
+    min-width: 44px; /* Ensure touch-friendly buttons */
+    min-height: 44px;
+  }
+}
+
+/* Mobile table responsiveness */
+@media (max-width: 768px) {
+  .tableContainer {
+    margin: 1rem 0;
+    box-shadow: none;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+  }
+  
+  .table {
+    display: none; /* Hide the table on mobile */
+  }
+  
+  .mobileCardList {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobileCardList {
+    display: none; /* Hide mobile cards on desktop */
+  }
+}
+
+/* Mobile card layout styles */
+.mobileCardList {
+  display: none; /* Hidden by default, shown on mobile */
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.mobileCard {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.mobileCardSeries {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  padding: 0.75rem 1rem;
+  margin: -1rem -1rem 1rem -1rem;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobileCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobileCardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobileCardRow:last-child {
+  border-bottom: none;
+}
+
+.mobileCardLabel {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.mobileCardValue {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.mobileCardTitle {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.mobileCardActions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.mobileCardActions .iconButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.mobileCardEmbed {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Enhanced mobile styles for container */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+  
+  .main {
+    padding: 1rem 0 3rem 0;
+    max-width: 100%;
   }
 }
