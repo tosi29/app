@@ -99,8 +99,42 @@ export default function PopularBroadcastsContent({
 
   return (
     <>
+      {/* Display controls for sorting preferences */}
+      <div className={styles.displayControls}>
+        <div className={styles.controlGroup}>
+          <label className={styles.controlLabel}>並び順:</label>
+          <button
+            onClick={() => handleSort('viewCount')}
+            className={`${styles.controlButton} ${sortColumn === 'viewCount' ? styles.active : ''}`}
+          >
+            再生回数順
+          </button>
+          <button
+            onClick={() => handleSort('commentCount')}
+            className={`${styles.controlButton} ${sortColumn === 'commentCount' ? styles.active : ''}`}
+          >
+            コメント数順
+          </button>
+          <button
+            onClick={() => handleSort('likeCount')}
+            className={`${styles.controlButton} ${sortColumn === 'likeCount' ? styles.active : ''}`}
+          >
+            👍順
+          </button>
+        </div>
+        
+        <div className={styles.controlGroup}>
+          <button
+            onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+            className={styles.controlButton}
+          >
+            {sortDirection === 'desc' ? '降順 ↓' : '昇順 ↑'}
+          </button>
+        </div>
+      </div>
+
       <div className={styles.tableContainer}>
-        <table className={styles.broadcastsTable}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th 
@@ -127,8 +161,13 @@ export default function PopularBroadcastsContent({
               >
                 👍 {sortColumn === 'likeCount' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
+              <th 
+                className={styles.sortableHeader}
+                onClick={() => handleSort('date')}
+              >
+                日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
               <th>再生時間</th>
-              <th>日付</th>
               <th>リンク</th>
             </tr>
           </thead>
@@ -136,12 +175,17 @@ export default function PopularBroadcastsContent({
             {sortedBroadcasts.map((broadcast) => (
               <React.Fragment key={broadcast.id}>
                 <tr>
-                  <td>{broadcast.title}</td>
+                  <td>
+                    <div className={styles.titleWithSeries}>
+                      <div className={styles.broadcastTitle}>{broadcast.title}</div>
+                      <div className={styles.broadcastSeries}>{broadcast.series}</div>
+                    </div>
+                  </td>
                   <td>{broadcast.viewCount.toLocaleString()}</td>
                   <td>{broadcast.commentCount}</td>
                   <td>{broadcast.likeCount || ''}</td>
-                  <td>{broadcast.duration}</td>
                   <td>{broadcast.date}</td>
+                  <td>{broadcast.duration}</td>
                   <td>
                     <button
                       type="button"
@@ -168,8 +212,7 @@ export default function PopularBroadcastsContent({
                       <BroadcastEmbed
                         broadcast={broadcast}
                         embedType={embedType}
-                        height={315}
-                        width={560}
+                        height={152}
                       />
                     </td>
                   </tr>
