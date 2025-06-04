@@ -22,6 +22,12 @@
   width: 100%;
 }
 
+.inputButtonContainer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .formRow {
   display: flex;
   gap: 1rem;
@@ -40,19 +46,13 @@
   background-color: var(--background-color);
   color: var(--text-primary);
   transition: border-color 0.3s, box-shadow 0.3s;
+  flex: 1;
 }
 
 .input:focus, .select:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
-}
-
-.buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 
 .searchButton, .backButton {
@@ -62,7 +62,9 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .searchButton {
@@ -88,11 +90,21 @@
 }
 
 .backButton:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--overlay-medium);
+  transform: translateY(-1px);
+}
+
+.searchButton:focus, .backButton:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.searchButton:focus:not(:focus-visible), .backButton:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .resultsTitle {
-  margin: 2rem 2rem 1rem;
+  margin: 1.5rem 2rem 0.75rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -101,12 +113,12 @@
 .searchResults {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin: 1rem 2rem 2rem;
+  gap: 0.75rem;
+  margin: 0.75rem 2rem 1.5rem;
 }
 
 .resultCard {
-  padding: 1.5rem;
+  padding: 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   background-color: var(--card-background);
@@ -121,31 +133,31 @@
 .resultTitle {
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   color: var(--text-primary);
 }
 
 .resultSeries {
   font-size: 0.9rem;
   color: var(--text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .resultExcerpt {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-primary);
-  background-color: rgba(0, 0, 0, 0.02);
-  padding: 1rem;
+  background-color: var(--overlay-light);
+  padding: 0.75rem;
   border-radius: var(--border-radius);
   border-left: 3px solid var(--primary-color);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .resultActions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .noResults {
@@ -153,7 +165,7 @@
   text-align: center;
   color: var(--text-secondary);
   font-size: 1.1rem;
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--overlay-light);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
 }
@@ -169,7 +181,7 @@
     gap: 1.5rem;
   }
   
-  .buttonContainer {
+  .inputButtonContainer {
     flex-direction: column;
     gap: 0.75rem;
   }
@@ -179,10 +191,10 @@
   }
   
   .resultsTitle {
-    margin: 2rem 0.5rem 1rem;
+    margin: 1.5rem 0.5rem 0.75rem;
   }
   
   .searchResults {
-    margin: 1rem 0.5rem 2rem;
+    margin: 0.75rem 0.5rem 1.5rem;
   }
 }
