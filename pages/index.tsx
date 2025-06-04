@@ -121,7 +121,7 @@ export default function Home() {
     },
     {
       id: 'search',
-      label: '配信検索',
+      label: '検索',
       content: <SearchContent 
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
