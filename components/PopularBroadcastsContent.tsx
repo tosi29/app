@@ -100,6 +100,7 @@ export default function PopularBroadcastsContent({
   return (
     <>
       <div className={styles.tableContainer}>
+        {/* Desktop table view */}
         <table className={styles.table}>
           <thead>
             <tr>
@@ -185,6 +186,69 @@ export default function PopularBroadcastsContent({
             ))}
           </tbody>
         </table>
+
+        {/* Mobile card view */}
+        <div className={styles.mobileCardList}>
+          {sortedBroadcasts.map((broadcast) => (
+            <div key={broadcast.id} className={styles.mobileCard}>
+              <div className={styles.mobileCardContent}>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>シリーズ</span>
+                  <span className={styles.mobileCardValue}>{broadcast.series}</span>
+                </div>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>タイトル</span>
+                  <span className={`${styles.mobileCardValue} ${styles.mobileCardTitle}`}>
+                    {broadcast.title}
+                  </span>
+                </div>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>再生回数</span>
+                  <span className={styles.mobileCardValue}>{broadcast.viewCount.toLocaleString()}</span>
+                </div>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>コメント数</span>
+                  <span className={styles.mobileCardValue}>{broadcast.commentCount}</span>
+                </div>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>👍</span>
+                  <span className={styles.mobileCardValue}>{broadcast.likeCount || '-'}</span>
+                </div>
+                <div className={styles.mobileCardRow}>
+                  <span className={styles.mobileCardLabel}>日付</span>
+                  <span className={styles.mobileCardValue}>{broadcast.date}</span>
+                </div>
+                <div className={styles.mobileCardActions}>
+                  <button
+                    type="button"
+                    onClick={() => toggleEmbedVisibility(broadcast.id)}
+                    className={styles.iconButton}
+                    aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
+                  >
+                    {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                    className={styles.iconButton}
+                    aria-label="コメントを見る"
+                  >
+                    💬
+                  </button>
+                </div>
+              </div>
+              {visibleEmbeds.has(broadcast.id) && (
+                <div className={styles.mobileCardEmbed}>
+                  <BroadcastEmbed
+                    broadcast={broadcast}
+                    embedType={embedType}
+                    height={152}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );

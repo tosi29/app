@@ -188,6 +188,7 @@
   align-items: center;
   gap: 1rem;
   margin: 2rem 0;
+  padding: 2rem 1rem;
 }
 
 .loadingIndicator {
@@ -197,6 +198,19 @@
   border-radius: 50%;
   border-top-color: var(--primary-color);
   animation: spin 1s ease-in-out infinite;
+}
+
+/* Mobile loading state */
+@media (max-width: 768px) {
+  .loadingContainer {
+    margin: 1rem 0;
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .loadingIndicator {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 @keyframes spin {
@@ -665,14 +679,34 @@
   border-top: 1px solid var(--border-color);
 }
 
-/* Enhanced mobile styles for container */
-@media (max-width: 768px) {
+/* Enhanced mobile styles for improved usability */
+@media (max-width: 480px) {
   .container {
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
   }
   
   .main {
-    padding: 1rem 0 3rem 0;
-    max-width: 100%;
+    padding: 0.75rem 0 2rem 0;
+  }
+  
+  /* Improve icon button spacing on very small screens */
+  .iconButton {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75rem;
+  }
+  
+  /* Improve mobile card typography */
+  .mobileCardTitle {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+  
+  .mobileCardLabel {
+    font-size: 0.8rem;
+  }
+  
+  .mobileCardValue {
+    font-size: 0.9rem;
   }
 }
