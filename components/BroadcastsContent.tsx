@@ -27,7 +27,7 @@ const BroadcastsContent = React.memo(({
   const [groupDisplayMode, setGroupDisplayMode] = useState<boolean>(true);
   
   // State for sorting in non-group mode
-  const [sortColumn, setSortColumn] = useState<'date' | 'title' | 'duration' | 'likeCount'>('date');
+  const [sortColumn, setSortColumn] = useState<'date' | 'title' | 'duration'>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Group broadcasts by series with ID-based sorting within groups
@@ -66,10 +66,6 @@ const BroadcastsContent = React.memo(({
         case 'duration':
           aValue = a.duration;
           bValue = b.duration;
-          break;
-        case 'likeCount':
-          aValue = a.likeCount || 0;
-          bValue = b.likeCount || 0;
           break;
         default:
           return 0;
@@ -118,7 +114,7 @@ const BroadcastsContent = React.memo(({
   }, [broadcastsBySeries]);
   
   // Handle column sorting
-  const handleSort = useCallback((column: 'date' | 'title' | 'duration' | 'likeCount') => {
+  const handleSort = useCallback((column: 'date' | 'title' | 'duration') => {
     if (sortColumn === column) {
       setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
     } else {
@@ -188,7 +184,6 @@ const BroadcastsContent = React.memo(({
                       <th>日付</th>
                       <th>タイトル</th>
                       <th>再生時間</th>
-                      <th>👍</th>
                       <th>リンク</th>
                     </>
                   ) : (
@@ -211,12 +206,6 @@ const BroadcastsContent = React.memo(({
                       >
                         再生時間 {sortColumn === 'duration' && (sortDirection === 'asc' ? '↑' : '↓')}
                       </th>
-                      <th 
-                        className={styles.sortableHeader}
-                        onClick={() => handleSort('likeCount')}
-                      >
-                        👍 {sortColumn === 'likeCount' && (sortDirection === 'asc' ? '↑' : '↓')}
-                      </th>
                       <th>リンク</th>
                     </>
                   )}
@@ -233,7 +222,7 @@ const BroadcastsContent = React.memo(({
                         className={`${styles.seriesHeader} ${getSeriesColorClass(series)}`}
                         onClick={() => toggleSeries(series)}
                       >
-                        <td colSpan={5}>
+                        <td colSpan={4}>
                           <div className={styles.seriesToggle}>
                             <span className={`${styles.toggleIcon} ${expandedSeries[series] ? styles.expanded : ''}`}>
                               {expandedSeries[series] ? '▼' : '▶'}
@@ -248,7 +237,6 @@ const BroadcastsContent = React.memo(({
                             <td>{broadcast.date}</td>
                             <td>{broadcast.title}</td>
                             <td>{broadcast.duration}</td>
-                            <td>{broadcast.likeCount || ''}</td>
                             <td>
                               <button
                                 type="button"
@@ -271,7 +259,7 @@ const BroadcastsContent = React.memo(({
                           </tr>
                           {visibleEmbeds.has(broadcast.id) && (
                             <tr>
-                              <td colSpan={5}>
+                              <td colSpan={4}>
                                 <BroadcastEmbed 
                                   broadcast={broadcast}
                                   embedType={embedType}
@@ -297,7 +285,6 @@ const BroadcastsContent = React.memo(({
                           </div>
                         </td>
                         <td>{broadcast.duration}</td>
-                        <td>{broadcast.likeCount || ''}</td>
                         <td>
                           <button
                             type="button"
@@ -320,7 +307,7 @@ const BroadcastsContent = React.memo(({
                       </tr>
                       {visibleEmbeds.has(broadcast.id) && (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={4}>
                             <BroadcastEmbed 
                               broadcast={broadcast}
                               embedType={embedType}
