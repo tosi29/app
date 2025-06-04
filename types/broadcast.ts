@@ -10,3 +10,8 @@ export interface PastBroadcast {
   spotify_episode_id: string;
   likeCount?: number;
 }
+
+export interface PopularBroadcast extends PastBroadcast {
+  commentCount: number;
+  viewCount: number;
+}
