@@ -133,7 +133,6 @@ export default function PopularBroadcastsContent({
               >
                 日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
-              <th>再生時間</th>
               <th>リンク</th>
             </tr>
           </thead>
@@ -151,7 +150,6 @@ export default function PopularBroadcastsContent({
                   <td>{broadcast.commentCount}</td>
                   <td>{broadcast.likeCount || ''}</td>
                   <td>{broadcast.date}</td>
-                  <td>{broadcast.duration}</td>
                   <td>
                     <button
                       type="button"
@@ -174,7 +172,7 @@ export default function PopularBroadcastsContent({
                 </tr>
                 {visibleEmbeds.has(broadcast.id) && (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={6}>
                       <BroadcastEmbed
                         broadcast={broadcast}
                         embedType={embedType}
