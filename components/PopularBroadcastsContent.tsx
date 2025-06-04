@@ -99,40 +99,6 @@ export default function PopularBroadcastsContent({
 
   return (
     <>
-      {/* Display controls for sorting preferences */}
-      <div className={styles.displayControls}>
-        <div className={styles.controlGroup}>
-          <label className={styles.controlLabel}>並び順:</label>
-          <button
-            onClick={() => handleSort('viewCount')}
-            className={`${styles.controlButton} ${sortColumn === 'viewCount' ? styles.active : ''}`}
-          >
-            再生回数順
-          </button>
-          <button
-            onClick={() => handleSort('commentCount')}
-            className={`${styles.controlButton} ${sortColumn === 'commentCount' ? styles.active : ''}`}
-          >
-            コメント数順
-          </button>
-          <button
-            onClick={() => handleSort('likeCount')}
-            className={`${styles.controlButton} ${sortColumn === 'likeCount' ? styles.active : ''}`}
-          >
-            👍順
-          </button>
-        </div>
-        
-        <div className={styles.controlGroup}>
-          <button
-            onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-            className={styles.controlButton}
-          >
-            {sortDirection === 'desc' ? '降順 ↓' : '昇順 ↑'}
-          </button>
-        </div>
-      </div>
-
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
