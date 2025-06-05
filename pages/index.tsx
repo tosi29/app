@@ -145,6 +145,7 @@ export default function Home() {
       <Head>
         <title>配信一覧 | Next.js App</title>
         <meta name="description" content="配信一覧ページ" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
