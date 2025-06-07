@@ -58,7 +58,7 @@
 }
 
 .closeButton:hover {
-  background-color: var(--hover-color);
+  background-color: var(--overlay-light);
   color: var(--text-primary);
 }
 
@@ -88,7 +88,7 @@
   font-size: 1rem;
   line-height: 1.6;
   color: var(--text-primary);
-  background-color: var(--background-secondary);
+  background-color: var(--card-background);
   padding: 1rem;
   border-radius: var(--border-radius);
   border-left: 4px solid var(--primary-color);
@@ -103,7 +103,7 @@
 .listItem {
   margin-bottom: 0.75rem;
   padding: 0.75rem;
-  background-color: var(--background-secondary);
+  background-color: var(--card-background);
   border-radius: var(--border-radius);
   border-left: 4px solid var(--secondary-color);
   font-size: 0.95rem;
