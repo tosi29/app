@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { NextRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import BroadcastEmbed from './BroadcastEmbed';
+import BroadcastSummaryModal from './BroadcastSummaryModal';
 import { PopularBroadcast } from '../types/broadcast';
 
 interface PopularBroadcastsContentProps {
@@ -21,6 +22,10 @@ export default function PopularBroadcastsContent({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sortColumn, setSortColumn] = useState<'viewCount' | 'commentCount' | 'likeCount' | 'title' | 'date'>('viewCount');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // State for summary modal
+  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
+  const [selectedBroadcastForSummary, setSelectedBroadcastForSummary] = useState<PopularBroadcast | null>(null);
 
   // Fetch popular broadcasts data
   useEffect(() => {
@@ -92,6 +97,17 @@ export default function PopularBroadcastsContent({
       setSortDirection('desc');
     }
   }, [sortColumn]);
+
+  // Summary modal handlers
+  const openSummaryModal = useCallback((broadcast: PopularBroadcast) => {
+    setSelectedBroadcastForSummary(broadcast);
+    setSummaryModalOpen(true);
+  }, []);
+
+  const closeSummaryModal = useCallback(() => {
+    setSummaryModalOpen(false);
+    setSelectedBroadcastForSummary(null);
+  }, []);
 
   if (isLoading) {
     return <div className={styles.loading}>人気の配信データを読み込み中...</div>;
@@ -168,6 +184,19 @@ export default function PopularBroadcastsContent({
                     >
                       💬
                     </button>
+                    {broadcast.summary && (
+                      <>
+                        {' '}
+                        <button
+                          type="button"
+                          onClick={() => openSummaryModal(broadcast)}
+                          className={styles.iconButton}
+                          aria-label="要約を見る"
+                        >
+                          📋
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
                 {visibleEmbeds.has(broadcast.id) && (
@@ -186,6 +215,11 @@ export default function PopularBroadcastsContent({
           </tbody>
         </table>
       </div>
+      <BroadcastSummaryModal 
+        broadcast={selectedBroadcastForSummary}
+        isOpen={summaryModalOpen}
+        onClose={closeSummaryModal}
+      />
     </>
   );
 }
