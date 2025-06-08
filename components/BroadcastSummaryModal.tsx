@@ -40,21 +40,25 @@ export default function BroadcastSummaryModal({
           </div>
 
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>事実や出来事</h3>
-            <ul className={styles.list}>
-              {summary.facts.map((fact, index) => (
-                <li key={index} className={styles.listItem}>{fact}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>学び・教訓・法則</h3>
-            <ul className={styles.list}>
-              {summary.lessons.map((lesson, index) => (
-                <li key={index} className={styles.listItem}>{lesson}</li>
-              ))}
-            </ul>
+            <h3 className={styles.sectionTitle}>事実や出来事と学び・教訓・法則</h3>
+            <div className={styles.tableContainer}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.tableHeader}>事実や出来事</th>
+                    <th className={styles.tableHeader}>学び・教訓・法則</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summary.facts.map((fact, index) => (
+                    <tr key={index} className={styles.tableRow}>
+                      <td className={styles.tableCell} data-label="事実や出来事">{fact}</td>
+                      <td className={styles.tableCell} data-label="学び・教訓・法則">{summary.lessons[index] || ''}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

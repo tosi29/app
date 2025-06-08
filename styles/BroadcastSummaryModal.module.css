@@ -125,6 +125,61 @@
   top: 0.75rem;
 }
 
+.tableContainer {
+  overflow-x: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-background);
+}
+
+.tableHeader {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tableHeader:first-child {
+  border-left: 4px solid var(--primary-color);
+}
+
+.tableHeader:last-child {
+  border-right: 4px solid var(--primary-color);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow:nth-child(even) {
+  background-color: var(--overlay-light);
+}
+
+.tableCell {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  vertical-align: top;
+  border-left: 4px solid var(--secondary-color);
+}
+
+.tableCell:last-child {
+  border-left: 4px solid var(--accent-color);
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .overlay {
@@ -163,5 +218,60 @@
   .listItem {
     padding: 0.5rem;
     font-size: 0.9rem;
+  }
+  
+  .tableHeader {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .tableCell {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  /* Stack table cells vertically on very small screens */
+  @media (max-width: 480px) {
+    .table, .tableHeader, .tableCell, .tableRow {
+      display: block;
+    }
+    
+    .tableHeader {
+      display: none;
+    }
+    
+    .tableRow {
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      padding: 0;
+      background-color: var(--card-background);
+    }
+    
+    .tableRow:nth-child(even) {
+      background-color: var(--card-background);
+    }
+    
+    .tableCell {
+      border: none;
+      border-left: 4px solid var(--secondary-color);
+      position: relative;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tableCell:last-child {
+      border-left: 4px solid var(--accent-color);
+      margin-bottom: 0;
+    }
+    
+    .tableCell::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: var(--primary-color);
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.8rem;
+    }
   }
 }
