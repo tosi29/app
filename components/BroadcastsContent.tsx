@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from '../styles/Home.module.css';
 import BroadcastEmbed from './BroadcastEmbed';
+import BroadcastSummaryModal from './BroadcastSummaryModal';
+import SummaryButton from './SummaryButton';
 import { PastBroadcast } from '../types/broadcast';
 
 interface BroadcastsContentProps {
@@ -29,6 +31,10 @@ const BroadcastsContent = React.memo(({
   // State for sorting in non-group mode
   const [sortColumn, setSortColumn] = useState<'date' | 'title' | 'duration'>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // State for summary modal
+  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
+  const [selectedBroadcastForSummary, setSelectedBroadcastForSummary] = useState<PastBroadcast | null>(null);
 
   // Group broadcasts by series with ID-based sorting within groups
   const broadcastsBySeries = useMemo(() => {
@@ -132,6 +138,17 @@ const BroadcastsContent = React.memo(({
     const colorClasses = ['seriesColor0', 'seriesColor1', 'seriesColor2'];
     return styles[colorClasses[index % colorClasses.length]];
   }, [seriesList]);
+
+  // Summary modal handlers
+  const openSummaryModal = useCallback((broadcast: PastBroadcast) => {
+    setSelectedBroadcastForSummary(broadcast);
+    setSummaryModalOpen(true);
+  }, []);
+
+  const closeSummaryModal = useCallback(() => {
+    setSummaryModalOpen(false);
+    setSelectedBroadcastForSummary(null);
+  }, []);
 
   return (
     <>
@@ -255,6 +272,10 @@ const BroadcastsContent = React.memo(({
                               >
                                 💬
                               </button>
+                              <SummaryButton 
+                                broadcast={broadcast}
+                                onOpenSummary={openSummaryModal}
+                              />
                             </td>
                           </tr>
                           {visibleEmbeds.has(broadcast.id) && (
@@ -303,6 +324,10 @@ const BroadcastsContent = React.memo(({
                           >
                             💬
                           </button>
+                          <SummaryButton 
+                            broadcast={broadcast}
+                            onOpenSummary={openSummaryModal}
+                          />
                         </td>
                       </tr>
                       {visibleEmbeds.has(broadcast.id) && (
@@ -324,6 +349,11 @@ const BroadcastsContent = React.memo(({
           </div>
         </>
       )}
+      <BroadcastSummaryModal 
+        broadcast={selectedBroadcastForSummary}
+        isOpen={summaryModalOpen}
+        onClose={closeSummaryModal}
+      />
     </>
   );
 });
