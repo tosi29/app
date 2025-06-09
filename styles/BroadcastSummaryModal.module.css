@@ -116,14 +116,7 @@
   margin-bottom: 0;
 }
 
-.listItem::before {
-  content: '•';
-  color: var(--secondary-color);
-  font-weight: bold;
-  position: absolute;
-  left: -0.5rem;
-  top: 0.75rem;
-}
+
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
