@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from '../styles/Home.module.css';
 import BroadcastEmbed from './BroadcastEmbed';
 import BroadcastSummaryModal from './BroadcastSummaryModal';
+import SummaryButton from './SummaryButton';
 import { PastBroadcast } from '../types/broadcast';
 
 interface BroadcastsContentProps {
@@ -271,19 +272,10 @@ const BroadcastsContent = React.memo(({
                               >
                                 💬
                               </button>
-                              {broadcast.summary && (
-                                <>
-                                  {' '}
-                                  <button
-                                    type="button"
-                                    onClick={() => openSummaryModal(broadcast)}
-                                    className={styles.iconButton}
-                                    aria-label="要約を見る"
-                                  >
-                                    📋
-                                  </button>
-                                </>
-                              )}
+                              <SummaryButton 
+                                broadcast={broadcast}
+                                onOpenSummary={openSummaryModal}
+                              />
                             </td>
                           </tr>
                           {visibleEmbeds.has(broadcast.id) && (
@@ -332,19 +324,10 @@ const BroadcastsContent = React.memo(({
                           >
                             💬
                           </button>
-                          {broadcast.summary && (
-                            <>
-                              {' '}
-                              <button
-                                type="button"
-                                onClick={() => openSummaryModal(broadcast)}
-                                className={styles.iconButton}
-                                aria-label="要約を見る"
-                              >
-                                📋
-                              </button>
-                            </>
-                          )}
+                          <SummaryButton 
+                            broadcast={broadcast}
+                            onOpenSummary={openSummaryModal}
+                          />
                         </td>
                       </tr>
                       {visibleEmbeds.has(broadcast.id) && (

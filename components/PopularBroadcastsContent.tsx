@@ -3,6 +3,7 @@ import { NextRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import BroadcastEmbed from './BroadcastEmbed';
 import BroadcastSummaryModal from './BroadcastSummaryModal';
+import SummaryButton from './SummaryButton';
 import { PopularBroadcast } from '../types/broadcast';
 
 interface PopularBroadcastsContentProps {
@@ -184,19 +185,10 @@ export default function PopularBroadcastsContent({
                     >
                       💬
                     </button>
-                    {broadcast.summary && (
-                      <>
-                        {' '}
-                        <button
-                          type="button"
-                          onClick={() => openSummaryModal(broadcast)}
-                          className={styles.iconButton}
-                          aria-label="要約を見る"
-                        >
-                          📋
-                        </button>
-                      </>
-                    )}
+                    <SummaryButton 
+                      broadcast={broadcast}
+                      onOpenSummary={openSummaryModal}
+                    />
                   </td>
                 </tr>
                 {visibleEmbeds.has(broadcast.id) && (
