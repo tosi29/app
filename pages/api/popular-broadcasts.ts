@@ -1,25 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-interface BroadcastSummary {
-  overview: string; // 今回の配信概要：50文字
-  facts: string[]; // 事実や出来事：3行
-  lessons: string[]; // 学び・教訓・法則：3行
-}
-
-// Define interfaces
-interface PastBroadcast {
-  id: number;
-  date: string;
-  title: string;
-  excerpt: string;
-  series: string;
-  duration: string;
-  url: string;
-  youtube_video_id: string;
-  spotify_episode_id: string;
-  likeCount?: number;
-  summary?: BroadcastSummary;
-}
+import { PastBroadcast, PopularBroadcast } from '../../types/broadcast';
 
 interface Comment {
   id: number;
@@ -30,10 +10,6 @@ interface Comment {
   author: string;
 }
 
-interface PopularBroadcast extends PastBroadcast {
-  commentCount: number;
-  viewCount: number; // For now, we'll use a calculated value
-}
 
 // Import the same data as other APIs
 const pastBroadcasts: PastBroadcast[] = [
@@ -177,7 +153,7 @@ const comments: Comment[] = [
 ];
 
 export default function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse<PopularBroadcast[]>
 ) {
   // Count comments for each episode

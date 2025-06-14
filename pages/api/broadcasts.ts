@@ -1,25 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-interface BroadcastSummary {
-  overview: string; // 今回の配信概要：50文字
-  facts: string[]; // 事実や出来事：3行
-  lessons: string[]; // 学び・教訓・法則：3行
-}
-
-// Define the PastBroadcast interface
-interface PastBroadcast {
-  id: number;
-  date: string;
-  title: string;
-  excerpt: string;
-  series: string;
-  duration: string;
-  url: string;
-  youtube_video_id: string;
-  spotify_episode_id: string;
-  likeCount?: number;
-  summary?: BroadcastSummary;
-}
+import { PastBroadcast } from '../../types/broadcast';
 
 // Sample data for past broadcasts
 const pastBroadcasts: PastBroadcast[] = [
@@ -113,7 +93,7 @@ const pastBroadcasts: PastBroadcast[] = [
 ];
 
 export default function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse<PastBroadcast[]>
 ) {
   // Return all broadcasts
