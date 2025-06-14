@@ -1,5 +1,5 @@
 import React from 'react';
-import { BroadcastSummary, PastBroadcast } from '../types/broadcast';
+import { PastBroadcast } from '../types/broadcast';
 import styles from '../styles/BroadcastSummaryModal.module.css';
 
 interface BroadcastSummaryModalProps {

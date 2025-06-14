@@ -119,12 +119,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     return `commentDot-${colorType}`;
   };
 
-  // Filter comments is no longer needed as the API handles this
-  // But we keep the filteredComments variable for compatibility
-  const filteredComments = comments;
-
   // Sort comments by feedback score (using positiveScore as proxy for feedback)
-  const sortedComments = [...filteredComments].sort((a, b) => b.positiveScore - a.positiveScore);
+  const sortedComments = [...comments].sort((a, b) => b.positiveScore - a.positiveScore);
 
   // Handle mouse over comment dot
   const handleMouseOver = (comment: Comment): void => {
@@ -266,7 +262,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 <text x="35" y="55" textAnchor="end" fontSize="12" fill="var(--text-secondary)">1.0</text>
                 
                 {/* Plot comment dots */}
-                {filteredComments.map((comment) => {
+                {comments.map((comment) => {
                   const x = 50 + comment.opinionScore * 500; // Scale to fit within the graph
                   const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
                   const seriesClass = getSeriesClassName(comment.episodeId);
