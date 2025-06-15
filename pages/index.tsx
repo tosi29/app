@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
-import styles from '../styles/Home.module.css'
 import Tabs from '../components/Tabs'
 import CommentsSection from '../components/CommentsSection'
 import BroadcastsContent from '../components/BroadcastsContent'
@@ -141,21 +140,21 @@ export default function Home() {
   ];
 
   return (
-    <div className={styles.container}>
+    <div className="min-h-screen px-4 flex flex-col justify-start items-center bg-app">
       <Head>
         <title>配信一覧 | Next.js App</title>
         <meta name="description" content="配信一覧ページ" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={styles.tabsSection}>
+      <div className="w-full flex justify-center items-center px-4 py-4 pb-3 sticky top-0 bg-white z-10 border-b border-transparent gap-8 relative md:flex-row md:gap-8 max-md:flex-col max-md:gap-4 max-md:px-3">
         <Tabs 
           active={activeTab} 
           tabs={tabs} 
           onTabChange={handleTabChange} 
         />
         <button
-          className={styles.settingsIcon}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg transition-all duration-200 ease-out flex items-center justify-center hover:bg-black/5 hover:scale-110 hover:-translate-y-1/2 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 max-md:right-2 max-md:text-xl max-md:p-1.5"
           onClick={() => setIsSettingsOpen(true)}
           aria-label="設定を開く"
         >
@@ -163,7 +162,7 @@ export default function Home() {
         </button>
       </div>
 
-      <main className={styles.main}>
+      <main className="py-8 pb-20 flex-1 flex flex-col justify-start items-center w-full max-w-6xl">
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
       

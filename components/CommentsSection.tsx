@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import styles from '../styles/Home.module.css';
-import commentStyles from '../styles/Comments.module.css';
 
 interface Comment {
   id: number;
@@ -193,15 +191,15 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   return (
     <>
       {/* Dropdown filter for episodes */}
-      <div className={commentStyles.filterContainer}>
-        <label htmlFor="episode-filter" className={commentStyles.filterLabel}>
+      <div className="w-full max-w-4xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center gap-3 max-md:flex-col max-md:gap-2 max-md:px-3">
+        <label htmlFor="episode-filter" className="font-semibold text-gray-900 m-0 text-sm">
           配信で絞り込み:
         </label>
         <select
           id="episode-filter"
           value={dropdownEpisodeId || ''}
           onChange={handleDropdownChange}
-          className={commentStyles.filterSelect}
+          className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[200px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:w-full"
         >
           <option value="">すべて</option>
           {pastBroadcasts.map((broadcast) => (
@@ -213,9 +211,9 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       </div>
 
       {loading ? (
-        <div className={styles.loadingContainer}>
+        <div className="flex flex-col items-center gap-4 my-8">
           <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
-          <div className={styles.loadingIndicator}></div>
+          <div className="w-10 h-10 border-3 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
         </div>
       ) : comments.length === 0 ? (
         <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
@@ -223,18 +221,18 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
         </div>
       ) : (
 
-      <div className={commentStyles.graphContainer}>
-        <div className={commentStyles.commentsLayout}>
+      <div className="w-full max-w-7xl my-8 p-6 border border-gray-200 rounded-lg bg-white shadow-md max-md:p-4">
+        <div className="flex gap-6 w-full max-lg:flex-col max-lg:gap-4 max-md:gap-3">
           {/* Left side: Graph */}
-          <div className={commentStyles.graphSection}>
+          <div className="flex-shrink-0 max-lg:flex-none">
             <div 
-              className={commentStyles.graphAxes}
+              className="relative w-[600px] h-[600px] mx-auto max-md:w-[450px] max-md:h-[450px] max-md:scale-75 max-md:origin-top-left"
               onClick={handleClickOutside}
             >
-              <div className={commentStyles.yAxisLabel}>ポジティブ ↑</div>
-              <div className={commentStyles.xAxisLabel}>← リアクション | 意見 →</div>
+              <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-sm text-gray-600 font-medium">ポジティブ ↑</div>
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 text-sm text-gray-600 font-medium">← リアクション | 意見 →</div>
 
-              <svg width="600" height="600" className={commentStyles.graph}>
+              <svg width="600" height="600" className="bg-gray-50 rounded-lg transition-all duration-300 hover:shadow-sm">
                 {/* X-axis line */}
                 <line x1="50" y1="550" x2="550" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
                 
@@ -272,9 +270,10 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       key={comment.id}
                       cx={x}
                       cy={y}
-                      className={`${commentStyles.commentDot} ${seriesClass ? commentStyles[seriesClass] : ''} ${
-                        selectedComment?.id === comment.id ? commentStyles.commentDotSelected : ''
+                      className={`r-2 cursor-pointer transition-all duration-200 hover:r-3 hover:opacity-80 ${seriesClass === 'commentDot-basic' ? 'fill-blue-500' : seriesClass === 'commentDot-guest' ? 'fill-green-500' : seriesClass === 'commentDot-community' ? 'fill-purple-500' : 'fill-blue-500'} ${
+                        selectedComment?.id === comment.id ? 'r-3 stroke-2 stroke-black' : ''
                       }`}
+                      r="6"
                       onMouseOver={() => handleMouseOver(comment)}
                       onMouseOut={handleMouseOut}
                       onClick={(e) => {
@@ -289,14 +288,14 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               {/* Comment tooltip with episode information */}
               {hoveredComment && (
                 <div
-                  className={`${commentStyles.commentTooltip} ${
+                  className={`absolute z-10 p-3 bg-white border border-gray-300 rounded-lg shadow-lg max-w-xs min-w-48 pointer-events-none transform ${
                     hoveredComment.opinionScore > 0.5
                       ? (hoveredComment.positiveScore > 0.5
-                        ? commentStyles['commentTooltip-bottomLeft']
-                        : commentStyles['commentTooltip-topLeft'])
+                        ? '-translate-x-full -translate-y-full'
+                        : '-translate-x-full translate-y-2')
                       : (hoveredComment.positiveScore > 0.5
-                        ? commentStyles['commentTooltip-bottomRight']
-                        : commentStyles['commentTooltip-topRight'])
+                        ? 'translate-x-2 -translate-y-full'
+                        : 'translate-x-2 translate-y-2')
                   }`}
                   style={{
                     left: `${50 + hoveredComment.opinionScore * 500}px`,
@@ -304,19 +303,19 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <p className={commentStyles.commentEpisode}>
+                  <p className="font-semibold text-sm text-blue-500 mb-1 m-0">
                     {getEpisodeTitle(hoveredComment.episodeId)} 
-                    <span className={commentStyles.commentSeries}>
+                    <span className="text-xs text-gray-600 ml-1 font-normal">
                       ({getEpisodeSeries(hoveredComment.episodeId)})
                     </span>
                   </p>
-                  <p className={commentStyles.commentText}>{hoveredComment.text}</p>
-                  <p className={commentStyles.commentAuthor}>by {hoveredComment.author}</p>
+                  <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{hoveredComment.text}</p>
+                  <p className="text-xs text-gray-500 italic m-0">by {hoveredComment.author}</p>
                 </div>
               )}
             </div>
 
-            <div className={commentStyles.legend}>
+            <div className="flex justify-center gap-6 mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 max-md:flex-col max-md:gap-2">
               {!dropdownEpisodeId ? (
                 // Show all series when no filter is applied
                 Array.from(new Set(pastBroadcasts.map(b => b.series)))
@@ -324,16 +323,16 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                   .map(series => {
                     const colorType = getSeriesColorType(series);
                     return (
-                      <div key={series} className={commentStyles.legendItem}>
-                        <div className={`${commentStyles.legendColorBox} ${commentStyles[`commentDot-${colorType}`]}`}></div>
+                      <div key={series} className="flex items-center gap-2">
+                        <div className={`w-3 h-3 rounded-full ${colorType === 'basic' ? 'bg-blue-500' : colorType === 'guest' ? 'bg-green-500' : colorType === 'community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
                         <div>{series}</div>
                       </div>
                     );
                   })
               ) : (
                 // Show only the selected episode's series when filtered
-                <div className={commentStyles.legendItem}>
-                  <div className={`${commentStyles.legendColorBox} ${commentStyles[getSeriesClassName(dropdownEpisodeId)]}`}></div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${getSeriesClassName(dropdownEpisodeId) === 'commentDot-basic' ? 'bg-blue-500' : getSeriesClassName(dropdownEpisodeId) === 'commentDot-guest' ? 'bg-green-500' : getSeriesClassName(dropdownEpisodeId) === 'commentDot-community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
                   <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
                 </div>
               )}
@@ -341,38 +340,38 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
           </div>
 
           {/* Right side: Comments List */}
-          <div className={commentStyles.commentsListSection}>
-            <div className={commentStyles.commentsList} ref={commentsListRef}>
-              <h3 className={commentStyles.commentsListTitle}>
+          <div className="flex-1 min-w-[300px] max-lg:flex-none max-lg:min-w-0">
+            <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={commentsListRef}>
+              <h3 className="m-0 mb-4 text-lg font-semibold text-gray-900 pb-2 border-b border-gray-200">
                 コメント一覧 (フィードバック順)
               </h3>
               {sortedComments.map((comment) => (
                 <div
                   key={comment.id}
                   data-comment-id={comment.id}
-                  className={`${commentStyles.commentItem} ${
-                    selectedComment?.id === comment.id ? commentStyles.selected : ''
+                  className={`p-3 mb-2 border border-gray-200 rounded-lg bg-white cursor-pointer transition-all duration-200 hover:border-blue-500 hover:shadow-sm hover:-translate-y-px max-md:p-2 max-md:mb-1.5 ${
+                    selectedComment?.id === comment.id ? 'border-blue-500 shadow-md shadow-blue-500/10 bg-blue-500/5' : ''
                   }`}
                   onClick={() => handleCommentItemClick(comment)}
                 >
-                  <div className={commentStyles.commentItemHeader}>
-                    <p className={commentStyles.commentItemEpisode}>
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="text-sm font-semibold text-blue-500 m-0">
                       {getEpisodeTitle(comment.episodeId)}
-                      <span className={commentStyles.commentSeries}>
+                      <span className="text-xs text-gray-600 ml-1.5 font-normal">
                         ({getEpisodeSeries(comment.episodeId)})
                       </span>
                     </p>
-                    <span className={commentStyles.commentItemScore}>
+                    <span className="text-xs text-gray-600 bg-blue-500/10 px-2 py-1 rounded-full">
                       {Math.round(comment.positiveScore * 100)}%
                     </span>
                   </div>
-                  <p className={commentStyles.commentItemText}>{comment.text}</p>
-                  <p className={commentStyles.commentItemAuthor}>by {comment.author}</p>
+                  <p className="m-0 mb-1 text-sm leading-snug text-gray-900">{comment.text}</p>
+                  <p className="m-0 text-xs text-gray-500 text-right italic">by {comment.author}</p>
                   
                   {/* Feedback buttons */}
-                  <div className={commentStyles.feedbackContainer}>
+                  <div className="flex gap-2 mt-2 flex-wrap">
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('empathy', comment);
@@ -382,7 +381,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       👍
                     </button>
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('insight', comment);
@@ -392,7 +391,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       💡
                     </button>
                     <button 
-                      className={commentStyles.feedbackButton}
+                      className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFeedback('on-target', comment);
