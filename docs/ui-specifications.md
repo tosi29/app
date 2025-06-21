@@ -11,7 +11,7 @@
 - **フレームワーク**: Next.js 15.2.4
 - **言語**: TypeScript 5.8.3  
 - **UIライブラリ**: React 18.2.0
-- **スタイリング**: CSS Modules
+- **スタイリング**: TailwindCSS 3.4.17
 - **開発ツール**: ESLint 8.56.0
 
 ### アーキテクチャ
@@ -88,6 +88,8 @@
   - プラットフォーム設定に応じてSpotify/YouTube埋め込み表示
 - **コメントボタン**: コメントタブへ遷移（`/?tab=comments&episodeId=${id}`）
   - 💬アイコン付き「コメントを見る」テキスト
+- **概要ボタン**: 配信概要モーダル表示（概要データがある場合のみ）
+  - 📝アイコン付き「概要」テキスト
 
 #### 埋め込みプレイヤー
 - テーブル行の下部に表示
@@ -134,6 +136,7 @@
 - **再生ボタン** (▶️): インライン埋め込みプレイヤー表示
 - **停止ボタン** (⏹️): 埋め込みプレイヤー非表示  
 - **コメントボタン** (💬): コメントタブへ遷移
+- **概要ボタン** (📝): 配信概要モーダル表示（概要データがある場合のみ）
 
 ### データ読み込み状態
 - ローディング中："人気の配信データを読み込み中..."表示
@@ -148,8 +151,6 @@
 
 #### 検索フィールド
 - **検索キーワード入力**: タイトル・概要でのテキスト検索
-- **シリーズ選択**: ドロップダウンでシリーズフィルタリング
-  - オプション：すべて、Basic Series、Guest Series、Community Series
 
 #### 検索ボタン
 - 通常状態："検索"
@@ -171,6 +172,7 @@
 ### アクション機能
 - **再生ボタン**: カード内に埋め込みプレイヤー表示/非表示
 - **コメントボタン**: コメントタブへ遷移
+- **概要ボタン**: 配信概要モーダル表示（概要データがある場合のみ）
 
 ### 状態管理
 - 検索実行前：フォームのみ表示
@@ -234,6 +236,18 @@ interface PastBroadcast {
   url: string;               // 配信URL
   youtube_video_id: string;  // YouTube動画ID
   spotify_episode_id: string; // SpotifyエピソードID
+  likeCount?: number;        // いいね数（オプショナル）
+  summary?: BroadcastSummary; // 配信概要（オプショナル）
+}
+```
+
+### 配信概要データ（BroadcastSummary）
+
+```typescript
+interface BroadcastSummary {
+  overview: string;   // 今回の配信概要：50文字
+  facts: string[];    // 事実や出来事：3行
+  lessons: string[];  // 学び・教訓・法則：3行
 }
 ```
 
@@ -259,6 +273,29 @@ interface PopularBroadcast extends PastBroadcast {
 }
 ```
 
+### 検索API結果データ（RetrievalResult）
+
+```typescript
+interface RetrievalResult {
+  content: {
+    text: string;
+    type: "TEXT";
+  };
+  metadata: {
+    episode_id: string;
+    series_name: string;
+    series_number: string;
+    label?: string;
+    title: string;
+    duration: number;
+    position?: number;
+    spotify_episode_id?: string;
+    youtube_video_id?: string;
+  };
+  score: number;
+}
+```
+
 ## API仕様
 
 ### エンドポイント
@@ -266,7 +303,8 @@ interface PopularBroadcast extends PastBroadcast {
 - **GET /api/broadcasts**: 全配信データ取得
 - **GET /api/popular-broadcasts**: 人気配信データ取得（再生回数・コメント数付き）
 - **GET /api/search-broadcasts**: 検索機能
-  - クエリパラメータ：`query`（検索キーワード）、`series`（シリーズフィルター）
+  - クエリパラメータ：`query`（検索キーワード）
+  - レスポンス形式：`RetrievalResult[]`（検索結果配列）
 - **GET /api/comments**: コメントデータ取得
   - クエリパラメータ：`episodeId`（特定エピソード指定）
 
@@ -323,6 +361,39 @@ interface PopularBroadcast extends PastBroadcast {
 - プラットフォームボタンクリックで即座に切り替え
 - 既に表示中の埋め込みプレイヤーも新しいプラットフォームに切り替わる
 - 背景クリックまたは✕ボタンでモーダル閉じる
+
+## 配信概要モーダル機能
+
+### 機能概要
+- 配信の概要情報を表示するモーダルダイアログ
+- 概要データが存在する配信に対してのみ表示される概要ボタンから起動
+- 構造化された配信内容サマリーを提供
+
+### モーダル構成
+- **ヘッダー**: "配信概要" タイトル + 閉じるボタン（✕）
+- **コンテンツエリア**: 
+  - **配信概要**: 50文字程度の配信の要約
+  - **事実や出来事**: 配信中に話された事実のリスト表示
+  - **学び・教訓・法則**: 配信から得られる学びのリスト表示
+- **背景**: クリックで閉じる半透明オーバーレイ
+
+### 表示内容
+#### 概要セクション
+- エピソードタイトルとシリーズ名
+- 配信概要テキスト（overview）
+
+#### 事実・出来事セクション
+- 配信中に言及された事実や出来事のリスト
+- 各項目は箇条書きで表示
+
+#### 学び・教訓セクション  
+- 配信から得られる学びや教訓のリスト
+- 各項目は箇条書きで表示
+
+### 動作
+- 概要ボタンクリックでモーダル表示
+- 背景クリックまたは✕ボタンでモーダル閉じる
+- モーダル表示中は背景スクロール無効化
 
 ---
 
