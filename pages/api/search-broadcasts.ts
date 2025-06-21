@@ -1,20 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sampleRetrievalResults } from '../../data/search-sample-data';
 import { RetrievalResult } from '../../types/search';
-
-// Define the PastBroadcast interface for API response compatibility
-interface PastBroadcast {
-  id: number;
-  date: string;
-  title: string;
-  excerpt: string;
-  series: string;
-  duration: string;
-  url: string;
-  youtube_video_id: string;
-  spotify_episode_id: string;
-  likeCount?: number;
-}
+import { PastBroadcast } from '../../types/broadcast';
 
 // Helper function to convert seconds to MM:SS format
 function secondsToMMSS(seconds: number): string {

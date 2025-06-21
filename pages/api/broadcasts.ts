@@ -1,26 +1,85 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-// Define the PastBroadcast interface
-interface PastBroadcast {
-  id: number;
-  date: string;
-  title: string;
-  excerpt: string;
-  series: string;
-  duration: string;
-  url: string;
-  youtube_video_id: string;
-  spotify_episode_id: string;
-  likeCount?: number;
-}
+import { PastBroadcast } from '../../types/broadcast';
 
 // Sample data for past broadcasts
 const pastBroadcasts: PastBroadcast[] = [
-  { id: 1, date: '2018-11-29', title: '吉田松陰が脱藩した衝撃の理由！', excerpt: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！', series: '吉田松陰', duration: '15:56', url: 'https://www.youtube.com/watch?v=VMpjzAA6hNI', youtube_video_id: 'VMpjzAA6hNI', spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i', likeCount: 1247 },
-  { id: 2, date: '2019-01-23', title: '吉田松陰の「感化力」がすごい！', excerpt: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！', series: '吉田松陰', duration: '12:51', url: 'https://www.youtube.com/watch?v=2xDAjrniULM', youtube_video_id: '2xDAjrniULM', spotify_episode_id: '2Y7WBA51rsihKPeQR304qP', likeCount: 856 },
+  { 
+    id: 1, 
+    date: '2018-11-29', 
+    title: '吉田松陰が脱藩した衝撃の理由！', 
+    excerpt: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！', 
+    series: '吉田松陰', 
+    duration: '15:56', 
+    url: 'https://www.youtube.com/watch?v=VMpjzAA6hNI', 
+    youtube_video_id: 'VMpjzAA6hNI', 
+    spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i', 
+    likeCount: 1247,
+    summary: {
+      overview: '吉田松陰の人生を変えた脱藩体験について、その背景と意義を詳しく解説',
+      facts: [
+        '1851年、吉田松陰は20歳で長州藩を脱藩した',
+        '東北地方を旅行し、各地の防備状況を視察した',
+        '脱藩の罪で萩の野山獄に収監された'
+      ],
+      lessons: [
+        '好奇心と学習欲が人生を動かす原動力となる',
+        'リスクを取ってでも経験を積むことの重要性',
+        '時代の変化を敏感に察知する視点の大切さ'
+      ]
+    }
+  },
+  { 
+    id: 2, 
+    date: '2019-01-23', 
+    title: '吉田松陰の「感化力」がすごい！', 
+    excerpt: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！', 
+    series: '吉田松陰', 
+    duration: '12:51', 
+    url: 'https://www.youtube.com/watch?v=2xDAjrniULM', 
+    youtube_video_id: '2xDAjrniULM', 
+    spotify_episode_id: '2Y7WBA51rsihKPeQR304qP', 
+    likeCount: 856,
+    summary: {
+      overview: '吉田松陰が門下生に与えた深い影響力と、その教育手法の特徴を分析',
+      facts: [
+        '松下村塾で多くの幕末維新の志士を育成した',
+        '弟子たちとの個人的な関係を重視した教育を行った',
+        '知識だけでなく実践的な行動力を重んじた'
+      ],
+      lessons: [
+        '真の教育とは知識の伝達ではなく人格の感化である',
+        '一対一の関係性が持つ教育的な力の大きさ',
+        'リーダーは自らの生き方で弟子を導くものである'
+      ]
+    }
+  },
   { id: 3, date: '2019-01-23', title: '黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', excerpt: '吉田松陰シリーズ: 黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？', series: '吉田松陰', duration: '13:52', url: 'https://www.youtube.com/watch?v=Mzr3fk1ExGA', youtube_video_id: 'Mzr3fk1ExGA', spotify_episode_id: '5jhl7KJu2QDZgPMDqxtMzV' },
   { id: 4, date: '2019-01-23', title: 'もし吉田松陰に人生相談ができたら・・・？', excerpt: '吉田松陰シリーズ: もし吉田松陰に人生相談ができたら・・・？', series: '吉田松陰', duration: '16:21', url: 'https://www.youtube.com/watch?v=2cJi5iIOCyU', youtube_video_id: '2cJi5iIOCyU', spotify_episode_id: '2RgEvZnXOrP0zEePtnLCvN', likeCount: 432 },
-  { id: 5, date: '2019-01-23', title: 'スパルタ人の壮絶な一生！まさにスパルタ教育', excerpt: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育', series: 'スパルタ', duration: '21:39', url: 'https://www.youtube.com/watch?v=J_kARj-FuPw', youtube_video_id: 'J_kARj-FuPw', spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK', likeCount: 2103 },
+  { 
+    id: 5, 
+    date: '2019-01-23', 
+    title: 'スパルタ人の壮絶な一生！まさにスパルタ教育', 
+    excerpt: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育', 
+    series: 'スパルタ', 
+    duration: '21:39', 
+    url: 'https://www.youtube.com/watch?v=J_kARj-FuPw', 
+    youtube_video_id: 'J_kARj-FuPw', 
+    spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK', 
+    likeCount: 2103,
+    summary: {
+      overview: '古代スパルタの教育制度とスパルタ人の人生について詳しく解説する',
+      facts: [
+        '7歳から国家による軍事教育が始まった',
+        '30歳まで軍営生活を続けなければならなかった',
+        '身体的な強さと規律が何よりも重視された'
+      ],
+      lessons: [
+        '厳格な規律と継続的な努力が強い人間を作る',
+        '個人よりも集団の利益を優先する重要性',
+        '困難な環境こそが真の強さを育む場となる'
+      ]
+    }
+  },
   { id: 6, date: '2019-01-23', title: 'スパルタでイケてる男の基準！', excerpt: 'スパルタシリーズ: スパルタでイケてる男の基準！', series: 'スパルタ', duration: '8:56', url: 'https://www.youtube.com/watch?v=X0_q7MB3jaQ', youtube_video_id: 'X0_q7MB3jaQ', spotify_episode_id: '3QczCyKWjJeoKRMSxWLG3X' },
   { id: 7, date: '2019-01-23', title: 'スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', excerpt: 'スパルタシリーズ: スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道', series: 'スパルタ', duration: '18:39', url: 'https://www.youtube.com/watch?v=Pkqx0O-sv4Y', youtube_video_id: 'Pkqx0O-sv4Y', spotify_episode_id: '5SH0KXiFyyilqdTbSvT2QG', likeCount: 1876 },
   { id: 8, date: '2019-01-23', title: 'スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', excerpt: 'スパルタシリーズ: スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？', series: 'スパルタ', duration: '5:09', url: 'https://www.youtube.com/watch?v=kjenu0OuI2o', youtube_video_id: 'kjenu0OuI2o', spotify_episode_id: '73j4TNFb4JXMeHAMNEiKDI' },
@@ -34,7 +93,7 @@ const pastBroadcasts: PastBroadcast[] = [
 ];
 
 export default function handler(
-  req: NextApiRequest,
+  _req: NextApiRequest,
   res: NextApiResponse<PastBroadcast[]>
 ) {
   // Return all broadcasts

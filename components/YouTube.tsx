@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from '../styles/YouTube.module.css';
 
 interface YouTubeProps {
   videoId: string;
@@ -18,7 +17,7 @@ export default function YouTube({
   const embedUrl = `https://www.youtube.com/embed/${videoId}${startTime ? `?start=${startTime}` : ''}`;
 
   return (
-    <div className={styles.youtubeContainer}>
+    <div className="w-full flex justify-center my-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm max-md:p-2 max-md:my-2 max-sm:p-1 max-sm:border-none max-sm:bg-transparent max-sm:shadow-none">
       <iframe
         width={width}
         height={height}
@@ -28,7 +27,7 @@ export default function YouTube({
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
-        className={styles.youtubeIframe}
+        className="rounded-lg max-w-full h-auto max-md:w-full max-md:aspect-video"
       />
     </div>
   );

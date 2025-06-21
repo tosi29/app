@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from '../styles/SpotifyPodcastEmbed.module.css';
 
 interface SpotifyPodcastEmbedProps {
   episodeId: string;
@@ -28,9 +27,9 @@ export default function SpotifyPodcastEmbed({
   const embedUrl = `${baseUrl}?${params.toString()}`;
 
   return (
-    <div className={styles.embedContainer}>
+    <div className="w-full flex justify-center my-1 max-md:my-0.5">
       <iframe
-        className={styles.spotifyIframe}
+        className="rounded-xl border-none shadow-md max-w-full max-md:rounded-lg"
         src={embedUrl}
         width={width}
         height={height}
