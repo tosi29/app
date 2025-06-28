@@ -1,251 +1,79 @@
-import { RetrievalResult } from '../types/search';
+import { SearchResponse } from '../types/search';
 
-// Helper function to convert MM:SS duration to seconds
-function durationToSeconds(duration: string): number {
-  const [minutes, seconds] = duration.split(':').map(Number);
-  return minutes * 60 + seconds;
-}
-
-// Sample data in the new format
-export const sampleRetrievalResults: RetrievalResult[] = [
-  {
-    content: {
-      text: '吉田松陰シリーズ: 吉田松陰が脱藩した衝撃の理由！',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '1',
-      series_name: '吉田松陰',
-      series_number: '1',
-      title: '吉田松陰が脱藩した衝撃の理由！',
-      duration: durationToSeconds('15:56'),
-      youtube_video_id: 'VMpjzAA6hNI',
-      spotify_episode_id: '3SqhovshNoPdYFhT2LGR6i'
-    },
-    score: 0.95
-  },
-  {
-    content: {
-      text: '吉田松陰シリーズ: 吉田松陰の「感化力」がすごい！',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '2',
-      series_name: '吉田松陰',
-      series_number: '2',
-      title: '吉田松陰の「感化力」がすごい！',
-      duration: durationToSeconds('12:51'),
-      youtube_video_id: '2xDAjrniULM',
-      spotify_episode_id: '2Y7WBA51rsihKPeQR304qP'
-    },
-    score: 0.93
-  },
-  {
-    content: {
-      text: '吉田松陰シリーズ: 黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '3',
-      series_name: '吉田松陰',
-      series_number: '3',
-      title: '黒船が来たときに吉田松陰がとった「とんでもない行動」とは！？',
-      duration: durationToSeconds('13:52'),
-      youtube_video_id: 'Mzr3fk1ExGA',
-      spotify_episode_id: '5jhl7KJu2QDZgPMDqxtMzV'
-    },
-    score: 0.91
-  },
-  {
-    content: {
-      text: '吉田松陰シリーズ: もし吉田松陰に人生相談ができたら・・・？',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '4',
-      series_name: '吉田松陰',
-      series_number: '4',
-      title: 'もし吉田松陰に人生相談ができたら・・・？',
-      duration: durationToSeconds('16:21'),
-      youtube_video_id: '2cJi5iIOCyU',
-      spotify_episode_id: '2RgEvZnXOrP0zEePtnLCvN'
-    },
-    score: 0.89
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: スパルタ人の壮絶な一生！まさにスパルタ教育',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '5',
-      series_name: 'スパルタ',
-      series_number: '1',
-      title: 'スパルタ人の壮絶な一生！まさにスパルタ教育',
-      duration: durationToSeconds('21:39'),
-      youtube_video_id: 'J_kARj-FuPw',
-      spotify_episode_id: '6TgxYkg97TTXVev9I4GYxK'
-    },
-    score: 0.88
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: スパルタでイケてる男の基準！',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '6',
-      series_name: 'スパルタ',
-      series_number: '2',
-      title: 'スパルタでイケてる男の基準！',
-      duration: durationToSeconds('8:56'),
-      youtube_video_id: 'X0_q7MB3jaQ',
-      spotify_episode_id: '3QczCyKWjJeoKRMSxWLG3X'
-    },
-    score: 0.86
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '7',
-      series_name: 'スパルタ',
-      series_number: '3',
-      title: 'スパルタ人の性事情！戦争に勝つためのスパルタ式肉欲道',
-      duration: durationToSeconds('18:39'),
-      youtube_video_id: 'Pkqx0O-sv4Y',
-      spotify_episode_id: '5SH0KXiFyyilqdTbSvT2QG'
-    },
-    score: 0.84
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '8',
-      series_name: 'スパルタ',
-      series_number: '4',
-      title: 'スパルタ人のグルメ！ギリシャいちマズイ飯、いかがですか？',
-      duration: durationToSeconds('5:09'),
-      youtube_video_id: 'kjenu0OuI2o',
-      spotify_episode_id: '73j4TNFb4JXMeHAMNEiKDI'
-    },
-    score: 0.82
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: スパルタとアテネを比較して考える！脳筋VS頭脳、勝つのはどっち？',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '9',
-      series_name: 'スパルタ',
-      series_number: '5',
-      title: 'スパルタとアテネを比較して考える！脳筋VS頭脳、勝つのはどっち？',
-      duration: durationToSeconds('17:49'),
-      youtube_video_id: '2kPwhNmKUXM',
-      spotify_episode_id: '5u4DpzSINLMa4jHwCqGiyX'
-    },
-    score: 0.80
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: アテネはどうすればスパルタに勝てたのか？頭脳が脳筋に負ける時',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '10',
-      series_name: 'スパルタ',
-      series_number: '6',
-      title: 'アテネはどうすればスパルタに勝てたのか？頭脳が脳筋に負ける時',
-      duration: durationToSeconds('11:42'),
-      youtube_video_id: 'eN0sIq332OU',
-      spotify_episode_id: '1cbt8XcdV5p8P4x9J9bMsQ'
-    },
-    score: 0.78
-  },
-  {
-    content: {
-      text: 'スパルタシリーズ: 草食系男子がスパルタ漢にお悩み相談するとしたら？',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '11',
-      series_name: 'スパルタ',
-      series_number: '7',
-      title: '草食系男子がスパルタ漢にお悩み相談するとしたら？',
-      duration: durationToSeconds('12:48'),
-      youtube_video_id: 'Y88fPSzdcYA',
-      spotify_episode_id: '6tO5pCxTSv8XmAX7F3BzRo'
-    },
-    score: 0.76
-  },
-  {
-    content: {
-      text: '人類のコミュニケーション史シリーズ: インターネットの本当の凄さ ― 人類のコミュニケーション史',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '12',
-      series_name: '人類のコミュニケーション史',
-      series_number: '1',
-      title: 'インターネットの本当の凄さ ― 人類のコミュニケーション史',
-      duration: durationToSeconds('13:36'),
-      youtube_video_id: 'Opb5REyVsNk',
-      spotify_episode_id: '5Fq3DFgW7KEKJuZ0UTUIUN'
-    },
-    score: 0.74
-  },
-  {
-    content: {
-      text: '人類のコミュニケーション史シリーズ: 文字、爆誕。ー 人類のコミュニケーション史',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '13',
-      series_name: '人類のコミュニケーション史',
-      series_number: '2',
-      title: '文字、爆誕。ー 人類のコミュニケーション史',
-      duration: durationToSeconds('14:11'),
-      youtube_video_id: '6vSclc0N5Ic',
-      spotify_episode_id: '6POSde1JgN7ZzlXNSowcRb'
-    },
-    score: 0.72
-  },
-  {
-    content: {
-      text: '人類のコミュニケーション史シリーズ: 炎上の元祖！活版印刷 ― 人類のコミュニケーション史',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '14',
-      series_name: '人類のコミュニケーション史',
-      series_number: '3',
-      title: '炎上の元祖！活版印刷 ― 人類のコミュニケーション史',
-      duration: durationToSeconds('12:55'),
-      youtube_video_id: 'FWwpeRyhHe4',
-      spotify_episode_id: '0lmLznEl2QEVcV2UnVA31V'
-    },
-    score: 0.70
-  },
-  {
-    content: {
-      text: '人類のコミュニケーション史シリーズ: マスメディアの誕生と電気通信 ー 人類のコミュニケーション史',
-      type: 'TEXT'
-    },
-    metadata: {
-      episode_id: '15',
-      series_name: '人類のコミュニケーション史',
-      series_number: '4',
-      title: 'マスメディアの誕生と電気通信 ー 人類のコミュニケーション史',
-      duration: durationToSeconds('16:35'),
-      youtube_video_id: 'EC_g2ReW-r4',
-      spotify_episode_id: '4quyVSN2mBwCLrAqMsTEDB'
-    },
-    score: 0.68
-  }
-];
+export const sampleRetrievalResults: SearchResponse = {
+    "query": "経験は言葉よりも大事",
+    "count": 10,
+    "totalCount": 10,
+    "results": [
+        {
+            "title": "絶対服従！？サリヴァン先生の過酷なスパルタ合宿",
+            "series": "16-4 ヘレン・ケラーとアン・サリヴァン",
+            "description": "てるのは子供が経験的に知っていることであればそれを知ることは簡単だって言って\nで\nん\n言葉よりも経験の圧倒的に大事で経験際してくれてればそれを伝えることができるって\n言ってるんですよ\nブッスホを続けれるはっはタッチだよ\nで二十歳歌手国ねすごいよね\nその通りだよねだから子どもがそういう経験してくれてればそれってこういうこう呼ぶ\nんだよとかこういうことなんだよって言ったら\nあの経験ってこういうことなんだってことはそうだんでしょ\n確かにた白経験もしれないことを言葉だけ教えてもわかんない理由で裁判が入ってて\n面白いなと思ったのはむしろそのヘレンじゃない人達って言葉\nを先に勉強してるじゃん\nだからはそっ",
+            "url": "https://www.youtube.com/watch?v=K7Y78WvGDWA",
+            "playback_time": 1026
+        },
+        {
+            "title": "実験と挑戦 プロデューサー・研究者 若新雄純さんが企むこれまで&これから（前編）",
+            "series": "番外編#52",
+            "description": "ゃあ人口が増えたわけでもなければなん\nか何か生産性が上がったわけでもないん\nですけどそういうその数値化できない部分\nを語るって言うなそれが僕大事だと思って\nてそれをぼかした記事にしたりとか公園\nバーっと喋ったりとか本にしたりとかして\nそれはもう役割でした\nいやーこれは大人にも相当影響あると思い\nますよねで本人たちのその例えばその行政\nとか政治とかまちづくりに関する意識も\n相当凍ったんですあのそうですね直接的に\nは一回も高校生に研修とかそういうことを\nやってないんですけど結果として残った\n高校生が新しく団体等はれたりとかうーん\nしたん\n結果ローンうーんそれはだからそれはそう\nだけ体験が充実してた",
+            "url": "https://www.youtube.com/watch?v=tMMPKrDwVx8",
+            "playback_time": 1408
+        },
+        {
+            "title": "変態紳士・ルソー、再び。社会に衝撃を与えた啓蒙主義と教育",
+            "series": "25-11 教育の歴史",
+            "description": "出来事を見せて失敗させて学ばせるということをたくさんやってます\n失敗させるというのは実は裏で大人が演技してたりしてて\nんあの仕組まれた失敗だったりする方\n本当に体験を重視してすごいをな意見を重視したの今までのそのキリスト教の中での\n当たり前っていうのはそのですね個人の体験とかどうでもいいんですよね\nとにかく聖書を読め覚えダサいということなんですよねもう個人の体験とか感覚とかは\n間違いと言ってもいいぐらいの立ち位置だったでしょうねはそれを\nん\nここまでな感覚というものを体験というものに重視し始めたということを生んだばかり\nが入ってるんですよねもの15歳までのステップの段階でですね\nまあやっとこう",
+            "url": "https://www.youtube.com/watch?v=5aYSAuVfCA8",
+            "playback_time": 2176
+        },
+        {
+            "title": "戦国の貴公子 宇喜多秀家 ～夢託されし秀吉チルドレンの生き様～（後編）",
+            "series": "番外編#66",
+            "description": "でも構造的に動きた日 dj が\nあの成長して行くチャンスが恵まれなかっ\nたっていう構造でもあるよねってこれはね\nだからね面白いのは経験値じゃなくて経験\n値というのは経験による知識とか知力\nみたいなものじゃなくて\n差額じゃないとわかんないってことなんだ\nよねこれはん\n差額をする暇がなかったんだからいいんだ\nね年弁なんですよねぇ\nここ多いときに座学は座学で大切だし経験\nは経験で大事だしどっちも大切なんだけど\nこういうことがわかるのは座学 the\nnature なるほどなあこの1000\n年間ぐらいとか500年間くらいの人間の\n挙動を見てこういうことやるとこういう\nことが起こりがちだみたいな事がわかる",
+            "url": "https://www.youtube.com/watch?v=W57LUS7b4fU",
+            "playback_time": 1309
+        },
+        {
+            "title": "天才宣伝マンの熱狂 〜ゲッベルスの圧倒的宣伝力が導くナチスの勃興〜",
+            "series": "39-3 ゲッベルス",
+            "description": "体験の場での演っていう\nのが彼もすごく重視してるんですよね彼の\n言った言葉の中でプロパガンダをするには\nこう分泌要するに文字を書いたりすること\nよりもやっぱ演説が一番であるとこれ新聞\nをたくさん発行するよりもたった1回の\n演説で人々の心に届けてそれが広まること\nが一番効果的だという風な趣旨のことも\n言ってるんですよね\nだから文字っていうメディアだけじゃなく\nてもう体験の場をちゃんと作るっていう\nなるほどね空間の中に閉じ込んでそれを\n体験していくっていう場も彼はそれを\nすごく重視したっていうことですねはい\nこういったものを彼はやっていくそして\nですねあのまた大きなことが起きますよね\n戦争が始まり",
+            "url": "https://www.youtube.com/watch?v=ZJKE9lIIZQo",
+            "playback_time": 610
+        },
+        {
+            "title": "絶対服従！？サリヴァン先生の過酷なスパルタ合宿",
+            "series": "16-4 ヘレン・ケラーとアン・サリヴァン",
+            "description": "の瞬間に辛くって\nいうのを教えるんですよ\n考えるそう瞬間に死ぬ\na そうそうそれで\nこれが辛くって意味なんだみたいなのがわかる\nまじそれはかいいよねぇ\nこれはもう一回じゃないんでしょうやっぱ繰り返しだと思うんですよ繰り返しを1回\nじゃないよね所\n繰り返しんだしその瞬間その瞬間に活気をのお母さんずにすぐ綴るっていうねおす\n遅さからサリバン先生にとってへっもうちぇ辺がてに触るものすべてが教材だしもう\n一日中指文字で縁に続いてたんですよ一日中ネットに戸数袖サリバン先生がここで言っ\nてるのは子供が経験的に知っていることであればそれを知ることは簡単だって言って\nで\nん\n言葉よりも経験の圧倒的に大事で経験",
+            "url": "https://www.youtube.com/watch?v=K7Y78WvGDWA",
+            "playback_time": 979
+        },
+        {
+            "title": "＜NTR＞出世の裏に色恋あり？カエサルのスキャンダラスな人生＜アッー！＞",
+            "series": "20-5 ユリウス・カエサル",
+            "description": "います\n経験値あがってそうです\nこれもびっくりすると思うけど\n帰国してなにしたかといったらね、今でいう弁護士になるんですよ\n弁護士はいはい\nローマって法がすごい大事だって話をしたじゃないですか\n専門職としての法律家は存在しないんだけども\n法律に則った状態で議論をする人ってのはすごく重宝されてた\n人気もあったし政治家の能力と同一だと思われてた\nなんで議論がうまいやつというのはこのまま元老院に入っちゃえよってなっちゃう\n実際キケロっていう平民出身のコンスルまで行った人がいるんですけど\nこの人とかも弁論家としてめちゃくちゃ有名なカエサルと同時代の人なんですけど\nこのキケロとかはそういう栄達の仕方して",
+            "url": "https://www.youtube.com/watch?v=yitSWOi2dH8",
+            "playback_time": 532
+        },
+        {
+            "title": "武家社会を定着させた男 北条義時の最期と武士たちが信じ抜いた源頼朝の権威",
+            "series": "34-12 鎌倉武士",
+            "description": "はこの\n物語まさに生きてるんだこういう\nミッションを背負ってるんだていう風な\nうんうん認識に至った時の人間の挙動って\nいうとはエネルギーが発散してくんかじゃ\nないかなと思いますよねあなんか結構その\nねビジネス業界で成功する例を中で言わ\nれるのが原体験が大事みたいなことが結構\n言われると思うんですよね例えばなんか\nうんこうじゃあえっとアフリカの貧しい\n子供たちを救いたいっていう今活動してる\n人がなんでかって言うと例えばその写真集\nを見てうわって戦列なあれを受けたとか\n実際現地に行った時にそういうのを間の\n当たりにしたから自分はやりたいみたいな\n感じでその原体験が大事みたいなことて\n言われてるんで",
+            "url": "https://www.youtube.com/watch?v=pVSRpj8Sn5g",
+            "playback_time": 1177
+        },
+        {
+            "title": "エール株式会社 篠田真貴子さんと語る「聴く力」（後編）",
+            "series": "番外編#45",
+            "description": "んですけど要は自分の自己変革の経験\nたくさん持ってると結構やりやすかったんだろうなあと思うんですよね中を\nすごいそういう視点であれを見てました\nなんだろ白い\nなんかあああ\n自己変革今後こんな感じですごいやっぱ大事になるんだろうなぁと思ってですね\nに勉強大事だなって私も改めて思いました\n例えば私みたいな今のこのよあの状況においては例えば私みたいな者は自分の個人的な\n経験とかそれで感じたことを発信することをまあ何っんですかね\nまあある種の価値をがあると思って思ってもらってるんですけども\n6結構\n微妙で私もはさっきちょっと子供との話を話しましたけどやっぱで自分の経験って\nなかなか客観視できないんです",
+            "url": "https://www.youtube.com/watch?v=g4fRqRhh4_M",
+            "playback_time": 3317
+        },
+        {
+            "title": "各国の現状と日本の立ち位置 〜僕たちに求められるリアリティと覚悟〜",
+            "series": "38-6 社会福祉の歴史",
+            "description": "アリティのあるものとして\n認知していくっていうことを彼らはやっ\nてるところがすごくなんか社会的な価値が\nすごく高いなとリスペクトしてます僕は\nやっぱり今一番直面してるのは障害なので\nで障害の歴史の多分ね最後のエンディング\nトークかなあの深井さんが言ってたのかな\nえっと\n結局なんかバーンって価値観変わったり\n評価基準に変わるのって体験が必要だ\nみたいなだから体験に飛び込む必要がある\nみたいなこと言ってたんですけど\n僕とか思いっきり体験せざるを得ない状況\nになってるわけですもうなんかもう運命\nでっていう気づいたら\nだからなんかこういう僕みたいな人が多分\nなんかこう\nリアリティを持って伝えるとかいう",
+            "url": "https://www.youtube.com/watch?v=E8jl_Ko4bWo",
+            "playback_time": 2017
+        }
+    ]
+};

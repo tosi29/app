@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sampleRetrievalResults } from '../../data/search-sample-data';
-import { RetrievalResult } from '../../types/search';
+import { SearchResultItem } from '../../types/search';
 import { PastBroadcast } from '../../types/broadcast';
 
 // Helper function to convert seconds to MM:SS format
@@ -10,24 +10,30 @@ function secondsToMMSS(seconds: number): string {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-// Function to convert RetrievalResult to PastBroadcast for API compatibility
-function convertToPastBroadcast(result: RetrievalResult): PastBroadcast {
-  const metadata = result.metadata;
+// Function to extract YouTube video ID from URL
+function extractYouTubeId(url: string): string {
+  const match = url.match(/[?&]v=([^&#]*)/);
+  return match ? match[1] : '';
+}
+
+// Function to convert SearchResultItem to PastBroadcast for API compatibility
+function convertToPastBroadcast(result: SearchResultItem, index: number): PastBroadcast {
   return {
-    id: parseInt(metadata.episode_id, 10),
+    id: index + 1,
     date: '2019-01-23', // Default date for compatibility - could be enhanced later
-    title: metadata.title,
-    excerpt: result.content.text,
-    series: metadata.series_name,
-    duration: secondsToMMSS(metadata.duration),
-    url: metadata.youtube_video_id ? `https://www.youtube.com/watch?v=${metadata.youtube_video_id}` : '',
-    youtube_video_id: metadata.youtube_video_id || '',
-    spotify_episode_id: metadata.spotify_episode_id || ''
+    title: result.title,
+    excerpt: result.description,
+    series: result.series,
+    duration: secondsToMMSS(result.playback_time),
+    url: result.url,
+    youtube_video_id: extractYouTubeId(result.url),
+    spotify_episode_id: '',
+    playback_time: result.playback_time
   };
 }
 
 // Convert the new format data to the old format for API compatibility
-const pastBroadcasts: PastBroadcast[] = sampleRetrievalResults.map(convertToPastBroadcast);
+const pastBroadcasts: PastBroadcast[] = sampleRetrievalResults.results.map(convertToPastBroadcast);
 
 export default function handler(
   req: NextApiRequest,

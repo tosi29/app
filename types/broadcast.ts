@@ -14,6 +14,7 @@ export interface PastBroadcast {
   url: string;
   youtube_video_id: string;
   spotify_episode_id: string;
+  playback_time?: number;
   likeCount?: number;
   summary?: BroadcastSummary;
 }

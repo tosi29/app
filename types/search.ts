@@ -24,3 +24,18 @@ export type RetrievalResult = {
 export type RetrieveApiResponse = {
   retrievalResults: RetrievalResult[];
 };
+
+export type SearchResultItem = {
+  title: string;
+  series: string;
+  description: string;
+  url: string;
+  playback_time: number;
+};
+
+export type SearchResponse = {
+  query: string;
+  count: number;
+  totalCount: number;
+  results: SearchResultItem[];
+};

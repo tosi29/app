@@ -27,6 +27,7 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
     return (
       <YouTube 
         videoId={broadcast.youtube_video_id}
+        startTime={broadcast.playback_time}
         width={width || 560}
         height={height || 315}
       />
