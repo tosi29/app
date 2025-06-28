@@ -27,11 +27,19 @@ const SearchContent = React.memo(({
   // Handle search form submission
   const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if search query is empty
+    if (!searchQuery || searchQuery.trim() === '') {
+      setIsSearched(true);
+      setSearchResults([]);
+      return;
+    }
+    
     setIsLoading(true);
     
     // Build query parameters
     const queryParams = new URLSearchParams();
-    if (searchQuery) queryParams.append('query', searchQuery);
+    queryParams.append('query', searchQuery);
     
     try {
       // Call the API endpoint
@@ -116,7 +124,12 @@ const SearchContent = React.memo(({
               ))}
             </div>
           ) : (
-            <p className="p-8 text-center text-gray-600 text-lg bg-gray-50 rounded-lg border border-gray-200">該当する配信はありません。</p>
+            <p className="p-8 text-center text-gray-600 text-lg bg-gray-50 rounded-lg border border-gray-200">
+              {!searchQuery || searchQuery.trim() === '' 
+                ? '検索クエリを入力してください。' 
+                : '該当する配信はありません。'
+              }
+            </p>
           )}
         </div>
       )}
