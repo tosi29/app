@@ -20,7 +20,7 @@ export default function PopularBroadcastsContent({
 }: PopularBroadcastsContentProps) {
   const [popularBroadcasts, setPopularBroadcasts] = useState<PopularBroadcast[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [sortColumn, setSortColumn] = useState<'viewCount' | 'commentCount' | 'likeCount' | 'title' | 'date'>('viewCount');
+  const [sortColumn, setSortColumn] = useState<'viewCount' | 'hypothesisCount' | 'likeCount' | 'title' | 'date'>('viewCount');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // State for summary modal
@@ -60,9 +60,9 @@ export default function PopularBroadcastsContent({
           aValue = a.viewCount;
           bValue = b.viewCount;
           break;
-        case 'commentCount':
-          aValue = a.commentCount;
-          bValue = b.commentCount;
+        case 'hypothesisCount':
+          aValue = a.hypothesisCount;
+          bValue = b.hypothesisCount;
           break;
         case 'likeCount':
           aValue = a.likeCount || 0;
@@ -133,9 +133,9 @@ export default function PopularBroadcastsContent({
               </th>
               <th 
                 className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('commentCount')}
+                onClick={() => handleSort('hypothesisCount')}
               >
-                コメント {sortColumn === 'commentCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+                仮説 {sortColumn === 'hypothesisCount' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
               <th 
                 className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
@@ -163,7 +163,7 @@ export default function PopularBroadcastsContent({
                     </div>
                   </td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.commentCount}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.hypothesisCount}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.likeCount || ''}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.date}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
@@ -178,9 +178,9 @@ export default function PopularBroadcastsContent({
                       </button>
                       <button
                         type="button"
-                        onClick={() => router.push(`/?tab=comments&episodeId=${broadcast.id}`)}
+                        onClick={() => router.push(`/?tab=hypotheses&episodeId=${broadcast.id}`)}
                         className="inline-flex items-center justify-center p-2 min-w-10 h-10 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-base cursor-pointer transition-all duration-200 ease-out hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:shadow-sm focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 no-underline"
-                        aria-label="コメントを見る"
+                        aria-label="仮説を見る"
                       >
                         💬
                       </button>

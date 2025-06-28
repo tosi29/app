@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PastBroadcast, PopularBroadcast } from '../../types/broadcast';
 
-interface Comment {
+interface Hypothesis {
   id: number;
   episodeId: number;
   text: string;
@@ -102,9 +102,9 @@ const pastBroadcasts: PastBroadcast[] = [
   { id: 15, date: '2019-03-01', title: 'マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', excerpt: '人類のコミュニケーション史シリーズ: マスメディアの誕生と電気通信 ー 人類のコミュニケーション史', series: '人類のコミュニケーション史', duration: '16:35', url: 'https://www.YouTube.com/watch?v=EC_g2ReW-r4', youtube_video_id: 'EC_g2ReW-r4', spotify_episode_id: '4quyVSN2mBwCLrAqMsTEDB', likeCount: 892 },
 ];
 
-// Sample comments data (reduced version for counting)
-const comments: Comment[] = [
-  // Episode 1 comments (8 comments)
+// Sample hypotheses data (reduced version for counting)
+const hypotheses: Hypothesis[] = [
+  // Episode 1 hypotheses (8 hypotheses)
   { id: 1, episodeId: 1, text: 'とても興味深い内容でした。', positiveScore: 0.8, opinionScore: 0.6, author: 'リスナー1' },
   { id: 2, episodeId: 1, text: '歴史の授業を思い出しました。', positiveScore: 0.7, opinionScore: 0.4, author: 'リスナー2' },
   { id: 3, episodeId: 1, text: '松陰先生の行動力に驚きです。', positiveScore: 0.9, opinionScore: 0.7, author: 'リスナー3' },
@@ -114,7 +114,7 @@ const comments: Comment[] = [
   { id: 7, episodeId: 1, text: '資料の説明が詳しくて良かったです。', positiveScore: 0.8, opinionScore: 0.5, author: 'リスナー7' },
   { id: 96, episodeId: 1, text: '音質がとても良くて聞きやすかったです。', positiveScore: 0.8, opinionScore: 0.2, author: 'リスナー96' },
   
-  // Episode 2 comments (6 comments)
+  // Episode 2 hypotheses (6 hypotheses)
   { id: 8, episodeId: 2, text: '感化力について深く考えさせられました。', positiveScore: 0.8, opinionScore: 0.8, author: 'リスナー8' },
   { id: 9, episodeId: 2, text: 'リーダーシップの本質が分かりました。', positiveScore: 0.9, opinionScore: 0.7, author: 'リスナー9' },
   { id: 10, episodeId: 2, text: '現代にも通じる教えですね。', positiveScore: 0.8, opinionScore: 0.6, author: 'リスナー10' },
@@ -123,13 +123,13 @@ const comments: Comment[] = [
   { id: 13, episodeId: 2, text: '次のエピソードが待ち遠しいです。', positiveScore: 0.9, opinionScore: 0.3, author: 'リスナー13' },
   
   // Continue with other episodes...
-  // Episode 3 comments (4 comments)
+  // Episode 3 hypotheses (4 hypotheses)
   { id: 14, episodeId: 3, text: 'とんでもない行動に驚きました！', positiveScore: 0.9, opinionScore: 0.8, author: 'リスナー14' },
   { id: 15, episodeId: 3, text: '歴史の面白さを再発見。', positiveScore: 0.8, opinionScore: 0.5, author: 'リスナー15' },
   { id: 16, episodeId: 3, text: '当時の状況がよく分かりました。', positiveScore: 0.8, opinionScore: 0.4, author: 'リスナー16' },
   { id: 97, episodeId: 3, text: '専門用語の説明が丁寧で助かりました。', positiveScore: 0.8, opinionScore: 0.4, author: 'リスナー97' },
   
-  // Episode 5 comments (12 comments) - Most popular episode
+  // Episode 5 hypotheses (12 hypotheses) - Most popular episode
   { id: 17, episodeId: 5, text: 'スパルタ教育の厳しさに驚愕！', positiveScore: 0.9, opinionScore: 0.8, author: 'リスナー17' },
   { id: 18, episodeId: 5, text: '現代の教育と比較すると面白い。', positiveScore: 0.8, opinionScore: 0.7, author: 'リスナー18' },
   { id: 19, episodeId: 5, text: '21分があっという間でした。', positiveScore: 0.9, opinionScore: 0.4, author: 'リスナー19' },
@@ -143,7 +143,7 @@ const comments: Comment[] = [
   { id: 27, episodeId: 5, text: '教育制度の違いに驚き。', positiveScore: 0.8, opinionScore: 0.6, author: 'リスナー27' },
   { id: 28, episodeId: 5, text: '古代ギリシャの魅力を感じます。', positiveScore: 0.9, opinionScore: 0.5, author: 'リスナー28' },
   
-  // Add more comments for other episodes...
+  // Add more hypotheses for other episodes...
   { id: 29, episodeId: 7, text: 'スパルタの性事情、興味深いです。', positiveScore: 0.8, opinionScore: 0.7, author: 'リスナー29' },
   { id: 98, episodeId: 7, text: 'ディスカッションの進行が上手でした。', positiveScore: 0.8, opinionScore: 0.3, author: 'リスナー98' },
   
@@ -156,21 +156,21 @@ export default function handler(
   _req: NextApiRequest,
   res: NextApiResponse<PopularBroadcast[]>
 ) {
-  // Count comments for each episode
-  const commentCounts: Record<number, number> = {};
-  comments.forEach(comment => {
-    commentCounts[comment.episodeId] = (commentCounts[comment.episodeId] || 0) + 1;
+  // Count hypotheses for each episode
+  const hypothesisCounts: Record<number, number> = {};
+  hypotheses.forEach(hypothesis => {
+    hypothesisCounts[hypothesis.episodeId] = (hypothesisCounts[hypothesis.episodeId] || 0) + 1;
   });
   
   // Create popular broadcasts data
   const popularBroadcasts: PopularBroadcast[] = pastBroadcasts.map(broadcast => {
-    const commentCount = commentCounts[broadcast.id] || 0;
-    // Calculate a view count based on likes and comments (simulated data)
-    const viewCount = (broadcast.likeCount || 0) * 10 + commentCount * 5;
+    const hypothesisCount = hypothesisCounts[broadcast.id] || 0;
+    // Calculate a view count based on likes and hypotheses (simulated data)
+    const viewCount = (broadcast.likeCount || 0) * 10 + hypothesisCount * 5;
     
     return {
       ...broadcast,
-      commentCount,
+      hypothesisCount,
       viewCount
     };
   });

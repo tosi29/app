@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export default function Comments() {
+export default function Hypotheses() {
   const router = useRouter();
   const { episodeId } = router.query;
 
   useEffect(() => {
-    // Redirect to the comments tab in home page
+    // Redirect to the hypotheses tab in home page
     if (typeof episodeId === 'string') {
-      router.replace(`/?tab=comments&episodeId=${episodeId}`);
+      router.replace(`/?tab=hypotheses&episodeId=${episodeId}`);
     } else {
-      router.replace('/?tab=comments');
+      router.replace('/?tab=hypotheses');
     }
   }, [episodeId, router]);
 

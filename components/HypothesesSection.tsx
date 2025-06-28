@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-
-interface Comment {
-  id: number;
-  episodeId: number;
-  text: string;
-  positiveScore: number; // 0 to 1 where 1 is most positive
-  opinionScore: number; // 0 to 1 where 1 is pure opinion (vs reaction)
-  author: string;
-}
+import { Hypothesis } from '../types/hypothesis';
 
 interface PastBroadcast {
   id: number;
@@ -17,18 +9,18 @@ interface PastBroadcast {
   series: string;
 }
 
-interface CommentsSectionProps {
+interface HypothesesSectionProps {
   pastBroadcasts: PastBroadcast[];
   selectedEpisodeId?: number;
 }
 
-export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: CommentsSectionProps): React.ReactNode {
-  const [hoveredComment, setHoveredComment] = useState<Comment | null>(null);
-  const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }: HypothesesSectionProps): React.ReactNode {
+  const [hoveredHypothesis, setHoveredHypothesis] = useState<Hypothesis | null>(null);
+  const [selectedHypothesis, setSelectedHypothesis] = useState<Hypothesis | null>(null);
+  const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
-  const commentsListRef = useRef<HTMLDivElement>(null);
+  const hypothesesListRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
@@ -47,7 +39,7 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     // Set loading state immediately when dropdown changes
     setLoading(true);
     
-    const fetchComments = async () => {
+    const fetchHypotheses = async () => {
       // Generate a unique request ID to track this specific request
       const thisRequestId = latestRequestIdRef.current + 1;
       latestRequestIdRef.current = thisRequestId;
@@ -55,8 +47,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
       try {
         // Use dropdownEpisodeId as the single source of truth for data fetching
         const url = dropdownEpisodeId 
-          ? `/api/comments?episodeId=${dropdownEpisodeId}`
-          : '/api/comments';
+          ? `/api/hypotheses?episodeId=${dropdownEpisodeId}`
+          : '/api/hypotheses';
         
         const response = await fetch(url);
         if (!response.ok) {
@@ -66,20 +58,20 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
         // Only update state if this is still the latest request
         if (thisRequestId === latestRequestIdRef.current) {
           const data = await response.json();
-          setComments(data);
+          setHypotheses(data);
           setLoading(false);
         }
       } catch (error) {
         // Only update error state if this is still the latest request
         if (thisRequestId === latestRequestIdRef.current) {
-          console.error('Error fetching comments:', error);
+          console.error('Error fetching hypotheses:', error);
           setLoading(false);
           // In a real app, you might want to show an error message to the user
         }
       }
     };
 
-    fetchComments();
+    fetchHypotheses();
   }, [dropdownEpisodeId]); // Only depend on dropdownEpisodeId
 
   // Function to get episode title by id
@@ -114,32 +106,32 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     if (!series) return '';
     
     const colorType = getSeriesColorType(series);
-    return `commentDot-${colorType}`;
+    return `hypothesisDot-${colorType}`;
   };
 
-  // Sort comments by feedback score (using positiveScore as proxy for feedback)
-  const sortedComments = [...comments].sort((a, b) => b.positiveScore - a.positiveScore);
+  // Sort hypotheses by confidence score
+  const sortedHypotheses = [...hypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
 
-  // Handle mouse over comment dot
-  const handleMouseOver = (comment: Comment): void => {
-    setHoveredComment(comment);
+  // Handle mouse over hypothesis dot
+  const handleMouseOver = (hypothesis: Hypothesis): void => {
+    setHoveredHypothesis(hypothesis);
   };
 
-  // Handle mouse out from comment dot
+  // Handle mouse out from hypothesis dot
   const handleMouseOut = (): void => {
-    setHoveredComment(null);
+    setHoveredHypothesis(null);
   };
 
-  // Handle click on comment dot
-  const handleCommentClick = (comment: Comment): void => {
-    setSelectedComment(comment);
-    setHoveredComment(null);
+  // Handle click on hypothesis dot
+  const handleHypothesisClick = (hypothesis: Hypothesis): void => {
+    setSelectedHypothesis(hypothesis);
+    setHoveredHypothesis(null);
     
-    // Scroll to the selected comment in the list
-    if (commentsListRef.current) {
-      const commentElement = commentsListRef.current.querySelector(`[data-comment-id="${comment.id}"]`);
-      if (commentElement) {
-        commentElement.scrollIntoView({
+    // Scroll to the selected hypothesis in the list
+    if (hypothesesListRef.current) {
+      const hypothesisElement = hypothesesListRef.current.querySelector(`[data-hypothesis-id="${hypothesis.id}"]`);
+      if (hypothesisElement) {
+        hypothesisElement.scrollIntoView({
           behavior: 'smooth',
           block: 'center'
         });
@@ -147,20 +139,20 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     }
   };
 
-  // Handle click on comment item in the list
-  const handleCommentItemClick = (comment: Comment): void => {
-    setSelectedComment(comment);
-    setHoveredComment(null);
+  // Handle click on hypothesis item in the list
+  const handleHypothesisItemClick = (hypothesis: Hypothesis): void => {
+    setSelectedHypothesis(hypothesis);
+    setHoveredHypothesis(null);
   };
 
-  // Handle click outside to close selected comment
+  // Handle click outside to close selected hypothesis
   const handleClickOutside = (): void => {
-    setSelectedComment(null);
+    setSelectedHypothesis(null);
   };
 
   // Handle feedback button clicks
-  const handleFeedback = (feedbackType: string, comment: Comment): void => {
-    console.log(`Feedback "${feedbackType}" given to comment:`, comment.text);
+  const handleFeedback = (feedbackType: string, hypothesis: Hypothesis): void => {
+    console.log(`Feedback "${feedbackType}" given to hypothesis:`, hypothesis.hypothesis);
     // Here you could add API call to save feedback
     // For now, just log it
   };
@@ -169,8 +161,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
   const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
     
-    // Clear existing comments and show loading state immediately
-    setComments([]);
+    // Clear existing hypotheses and show loading state immediately
+    setHypotheses([]);
     setLoading(true);
     
     // Update dropdown state
@@ -179,8 +171,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
     // Update URL to maintain existing functionality but use replace instead of push
     // to prevent adding a new history entry and causing full page reload
     const newQuery = episodeId 
-      ? { tab: 'comments', episodeId: episodeId.toString() }
-      : { tab: 'comments' };
+      ? { tab: 'hypotheses', episodeId: episodeId.toString() }
+      : { tab: 'hypotheses' };
     
     router.replace({
       pathname: '/',
@@ -212,12 +204,12 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
 
       {loading ? (
         <div className="flex flex-col items-center gap-4 my-8">
-          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>コメントを読み込んでいます...</p>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>仮説を読み込んでいます...</p>
           <div className="w-10 h-10 border-3 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
         </div>
-      ) : comments.length === 0 ? (
+      ) : hypotheses.length === 0 ? (
         <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
-          コメントはありません
+          仮説はありません
         </div>
       ) : (
 
@@ -229,8 +221,8 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               className="relative w-[600px] h-[600px] mx-auto max-md:w-[450px] max-md:h-[450px] max-md:scale-75 max-md:origin-top-left"
               onClick={handleClickOutside}
             >
-              <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-sm text-gray-600 font-medium">ポジティブ ↑</div>
-              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 text-sm text-gray-600 font-medium">← リアクション | 意見 →</div>
+              <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-sm text-gray-600 font-medium">確信度 ↑</div>
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 text-sm text-gray-600 font-medium">← 一般的 | 独創的 →</div>
 
               <svg width="600" height="600" className="bg-gray-50 rounded-lg transition-all duration-300 hover:shadow-sm">
                 {/* X-axis line */}
@@ -259,58 +251,61 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                 <line x1="40" y1="50" x2="50" y2="50" stroke="var(--text-secondary)" strokeWidth="1.5" />
                 <text x="35" y="55" textAnchor="end" fontSize="12" fill="var(--text-secondary)">1.0</text>
                 
-                {/* Plot comment dots */}
-                {comments.map((comment) => {
-                  const x = 50 + comment.opinionScore * 500; // Scale to fit within the graph
-                  const y = 550 - comment.positiveScore * 500; // Invert Y-axis to have positive values going up
-                  const seriesClass = getSeriesClassName(comment.episodeId);
+                {/* Plot hypothesis dots */}
+                {hypotheses.map((hypothesis) => {
+                  const x = 50 + hypothesis.originalityScore * 500; // Scale to fit within the graph
+                  const y = 550 - hypothesis.confidenceScore * 500; // Invert Y-axis to have positive values going up
+                  const seriesClass = getSeriesClassName(hypothesis.episodeId);
                   
                   return (
                     <circle
-                      key={comment.id}
+                      key={hypothesis.id}
                       cx={x}
                       cy={y}
-                      className={`r-2 cursor-pointer transition-all duration-200 hover:r-3 hover:opacity-80 ${seriesClass === 'commentDot-basic' ? 'fill-blue-500' : seriesClass === 'commentDot-guest' ? 'fill-green-500' : seriesClass === 'commentDot-community' ? 'fill-purple-500' : 'fill-blue-500'} ${
-                        selectedComment?.id === comment.id ? 'r-3 stroke-2 stroke-black' : ''
+                      className={`r-2 cursor-pointer transition-all duration-200 hover:r-3 hover:opacity-80 ${seriesClass === 'hypothesisDot-basic' ? 'fill-blue-500' : seriesClass === 'hypothesisDot-guest' ? 'fill-green-500' : seriesClass === 'hypothesisDot-community' ? 'fill-purple-500' : 'fill-blue-500'} ${
+                        selectedHypothesis?.id === hypothesis.id ? 'r-3 stroke-2 stroke-black' : ''
                       }`}
                       r="6"
-                      onMouseOver={() => handleMouseOver(comment)}
+                      onMouseOver={() => handleMouseOver(hypothesis)}
                       onMouseOut={handleMouseOut}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCommentClick(comment);
+                        handleHypothesisClick(hypothesis);
                       }}
                     />
                   );
                 })}
               </svg>
               
-              {/* Comment tooltip with episode information */}
-              {hoveredComment && (
+              {/* Hypothesis tooltip with episode information */}
+              {hoveredHypothesis && (
                 <div
                   className={`absolute z-10 p-3 bg-white border border-gray-300 rounded-lg shadow-lg max-w-xs min-w-48 pointer-events-none transform ${
-                    hoveredComment.opinionScore > 0.5
-                      ? (hoveredComment.positiveScore > 0.5
+                    hoveredHypothesis.originalityScore > 0.5
+                      ? (hoveredHypothesis.confidenceScore > 0.5
                         ? '-translate-x-full -translate-y-full'
                         : '-translate-x-full translate-y-2')
-                      : (hoveredComment.positiveScore > 0.5
+                      : (hoveredHypothesis.confidenceScore > 0.5
                         ? 'translate-x-2 -translate-y-full'
                         : 'translate-x-2 translate-y-2')
                   }`}
                   style={{
-                    left: `${50 + hoveredComment.opinionScore * 500}px`,
-                    top: `${550 - hoveredComment.positiveScore * 500}px`,
+                    left: `${50 + hoveredHypothesis.originalityScore * 500}px`,
+                    top: `${550 - hoveredHypothesis.confidenceScore * 500}px`,
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="font-semibold text-sm text-blue-500 mb-1 m-0">
-                    {getEpisodeTitle(hoveredComment.episodeId)} 
+                    {getEpisodeTitle(hoveredHypothesis.episodeId)} 
                     <span className="text-xs text-gray-600 ml-1 font-normal">
-                      ({getEpisodeSeries(hoveredComment.episodeId)})
+                      ({getEpisodeSeries(hoveredHypothesis.episodeId)})
                     </span>
                   </p>
-                  <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{hoveredComment.text}</p>
-                  <p className="text-xs text-gray-500 italic m-0">by {hoveredComment.author}</p>
+                  <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{hoveredHypothesis.hypothesis}</p>
+                  <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-1">
+                    <span className="font-medium">事実:</span> {hoveredHypothesis.fact}
+                  </div>
+                  <p className="text-xs text-gray-500 italic m-0">by {hoveredHypothesis.proposer}</p>
                 </div>
               )}
             </div>
@@ -332,41 +327,44 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
               ) : (
                 // Show only the selected episode's series when filtered
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${getSeriesClassName(dropdownEpisodeId) === 'commentDot-basic' ? 'bg-blue-500' : getSeriesClassName(dropdownEpisodeId) === 'commentDot-guest' ? 'bg-green-500' : getSeriesClassName(dropdownEpisodeId) === 'commentDot-community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-basic' ? 'bg-blue-500' : getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-guest' ? 'bg-green-500' : getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
                   <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right side: Comments List */}
+          {/* Right side: Hypotheses List */}
           <div className="flex-1 min-w-[300px] max-lg:flex-none max-lg:min-w-0">
-            <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={commentsListRef}>
+            <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={hypothesesListRef}>
               <h3 className="m-0 mb-4 text-lg font-semibold text-gray-900 pb-2 border-b border-gray-200">
-                コメント一覧 (フィードバック順)
+                仮説一覧 (確信度順)
               </h3>
-              {sortedComments.map((comment) => (
+              {sortedHypotheses.map((hypothesis) => (
                 <div
-                  key={comment.id}
-                  data-comment-id={comment.id}
+                  key={hypothesis.id}
+                  data-hypothesis-id={hypothesis.id}
                   className={`p-3 mb-2 border border-gray-200 rounded-lg bg-white cursor-pointer transition-all duration-200 hover:border-blue-500 hover:shadow-sm hover:-translate-y-px max-md:p-2 max-md:mb-1.5 ${
-                    selectedComment?.id === comment.id ? 'border-blue-500 shadow-md shadow-blue-500/10 bg-blue-500/5' : ''
+                    selectedHypothesis?.id === hypothesis.id ? 'border-blue-500 shadow-md shadow-blue-500/10 bg-blue-500/5' : ''
                   }`}
-                  onClick={() => handleCommentItemClick(comment)}
+                  onClick={() => handleHypothesisItemClick(hypothesis)}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <p className="text-sm font-semibold text-blue-500 m-0">
-                      {getEpisodeTitle(comment.episodeId)}
+                      {getEpisodeTitle(hypothesis.episodeId)}
                       <span className="text-xs text-gray-600 ml-1.5 font-normal">
-                        ({getEpisodeSeries(comment.episodeId)})
+                        ({getEpisodeSeries(hypothesis.episodeId)})
                       </span>
                     </p>
                     <span className="text-xs text-gray-600 bg-blue-500/10 px-2 py-1 rounded-full">
-                      {Math.round(comment.positiveScore * 100)}%
+                      {Math.round(hypothesis.confidenceScore * 100)}%
                     </span>
                   </div>
-                  <p className="m-0 mb-1 text-sm leading-snug text-gray-900">{comment.text}</p>
-                  <p className="m-0 text-xs text-gray-500 text-right italic">by {comment.author}</p>
+                  <p className="m-0 mb-1 text-sm leading-snug text-gray-900">{hypothesis.hypothesis}</p>
+                  <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2">
+                    <span className="font-medium">事実:</span> {hypothesis.fact}
+                  </div>
+                  <p className="m-0 text-xs text-gray-500 text-right italic">by {hypothesis.proposer}</p>
                   
                   {/* Feedback buttons */}
                   <div className="flex gap-2 mt-2 flex-wrap">
@@ -374,29 +372,29 @@ export default function CommentsSection({ pastBroadcasts, selectedEpisodeId }: C
                       className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleFeedback('empathy', comment);
+                        handleFeedback('interesting', hypothesis);
                       }}
-                      title="共感"
+                      title="興味深い"
                     >
-                      👍
+                      🤔
                     </button>
                     <button 
                       className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleFeedback('insight', comment);
+                        handleFeedback('groundbreaking', hypothesis);
                       }}
-                      title="なるほど"
+                      title="画期的"
                     >
-                      💡
+                      ✨
                     </button>
                     <button 
                       className="px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-900 text-xs font-medium cursor-pointer transition-all duration-200 flex items-center gap-1 hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleFeedback('on-target', comment);
+                        handleFeedback('worth-testing', hypothesis);
                       }}
-                      title="的を射ている"
+                      title="検証したい"
                     >
                       🎯
                     </button>

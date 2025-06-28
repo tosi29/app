@@ -19,6 +19,6 @@ export interface PastBroadcast {
 }
 
 export interface PopularBroadcast extends PastBroadcast {
-  commentCount: number;
+  hypothesisCount: number;
   viewCount: number;
 }

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Tabs from '../components/Tabs'
-import CommentsSection from '../components/CommentsSection'
+import HypothesesSection from '../components/HypothesesSection'
 import BroadcastsContent from '../components/BroadcastsContent'
 import PopularBroadcastsContent from '../components/PopularBroadcastsContent'
 import SearchContent from '../components/SearchContent'
@@ -28,7 +28,7 @@ export default function Home() {
   
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
-    router.query.tab === 'comments' ? 'comments' : 
+    router.query.tab === 'hypotheses' ? 'hypotheses' : 
     router.query.tab === 'search' ? 'search' :
     router.query.tab === 'popular' ? 'popular' : 'broadcasts'
   );
@@ -57,8 +57,8 @@ export default function Home() {
   
   useEffect(() => {
     if (router.isReady) {
-      if (tab === 'comments') {
-        setActiveTab('comments');
+      if (tab === 'hypotheses') {
+        setActiveTab('hypotheses');
       } else if (tab === 'search') {
         setActiveTab('search');
       } else if (tab === 'popular') {
@@ -75,7 +75,7 @@ export default function Home() {
     // Use replace instead of push to prevent unnecessary history entries
     router.replace({
       pathname: '/',
-      query: tabId === 'comments' ? { tab: tabId } : 
+      query: tabId === 'hypotheses' ? { tab: tabId } : 
              tabId === 'search' ? { tab: tabId } : 
              tabId === 'popular' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
@@ -94,7 +94,7 @@ export default function Home() {
     });
   }, []);
 
-  // Pass the episodeId to CommentsSection when available
+  // Pass the episodeId to HypothesesSection when available
   const tabs = [
     {
       id: 'broadcasts',
@@ -129,12 +129,12 @@ export default function Home() {
               />
     },
     {
-      id: 'comments',
-      label: 'コメント',
-      content: <CommentsSection 
+      id: 'hypotheses',
+      label: '仮説',
+      content: <HypothesesSection 
                  pastBroadcasts={pastBroadcasts}
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
-                 key="comments-section" // Add a stable key to prevent remounting
+                 key="hypotheses-section" // Add a stable key to prevent remounting
                />
     }
   ];
