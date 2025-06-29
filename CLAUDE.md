@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Last Updated:** 2025-06-29 - Reflects hypothesis visualization enhancements, external API integration, and UI improvements
+
 ## Development Commands
 
 **Development Server:**
@@ -22,6 +24,11 @@ npm run lint         # ESLint with Next.js config
 npm run type-check   # TypeScript type checking without emitting files
 ```
 
+**External API Integration:**
+- Search functionality via Lambda functions (configurable via environment variables)
+- Fallback to mock data when external APIs are unavailable
+- Environment variable: `EXTERNAL_SEARCH_API_URL` for Lambda integration
+
 ## Architecture Overview
 
 This is a Next.js 15 application for managing Japanese educational broadcast content with dual YouTube/Spotify integration.
@@ -35,6 +42,11 @@ The application centers around `PastBroadcast` objects containing:
 - Optional structured summaries with overview, facts, and lessons
 - `SearchResultBroadcast` extends base with `excerpt` field for search descriptions
 - `ExternalEpisode` interface for external API integration with multi-platform URLs
+
+The application also features `Hypothesis` objects:
+- Episode-specific hypothesis data with confidence and originality scores
+- Supporting facts/evidence for each hypothesis
+- Interactive 2D visualization capabilities
 
 ### Key Architectural Patterns
 
@@ -56,10 +68,10 @@ The application centers around `PastBroadcast` objects containing:
 
 **Tab-Based Navigation:**
 Four main content areas accessible via `Tabs` component:
-1. **Broadcasts** - Series-grouped past content
-2. **Popular** - Engagement-sorted content  
-3. **Search** - External API search with Lambda integration and empty query prompts
-4. **Hypotheses** - Episode hypothesis interface with 2D visualization
+1. **Broadcasts** - Series-grouped past content with expandable/collapsible groups
+2. **Popular** - Engagement-sorted content with hypothesis count integration
+3. **Search** - External API search with Lambda integration and fallback functionality
+4. **Hypotheses** - Interactive 2D scatter plot visualization using Recharts library
 
 ### Component Relationships
 
@@ -70,17 +82,18 @@ Four main content areas accessible via `Tabs` component:
 - CSS Modules (`/styles/`) provide component-specific styling
 
 **Key Components:**
-- `BroadcastsContent` - Main listing with series grouping logic
-- `SearchContent` - Search interface with filtering and result display
-- `HypothesesSection` - 2D graph visualization and hypothesis management
-- `BroadcastSummaryModal` - Rich episode summary display
+- `BroadcastsContent` - Main listing with series grouping, view mode toggle, and sorting
+- `SearchContent` - Search interface with external API integration and fallback
+- `HypothesesSection` - Interactive 2D scatter plot with Recharts, simplified display
+- `BroadcastSummaryModal` - Rich episode summary display with structured content
 - `SettingsModal` - User preferences (embed type selection)
+- `PopularBroadcastsContent` - Engagement metrics with hypothesis count integration
 
 **API Endpoints:**
-- `/api/broadcasts` - Main broadcast content data with external API integration
-- `/api/hypotheses` - Hypothesis data with facts and scores
-- `/api/popular-broadcasts` - Engagement metrics including hypothesis counts
-- `/api/search-broadcasts` - External search via Lambda with playback time support
+- `/api/broadcasts` - Main broadcast content data with external API integration and fallback
+- `/api/hypotheses` - Hypothesis data with episode filtering, confidence/originality scores
+- `/api/popular-broadcasts` - Engagement metrics including calculated hypothesis counts
+- `/api/search-broadcasts` - External Lambda search with excerpt generation and playback time support
 
 ### TypeScript Integration
 - Strict TypeScript configuration with comprehensive type checking
@@ -89,19 +102,27 @@ Four main content areas accessible via `Tabs` component:
 - Key interfaces: `PastBroadcast`, `PopularBroadcast`, `SearchResultBroadcast`, `ExternalEpisode`, `Hypothesis`
 
 ### Hypotheses Feature
-- Interactive 2D graph visualization (confidence vs originality)
-- Each hypothesis includes supporting facts/evidence
-- Episode-specific filtering and analysis
-- User feedback system (interesting, groundbreaking, worth testing)
-- Confidence score and originality score metrics
+- Interactive 2D scatter plot using Recharts library (confidence vs originality)
+- Simplified graph display without axis labels/numbers for clean interface
+- Each hypothesis includes supporting facts/evidence arrays
+- Episode-specific filtering and analysis with dropdown selection
+- User feedback system with emoji interactions (🤔 interesting, ✨ groundbreaking, 🎯 worth testing)
+- Confidence score and originality score metrics (0-100 scale)
+- Responsive design with mobile optimization
+- Real-time tooltip display with hypothesis details
 
 ### External API Integration
-- Lambda function integration for search functionality
-- YouTube deep-linking with playback time parameters
-- Multi-platform URL support (YouTube, Spotify, Voicy)
-- External episode data conversion to internal broadcast format
+- Lambda function integration for search functionality with environment variable configuration
+- Robust fallback system when external APIs are unavailable
+- YouTube deep-linking with playback time parameters for precise episode moments
+- Multi-platform URL support (YouTube, Spotify, Voicy) with automatic detection
+- External episode data conversion to internal broadcast format with excerpt extraction
+- Error handling and graceful degradation for network issues
 
 ### Styling Architecture
 - TailwindCSS utility classes for rapid UI development
-- Responsive design with mobile-first approach
-- Japanese language support throughout UI
+- Responsive design with mobile-first approach (breakpoints for mobile/desktop)
+- Japanese language support throughout UI with proper typography
+- Recharts integration for data visualization with custom styling
+- Component-specific CSS modules for complex layouts
+- Consistent color schemes and spacing patterns
