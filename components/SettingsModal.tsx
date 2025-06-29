@@ -37,7 +37,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         
         <div className="p-6 max-md:p-4">
           <div className="mb-6 last:mb-0">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">再生プラットフォーム:</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-3">優先する再生プラットフォーム:</label>
             <div className="flex gap-2 max-md:flex-col">
               <button
                 onClick={() => onEmbedTypeChange('spotify')}
