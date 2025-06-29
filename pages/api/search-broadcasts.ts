@@ -3,12 +3,6 @@ import { sampleRetrievalResults } from '../../data/search-sample-data';
 import { SearchResultItem, SearchResponse } from '../../types/search';
 import { PastBroadcast, SearchResultBroadcast } from '../../types/broadcast';
 
-// Helper function to convert seconds to MM:SS format
-function secondsToMMSS(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-}
 
 // Function to extract YouTube video ID from URL
 function extractYouTubeId(url: string): string {
@@ -24,7 +18,7 @@ function convertToSearchResultBroadcast(result: SearchResultItem, index: number)
     title: result.title,
     excerpt: result.description, // 検索結果でのみ使用する概要情報
     series: result.series,
-    duration: secondsToMMSS(result.playback_time),
+    duration: result.playback_time,
     url: result.url,
     youtube_video_id: extractYouTubeId(result.url),
     spotify_episode_id: '',

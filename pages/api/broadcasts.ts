@@ -8,15 +8,37 @@ function extractSpotifyEpisodeId(spotifyUrl: string): string {
   return match ? match[1] : '';
 }
 
+// ISO 8601 YouTube duration (PT35M44S) を秒数に変換する関数
+function parseYouTubeDurationToSeconds(duration: string): number | undefined {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return undefined;
+  
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  const seconds = parseInt(match[3] || '0');
+  
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+// ISO 8601 日時 (2025-04-13T21:00:12Z) を YYYY-MM-DD 形式に変換する関数
+function parseYouTubePublishedAt(publishedAt: string): string | undefined {
+  try {
+    const date = new Date(publishedAt);
+    return date.toISOString().split('T')[0]; // YYYY-MM-DD 形式
+  } catch {
+    return undefined;
+  }
+}
+
 
 // 外部APIデータをPastBroadcast型に変換する関数
 function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBroadcast {
   return {
     id: parseInt(episode.id),
-    date: '2024-01-01', // デフォルト日付（実際のAPIにdateがあれば使用）
+    date: parseYouTubePublishedAt(episode.youtube_published_at),
     title: episode.title,
     series: episode.series_name && episode.series_name.trim() ? episode.series_name.trim() : 'その他',
-    duration: '15:00', // デフォルト時間（実際のAPIにdurationがあれば使用）
+    duration: parseYouTubeDurationToSeconds(episode.youtube_duration),
     url: episode.url.youtube_url,
     youtube_video_id: episode.youtube_id,
     spotify_episode_id: extractSpotifyEpisodeId(episode.url.spotify_url),

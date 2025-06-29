@@ -5,7 +5,7 @@ import { Hypothesis } from '../types/hypothesis';
 
 interface PastBroadcast {
   id: number;
-  date: string;
+  date?: string;
   title: string;
   series: string;
 }

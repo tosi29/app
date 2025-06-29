@@ -6,10 +6,10 @@ export interface BroadcastSummary {
 
 export interface PastBroadcast {
   id: number;
-  date: string;
+  date?: string;
   title: string;
   series: string; // 空文字列の場合は"その他"として表示される
-  duration: string;
+  duration?: number; // 秒数
   url: string;
   youtube_video_id: string;
   spotify_episode_id: string;
@@ -38,6 +38,8 @@ export interface ExternalEpisode {
   title: string;
   youtube_id: string;
   series_name: string;
+  youtube_duration: string;
+  youtube_published_at: string;
 }
 
 export interface ExternalApiResponse {

@@ -73,8 +73,8 @@ export default function PopularBroadcastsContent({
           bValue = b.title.toLowerCase();
           break;
         case 'date':
-          aValue = new Date(a.date);
-          bValue = new Date(b.date);
+          aValue = a.date ? new Date(a.date) : new Date(0);
+          bValue = b.date ? new Date(b.date) : new Date(0);
           break;
         default:
           return 0;
@@ -167,7 +167,7 @@ export default function PopularBroadcastsContent({
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.hypothesisCount}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.likeCount || ''}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.date}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.date || '—'}</td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
                     <div className="flex items-center gap-1">
                       <button
