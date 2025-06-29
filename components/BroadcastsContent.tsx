@@ -29,6 +29,19 @@ const BroadcastsContent = React.memo(({
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }, []);
 
+  // 秒数を時間単位に変換する関数（合計時間用）
+  const formatDurationInHours = useCallback((seconds: number | undefined): string => {
+    if (!seconds) return '—';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    
+    if (hours > 0) {
+      return `${hours}時間${minutes}分`;
+    } else {
+      return `${minutes}分`;
+    }
+  }, []);
+
   // 日付の表示用フォーマット関数
   const formatDate = useCallback((date: string | undefined): string => {
     if (!date) return '—';
@@ -73,8 +86,8 @@ const BroadcastsContent = React.memo(({
     const totalSeconds = broadcasts.reduce((sum, broadcast) => {
       return sum + (broadcast.duration || 0);
     }, 0);
-    return formatDuration(totalSeconds);
-  }, [formatDuration]);
+    return formatDurationInHours(totalSeconds);
+  }, [formatDurationInHours]);
 
   // シリーズ名から数値を抽出する関数（例: "9. 吉田松陰" → 9）
   const extractSeriesNumberFromName = useCallback((seriesName: string): number | null => {
