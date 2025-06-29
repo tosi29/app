@@ -30,6 +30,22 @@ function parseYouTubePublishedAt(publishedAt: string): string | undefined {
   }
 }
 
+// series_number (例: "9-2") からシリーズ番号を抽出する関数
+function extractSeriesNumber(seriesNumber: string): string | undefined {
+  const match = seriesNumber.match(/^(\d+)-/);
+  return match ? match[1] : undefined;
+}
+
+// series_with_number を生成する関数 (例: "9. 吉田松陰")
+function generateSeriesWithNumber(seriesName: string, seriesNumber: string): string {
+  const number = extractSeriesNumber(seriesNumber);
+  if (number && seriesName && seriesName.trim()) {
+    return `${number}. ${seriesName.trim()}`;
+  }
+  // series_numberが無効またはseries_nameが空の場合は"999. その他"として最後に表示
+  return seriesName && seriesName.trim() ? seriesName.trim() : '999. その他';
+}
+
 
 // 外部APIデータをPastBroadcast型に変換する関数
 function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBroadcast {
@@ -37,7 +53,7 @@ function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBr
     id: parseInt(episode.id),
     date: parseYouTubePublishedAt(episode.youtube_published_at),
     title: episode.title,
-    series: episode.series_name && episode.series_name.trim() ? episode.series_name.trim() : 'その他',
+    series: generateSeriesWithNumber(episode.series_name, episode.series_number),
     duration: parseYouTubeDurationToSeconds(episode.youtube_duration),
     url: episode.url.youtube_url,
     youtube_video_id: episode.youtube_id,

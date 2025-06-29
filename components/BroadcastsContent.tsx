@@ -52,8 +52,8 @@ const BroadcastsContent = React.memo(({
   const broadcastsBySeries = useMemo(() => {
     const grouped: Record<string, PastBroadcast[]> = {};
     pastBroadcasts.forEach(broadcast => {
-      // 空文字列や空白のみのシリーズ名を「その他」に変換
-      const seriesName = broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+      // 空文字列や空白のみのシリーズ名を「999. その他」に変換
+      const seriesName = broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : '999. その他';
       if (!grouped[seriesName]) {
         grouped[seriesName] = [];
       }
@@ -75,6 +75,33 @@ const BroadcastsContent = React.memo(({
     }, 0);
     return formatDuration(totalSeconds);
   }, [formatDuration]);
+
+  // シリーズ名から数値を抽出する関数（例: "9. 吉田松陰" → 9）
+  const extractSeriesNumberFromName = useCallback((seriesName: string): number | null => {
+    const match = seriesName.match(/^(\d+)\./);
+    return match ? parseInt(match[1]) : null;
+  }, []);
+
+  // シリーズを数値順でソートする関数
+  const sortSeriesByNumber = useCallback((entries: [string, PastBroadcast[]][]): [string, PastBroadcast[]][] => {
+    return entries.sort(([a], [b]) => {
+      const aNum = extractSeriesNumberFromName(a);
+      const bNum = extractSeriesNumberFromName(b);
+      
+      // 両方に数値がある場合は数値順ソート
+      if (aNum !== null && bNum !== null) {
+        return aNum - bNum;
+      }
+      
+      // 数値がない場合は文字列ソート
+      if (aNum === null && bNum === null) {
+        return a.localeCompare(b);
+      }
+      
+      // 数値があるものを先に表示
+      return aNum !== null ? -1 : 1;
+    });
+  }, [extractSeriesNumberFromName]);
 
   // Sorted broadcasts for non-group mode
   const sortedBroadcasts = useMemo(() => {
@@ -265,8 +292,7 @@ const BroadcastsContent = React.memo(({
               <tbody>
                 {groupDisplayMode ? (
                   // Group display mode
-                  Object.entries(broadcastsBySeries)
-                    .sort(([a], [b]) => a.localeCompare(b))
+                  sortSeriesByNumber(Object.entries(broadcastsBySeries))
                     .map(([series, broadcasts]) => (
                     <React.Fragment key={series}>
                       <tr 
@@ -342,7 +368,7 @@ const BroadcastsContent = React.memo(({
                           <div className="flex flex-col gap-1">
                             <div className="font-medium text-gray-900">{broadcast.title}</div>
                             <div className="text-xs text-gray-600 font-normal">
-                              {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
+                              {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : '999. その他'}
                             </div>
                           </div>
                         </td>

@@ -38,6 +38,7 @@ export interface ExternalEpisode {
   title: string;
   youtube_id: string;
   series_name: string;
+  series_number: string;
   youtube_duration: string;
   youtube_published_at: string;
 }
