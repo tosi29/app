@@ -28,16 +28,20 @@ This is a Next.js 15 application for managing Japanese educational broadcast con
 
 ### Core Data Model
 The application centers around `PastBroadcast` objects containing:
-- Basic metadata (id, date, title, excerpt, series, duration)
+- Basic metadata (id, date, title, series, duration)
 - Dual media IDs (`youtube_video_id`, `spotify_episode_id`)
+- Optional playback timing (`playback_time`) for YouTube deep-linking
 - Optional engagement metrics (`likeCount`, `viewCount`, `hypothesisCount`)
 - Optional structured summaries with overview, facts, and lessons
+- `SearchResultBroadcast` extends base with `excerpt` field for search descriptions
+- `ExternalEpisode` interface for external API integration with multi-platform URLs
 
 ### Key Architectural Patterns
 
 **API-First Design:**
 - All data flows through `/pages/api/` endpoints
-- Currently uses mock data arrays in API routes
+- External API integration via Lambda functions for search functionality
+- Mock data arrays in API routes with external data conversion layers
 - Clean separation between data layer and UI components
 
 **Multi-Platform Media Integration:**
@@ -48,13 +52,13 @@ The application centers around `PastBroadcast` objects containing:
 **Series-Based Content Organization:**
 - Broadcasts grouped by series (吉田松陰, スパルタ, 人類のコミュニケーション史)
 - Expandable/collapsible series groups in main listing
-- Series-aware search and filtering
+- Series-aware search and filtering with playback time-based YouTube deep-linking
 
 **Tab-Based Navigation:**
 Four main content areas accessible via `Tabs` component:
 1. **Broadcasts** - Series-grouped past content
 2. **Popular** - Engagement-sorted content  
-3. **Search** - Full-text search with filters
+3. **Search** - External API search with Lambda integration and empty query prompts
 4. **Hypotheses** - Episode hypothesis interface with 2D visualization
 
 ### Component Relationships
@@ -73,16 +77,16 @@ Four main content areas accessible via `Tabs` component:
 - `SettingsModal` - User preferences (embed type selection)
 
 **API Endpoints:**
-- `/api/broadcasts` - Main broadcast content data
+- `/api/broadcasts` - Main broadcast content data with external API integration
 - `/api/hypotheses` - Hypothesis data with facts and scores
 - `/api/popular-broadcasts` - Engagement metrics including hypothesis counts
-- `/api/search-broadcasts` - Search functionality across content
+- `/api/search-broadcasts` - External search via Lambda with playback time support
 
 ### TypeScript Integration
 - Strict TypeScript configuration with comprehensive type checking
 - Centralized type definitions in `/types/` directory
 - Interface-driven development for broadcast and hypothesis data structures
-- Key interfaces: `PastBroadcast`, `PopularBroadcast`, `Hypothesis`
+- Key interfaces: `PastBroadcast`, `PopularBroadcast`, `SearchResultBroadcast`, `ExternalEpisode`, `Hypothesis`
 
 ### Hypotheses Feature
 - Interactive 2D graph visualization (confidence vs originality)
@@ -90,6 +94,12 @@ Four main content areas accessible via `Tabs` component:
 - Episode-specific filtering and analysis
 - User feedback system (interesting, groundbreaking, worth testing)
 - Confidence score and originality score metrics
+
+### External API Integration
+- Lambda function integration for search functionality
+- YouTube deep-linking with playback time parameters
+- Multi-platform URL support (YouTube, Spotify, Voicy)
+- External episode data conversion to internal broadcast format
 
 ### Styling Architecture
 - TailwindCSS utility classes for rapid UI development
