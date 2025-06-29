@@ -68,6 +68,14 @@ const BroadcastsContent = React.memo(({
     return grouped;
   }, [pastBroadcasts]);
 
+  // シリーズの合計再生時間を計算する関数
+  const calculateSeresTotalDuration = useCallback((broadcasts: PastBroadcast[]): string => {
+    const totalSeconds = broadcasts.reduce((sum, broadcast) => {
+      return sum + (broadcast.duration || 0);
+    }, 0);
+    return formatDuration(totalSeconds);
+  }, [formatDuration]);
+
   // Sorted broadcasts for non-group mode
   const sortedBroadcasts = useMemo(() => {
     const sorted = [...pastBroadcasts];
@@ -266,11 +274,16 @@ const BroadcastsContent = React.memo(({
                         onClick={() => toggleSeries(series)}
                       >
                         <td colSpan={4} className="px-3 py-2 text-left border-b border-gray-200">
-                          <div className="flex items-center gap-1.5 py-1.5">
-                            <span className="inline-flex items-center justify-center text-sm transition-transform duration-200 ease-out w-5 h-5 font-bold">
-                              {expandedSeries[series] ? '▼' : '▶'}
+                          <div className="flex items-center justify-between py-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <span className="inline-flex items-center justify-center text-sm transition-transform duration-200 ease-out w-5 h-5 font-bold">
+                                {expandedSeries[series] ? '▼' : '▶'}
+                              </span>
+                              <span className="font-bold text-gray-800 drop-shadow-sm">{series} ({broadcasts.length})</span>
+                            </div>
+                            <span className="text-sm font-medium text-gray-600">
+                              合計: {calculateSeresTotalDuration(broadcasts)}
                             </span>
-                            <span className="font-bold text-gray-800 drop-shadow-sm">{series} ({broadcasts.length})</span>
                           </div>
                         </td>
                       </tr>
