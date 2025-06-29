@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PastBroadcast, ExternalEpisode, ExternalApiResponse } from '../../types/broadcast';
-import { pastBroadcasts } from '../../data/broadcasts-sample';
 
 // Spotify URLからエピソードIDを抽出する関数
 function extractSpotifyEpisodeId(spotifyUrl: string): string {
@@ -111,8 +110,6 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
   }
 }
 
-// Sample data is now imported from data/broadcasts-sample.ts
-
 export default async function handler(
   _req: NextApiRequest,
   res: NextApiResponse<PastBroadcast[]>
@@ -121,19 +118,10 @@ export default async function handler(
     // 外部APIから配信データを取得
     const externalBroadcasts = await fetchExternalBroadcasts();
     
-    // 既存のモックデータと外部データを統合
-    // IDの重複を避けるため、外部データのIDを調整
-    const adjustedExternalBroadcasts = externalBroadcasts.map((broadcast, index) => ({
-      ...broadcast,
-      id: pastBroadcasts.length + index + 1, // 既存データの後に続くIDを設定
-    }));
-    
-    const allBroadcasts = [...pastBroadcasts, ...adjustedExternalBroadcasts];
-    
-    res.status(200).json(allBroadcasts);
+    res.status(200).json(externalBroadcasts);
   } catch (error) {
     console.error('Error in broadcasts API:', error);
-    // エラー時は既存のモックデータのみを返す
-    res.status(200).json(pastBroadcasts);
+    // エラー時は空配列を返す
+    res.status(200).json([]);
   }
 }
