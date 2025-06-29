@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Hypothesis } from '../types/hypothesis';
 
 interface PastBroadcast {
@@ -15,7 +16,6 @@ interface HypothesesSectionProps {
 }
 
 export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }: HypothesesSectionProps): React.ReactNode {
-  const [hoveredHypothesis, setHoveredHypothesis] = useState<Hypothesis | null>(null);
   const [selectedHypothesis, setSelectedHypothesis] = useState<Hypothesis | null>(null);
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,20 +112,10 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   // Sort hypotheses by confidence score
   const sortedHypotheses = [...hypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
 
-  // Handle mouse over hypothesis dot
-  const handleMouseOver = (hypothesis: Hypothesis): void => {
-    setHoveredHypothesis(hypothesis);
-  };
-
-  // Handle mouse out from hypothesis dot
-  const handleMouseOut = (): void => {
-    setHoveredHypothesis(null);
-  };
 
   // Handle click on hypothesis dot
   const handleHypothesisClick = (hypothesis: Hypothesis): void => {
     setSelectedHypothesis(hypothesis);
-    setHoveredHypothesis(null);
     
     // Scroll to the selected hypothesis in the list
     if (hypothesesListRef.current) {
@@ -142,7 +132,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   // Handle click on hypothesis item in the list
   const handleHypothesisItemClick = (hypothesis: Hypothesis): void => {
     setSelectedHypothesis(hypothesis);
-    setHoveredHypothesis(null);
   };
 
   // Handle click outside to close selected hypothesis
@@ -216,129 +205,141 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
       <div className="w-full max-w-7xl my-8 p-6 border border-gray-200 rounded-lg bg-white shadow-md max-md:p-4">
         <div className="flex gap-6 w-full max-lg:flex-col max-lg:gap-4 max-md:gap-3">
           {/* Left side: Graph */}
-          <div className="flex-shrink-0 max-lg:flex-none">
-            <div 
-              className="relative w-[600px] h-[600px] mx-auto max-md:w-[450px] max-md:h-[450px] max-md:scale-75 max-md:origin-top-left"
-              onClick={handleClickOutside}
-            >
-              <div className="absolute top-1/2 -left-10 -translate-y-1/2 -rotate-90 text-sm text-gray-600 font-medium">確信度 ↑</div>
-              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 text-sm text-gray-600 font-medium">← 一般的 | 独創的 →</div>
-
-              <svg width="600" height="600" className="bg-gray-50 rounded-lg transition-all duration-300 hover:shadow-sm">
-                {/* X-axis line */}
-                <line x1="50" y1="550" x2="550" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                
-                {/* Y-axis line */}
-                <line x1="50" y1="50" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                
-                {/* X-axis label ticks */}
-                <line x1="50" y1="550" x2="50" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="50" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0</text>
-                
-                <line x1="300" y1="550" x2="300" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="300" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">0.5</text>
-                
-                <line x1="550" y1="550" x2="550" y2="560" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="550" y="575" textAnchor="middle" fontSize="12" fill="var(--text-secondary)">1.0</text>
-                
-                {/* Y-axis label ticks */}
-                <line x1="40" y1="550" x2="50" y2="550" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="555" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0</text>
-                
-                <line x1="40" y1="300" x2="50" y2="300" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="305" textAnchor="end" fontSize="12" fill="var(--text-secondary)">0.5</text>
-                
-                <line x1="40" y1="50" x2="50" y2="50" stroke="var(--text-secondary)" strokeWidth="1.5" />
-                <text x="35" y="55" textAnchor="end" fontSize="12" fill="var(--text-secondary)">1.0</text>
-                
-                {/* Plot hypothesis dots */}
-                {hypotheses.map((hypothesis) => {
-                  const x = 50 + hypothesis.originalityScore * 500; // Scale to fit within the graph
-                  const y = 550 - hypothesis.confidenceScore * 500; // Invert Y-axis to have positive values going up
-                  const seriesClass = getSeriesClassName(hypothesis.episodeId);
-                  
-                  return (
-                    <circle
-                      key={hypothesis.id}
-                      cx={x}
-                      cy={y}
-                      className={`r-2 cursor-pointer transition-all duration-200 hover:r-3 hover:opacity-80 ${seriesClass === 'hypothesisDot-basic' ? 'fill-blue-500' : seriesClass === 'hypothesisDot-guest' ? 'fill-green-500' : seriesClass === 'hypothesisDot-community' ? 'fill-purple-500' : 'fill-blue-500'} ${
-                        selectedHypothesis?.id === hypothesis.id ? 'r-3 stroke-2 stroke-black' : ''
-                      }`}
-                      r="6"
-                      onMouseOver={() => handleMouseOver(hypothesis)}
-                      onMouseOut={handleMouseOut}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleHypothesisClick(hypothesis);
-                      }}
-                    />
-                  );
-                })}
-              </svg>
-              
-              {/* Hypothesis tooltip with episode information */}
-              {hoveredHypothesis && (
-                <div
-                  className={`absolute z-10 p-3 bg-white border border-gray-300 rounded-lg shadow-lg max-w-xs min-w-48 pointer-events-none transform ${
-                    hoveredHypothesis.originalityScore > 0.5
-                      ? (hoveredHypothesis.confidenceScore > 0.5
-                        ? '-translate-x-full -translate-y-full'
-                        : '-translate-x-full translate-y-2')
-                      : (hoveredHypothesis.confidenceScore > 0.5
-                        ? 'translate-x-2 -translate-y-full'
-                        : 'translate-x-2 translate-y-2')
-                  }`}
-                  style={{
-                    left: `${50 + hoveredHypothesis.originalityScore * 500}px`,
-                    top: `${550 - hoveredHypothesis.confidenceScore * 500}px`,
+          <div className="flex-1 min-w-[500px] max-w-[700px] max-lg:flex-none max-lg:min-w-0">
+            <div className="w-full h-[600px]">
+              <ResponsiveContainer width="100%" height="100%" minWidth={400}>
+                <ScatterChart
+                  margin={{
+                    top: 20,
+                    right: 20,
+                    bottom: 80,
+                    left: 60,
                   }}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={handleClickOutside}
                 >
-                  <p className="font-semibold text-sm text-blue-500 mb-1 m-0">
-                    {getEpisodeTitle(hoveredHypothesis.episodeId)} 
-                    <span className="text-xs text-gray-600 ml-1 font-normal">
-                      ({getEpisodeSeries(hoveredHypothesis.episodeId)})
-                    </span>
-                  </p>
-                  <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{hoveredHypothesis.hypothesis}</p>
-                  <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-1">
-                    <span className="font-medium">事実:</span> {hoveredHypothesis.fact}
-                  </div>
-                  <p className="text-xs text-gray-500 italic m-0">by {hoveredHypothesis.proposer}</p>
-                </div>
-              )}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    type="number" 
+                    dataKey="originalityScore" 
+                    domain={[0, 1]}
+                    tickCount={6}
+                    label={{ value: '← 一般的 | 独創的 →', position: 'insideBottom', offset: -10 }}
+                  />
+                  <YAxis 
+                    type="number" 
+                    dataKey="confidenceScore" 
+                    domain={[0, 1]}
+                    tickCount={6}
+                    label={{ value: '確信度', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload as Hypothesis;
+                        return (
+                          <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-3 max-w-xs">
+                            <p className="font-semibold text-sm text-blue-500 mb-1 m-0">
+                              {getEpisodeTitle(data.episodeId)}
+                              <span className="text-xs text-gray-600 ml-1 font-normal">
+                                ({getEpisodeSeries(data.episodeId)})
+                              </span>
+                            </p>
+                            <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{data.hypothesis}</p>
+                            <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-1">
+                              <span className="font-medium">事実:</span> {data.fact}
+                            </div>
+                            <p className="text-xs text-gray-500 italic m-0">by {data.proposer}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={60}
+                    content={() => (
+                      <div className="flex justify-center gap-4 mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 max-md:flex-wrap max-md:gap-2 max-md:justify-start">
+                        {!dropdownEpisodeId ? (
+                          // Show all series when no filter is applied
+                          Array.from(new Set(hypotheses.map(h => getEpisodeSeries(h.episodeId))))
+                            .sort()
+                            .map(series => {
+                              const colorType = getSeriesColorType(series);
+                              const color = colorType === 'basic' ? '#3b82f6' : colorType === 'guest' ? '#10b981' : '#8b5cf6';
+                              const hypothesesCount = hypotheses.filter(h => getEpisodeSeries(h.episodeId) === series).length;
+                              return (
+                                <div key={series} className="flex items-center gap-2 text-sm whitespace-nowrap">
+                                  <div 
+                                    className="w-3 h-3 rounded-full flex-shrink-0" 
+                                    style={{ backgroundColor: color }}
+                                  />
+                                  <span className="font-medium truncate max-w-[120px]" title={series}>{series}</span>
+                                  <span className="text-gray-500 flex-shrink-0">({hypothesesCount})</span>
+                                </div>
+                              );
+                            })
+                        ) : (
+                          // Show only the selected episode's series when filtered
+                          <div className="flex items-center gap-2 text-sm">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ 
+                                backgroundColor: getSeriesColorType(getEpisodeSeries(dropdownEpisodeId)) === 'basic' ? '#3b82f6' : 
+                                                 getSeriesColorType(getEpisodeSeries(dropdownEpisodeId)) === 'guest' ? '#10b981' : '#8b5cf6'
+                              }}
+                            />
+                            <span className="font-medium">{getEpisodeSeries(dropdownEpisodeId)}</span>
+                            <span className="text-gray-500">({hypotheses.length})</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  />
+                  {/* Group hypotheses by series for different colors */}
+                  {Array.from(new Set(hypotheses.map(h => getEpisodeSeries(h.episodeId))))
+                    .sort()
+                    .map((series) => {
+                      const seriesHypotheses = hypotheses.filter(h => getEpisodeSeries(h.episodeId) === series);
+                      const colorType = getSeriesColorType(series);
+                      const color = colorType === 'basic' ? '#3b82f6' : colorType === 'guest' ? '#10b981' : '#8b5cf6';
+                      
+                      return (
+                        <Scatter
+                          key={series}
+                          name={series}
+                          data={seriesHypotheses}
+                          fill={color}
+                          onClick={(data) => {
+                            if (data && data.payload) {
+                              handleHypothesisClick(data.payload as Hypothesis);
+                            }
+                          }}
+                        >
+                          {seriesHypotheses.map((hypothesis, entryIndex) => (
+                            <Cell 
+                              key={`cell-${entryIndex}`}
+                              fill={color}
+                              stroke={selectedHypothesis?.id === hypothesis.id ? '#000' : 'none'}
+                              strokeWidth={selectedHypothesis?.id === hypothesis.id ? 2 : 0}
+                              r={selectedHypothesis?.id === hypothesis.id ? 8 : 6}
+                            />
+                          ))}
+                        </Scatter>
+                      );
+                    })
+                  }
+                </ScatterChart>
+              </ResponsiveContainer>
             </div>
 
-            <div className="flex justify-center gap-6 mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 max-md:flex-col max-md:gap-2">
-              {!dropdownEpisodeId ? (
-                // Show all series when no filter is applied
-                Array.from(new Set(pastBroadcasts.map(b => b.series)))
-                  .sort()
-                  .map(series => {
-                    const colorType = getSeriesColorType(series);
-                    return (
-                      <div key={series} className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${colorType === 'basic' ? 'bg-blue-500' : colorType === 'guest' ? 'bg-green-500' : colorType === 'community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
-                        <div>{series}</div>
-                      </div>
-                    );
-                  })
-              ) : (
-                // Show only the selected episode's series when filtered
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-basic' ? 'bg-blue-500' : getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-guest' ? 'bg-green-500' : getSeriesClassName(dropdownEpisodeId) === 'hypothesisDot-community' ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
-                  <div>{getEpisodeSeries(dropdownEpisodeId)}</div>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Right side: Hypotheses List */}
           <div className="flex-1 min-w-[300px] max-lg:flex-none max-lg:min-w-0">
             <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={hypothesesListRef}>
               <h3 className="m-0 mb-4 text-lg font-semibold text-gray-900 pb-2 border-b border-gray-200">
-                仮説一覧 (確信度順)
+                仮説一覧
               </h3>
               {sortedHypotheses.map((hypothesis) => (
                 <div
