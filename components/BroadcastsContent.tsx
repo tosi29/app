@@ -148,11 +148,16 @@ const BroadcastsContent = React.memo(({
   }, [pastBroadcasts, sortColumn, sortDirection]);
   
   useEffect(() => {
-    const initialExpandedState: Record<string, boolean> = {};
-    Object.keys(broadcastsBySeries).forEach(series => {
-      initialExpandedState[series] = true; // Initially expanded
+    setExpandedSeries(prev => {
+      const newState = { ...prev };
+      Object.keys(broadcastsBySeries).forEach(series => {
+        // 新しいシリーズのみデフォルトで閉じた状態に設定
+        if (!(series in newState)) {
+          newState[series] = false; // Initially collapsed
+        }
+      });
+      return newState;
     });
-    setExpandedSeries(initialExpandedState);
   }, [broadcastsBySeries]);
 
   // Toggle expanded state for a series
