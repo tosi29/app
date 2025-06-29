@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import BroadcastEmbed from './BroadcastEmbed';
-import { PastBroadcast } from '../types/broadcast';
+import { SearchResultBroadcast } from '../types/broadcast';
 import { NextRouter } from 'next/router';
 
 interface SearchContentProps {
@@ -20,7 +20,7 @@ const SearchContent = React.memo(({
   const [searchQuery, setSearchQuery] = useState<string>('');
   
   // State for search results
-  const [searchResults, setSearchResults] = useState<PastBroadcast[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResultBroadcast[]>([]);
   const [isSearched, setIsSearched] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   

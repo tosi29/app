@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sampleRetrievalResults } from '../../data/search-sample-data';
 import { SearchResultItem, SearchResponse } from '../../types/search';
-import { PastBroadcast } from '../../types/broadcast';
+import { PastBroadcast, SearchResultBroadcast } from '../../types/broadcast';
 
 // Helper function to convert seconds to MM:SS format
 function secondsToMMSS(seconds: number): string {
@@ -17,12 +17,12 @@ function extractYouTubeId(url: string): string {
 }
 
 // Function to convert SearchResultItem to PastBroadcast for API compatibility
-function convertToPastBroadcast(result: SearchResultItem, index: number): PastBroadcast {
+function convertToSearchResultBroadcast(result: SearchResultItem, index: number): SearchResultBroadcast {
   return {
     id: index + 1,
     date: '2019-01-23', // Default date for compatibility - could be enhanced later
     title: result.title,
-    excerpt: result.description,
+    excerpt: result.description, // 検索結果でのみ使用する概要情報
     series: result.series,
     duration: secondsToMMSS(result.playback_time),
     url: result.url,
@@ -64,16 +64,16 @@ async function callSearchLambda(query: string): Promise<SearchResponse> {
 }
 
 // Fallback to sample data for compatibility
-function getFallbackResults(query?: string): PastBroadcast[] {
-  const pastBroadcasts = sampleRetrievalResults.results.map(convertToPastBroadcast);
+function getFallbackResults(query?: string): SearchResultBroadcast[] {
+  const searchResults = sampleRetrievalResults.results.map(convertToSearchResultBroadcast);
   
   if (!query || query.trim() === '') {
-    return pastBroadcasts;
+    return searchResults;
   }
 
   // Filter sample data by query
   const searchQuery = query.toLowerCase();
-  return pastBroadcasts.filter(broadcast => {
+  return searchResults.filter(broadcast => {
     const titleMatch = broadcast.title.toLowerCase().includes(searchQuery);
     const excerptMatch = broadcast.excerpt.toLowerCase().includes(searchQuery);
     return titleMatch || excerptMatch;
@@ -82,7 +82,7 @@ function getFallbackResults(query?: string): PastBroadcast[] {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PastBroadcast[]>
+  res: NextApiResponse<SearchResultBroadcast[]>
 ) {
   // Get search parameters from query
   const { query } = req.query;
@@ -95,7 +95,7 @@ export default async function handler(
   try {
     // Try to call Lambda API
     const lambdaResult = await callSearchLambda(query);
-    const broadcasts = lambdaResult.results.map(convertToPastBroadcast);
+    const broadcasts = lambdaResult.results.map(convertToSearchResultBroadcast);
     
     res.status(200).json(broadcasts);
   } catch (error) {
