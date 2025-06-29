@@ -293,7 +293,7 @@ const BroadcastsContent = React.memo(({
                             <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
                             <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{broadcast.title}</td>
                             <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
+                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
                               <button
                                 type="button"
                                 onClick={() => toggleEmbedVisibility(broadcast.id)}
@@ -347,7 +347,7 @@ const BroadcastsContent = React.memo(({
                           </div>
                         </td>
                         <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
+                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
                           <button
                             type="button"
                             onClick={() => toggleEmbedVisibility(broadcast.id)}
