@@ -222,15 +222,15 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                     type="number" 
                     dataKey="originalityScore" 
                     domain={[0, 1]}
-                    tickCount={6}
-                    label={{ value: '← 一般的 | 独創的 →', position: 'insideBottom', offset: -10 }}
+                    tick={false}
+                    axisLine={false}
                   />
                   <YAxis 
                     type="number" 
                     dataKey="confidenceScore" 
                     domain={[0, 1]}
-                    tickCount={6}
-                    label={{ value: '確信度', angle: -90, position: 'insideLeft' }}
+                    tick={false}
+                    axisLine={false}
                   />
                   <Tooltip 
                     content={({ active, payload }) => {
@@ -338,9 +338,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
           {/* Right side: Hypotheses List */}
           <div className="flex-1 min-w-[300px] max-lg:flex-none max-lg:min-w-0">
             <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={hypothesesListRef}>
-              <h3 className="m-0 mb-4 text-lg font-semibold text-gray-900 pb-2 border-b border-gray-200">
-                仮説一覧
-              </h3>
               {sortedHypotheses.map((hypothesis) => (
                 <div
                   key={hypothesis.id}
@@ -357,9 +354,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                         ({getEpisodeSeries(hypothesis.episodeId)})
                       </span>
                     </p>
-                    <span className="text-xs text-gray-600 bg-blue-500/10 px-2 py-1 rounded-full">
-                      {Math.round(hypothesis.confidenceScore * 100)}%
-                    </span>
                   </div>
                   <p className="m-0 mb-1 text-sm leading-snug text-gray-900">{hypothesis.hypothesis}</p>
                   <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2">
