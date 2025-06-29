@@ -83,7 +83,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   // Function to get episode series by id
   const getEpisodeSeries = (episodeId: number): string => {
     const broadcast = pastBroadcasts.find(b => b.id === episodeId);
-    return broadcast ? broadcast.series : '';
+    if (!broadcast) return 'その他';
+    return broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
   };
 
   // Function to map series names to color types

@@ -159,7 +159,9 @@ export default function PopularBroadcastsContent({
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
                     <div className="flex flex-col gap-1">
                       <div className="font-medium text-gray-900">{broadcast.title}</div>
-                      <div className="text-xs text-gray-600 font-normal">{broadcast.series}</div>
+                      <div className="text-xs text-gray-600 font-normal">
+                        {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
+                      </div>
                     </div>
                   </td>
                   <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>

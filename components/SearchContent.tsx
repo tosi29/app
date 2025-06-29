@@ -88,7 +88,9 @@ const SearchContent = React.memo(({
               {searchResults.map((broadcast) => (
                 <div key={broadcast.id} className="p-4 border border-gray-200 rounded-lg bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
                   <h3 className="text-xl font-semibold mb-1 text-gray-900">{broadcast.title}</h3>
-                  <div className="text-sm text-gray-600 mb-2">{broadcast.series}</div>
+                  <div className="text-sm text-gray-600 mb-2">
+                    {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
+                  </div>
                   <div className="text-base leading-relaxed text-gray-900 bg-gray-50 p-3 rounded-lg border-l-3 border-l-blue-500 mb-3">{broadcast.excerpt}</div>
                   {broadcast.likeCount && (
                     <div className="text-sm text-gray-600 mb-2">👍 {broadcast.likeCount}</div>

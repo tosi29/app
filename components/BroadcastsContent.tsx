@@ -39,10 +39,12 @@ const BroadcastsContent = React.memo(({
   const broadcastsBySeries = useMemo(() => {
     const grouped: Record<string, PastBroadcast[]> = {};
     pastBroadcasts.forEach(broadcast => {
-      if (!grouped[broadcast.series]) {
-        grouped[broadcast.series] = [];
+      // 空文字列や空白のみのシリーズ名を「その他」に変換
+      const seriesName = broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+      if (!grouped[seriesName]) {
+        grouped[seriesName] = [];
       }
-      grouped[broadcast.series].push(broadcast);
+      grouped[seriesName].push(broadcast);
     });
     
     // Sort broadcasts within each group by ID
@@ -313,7 +315,9 @@ const BroadcastsContent = React.memo(({
                         <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
                           <div className="flex flex-col gap-1">
                             <div className="font-medium text-gray-900">{broadcast.title}</div>
-                            <div className="text-xs text-gray-600 font-normal">{broadcast.series}</div>
+                            <div className="text-xs text-gray-600 font-normal">
+                              {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
+                            </div>
                           </div>
                         </td>
                         <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{broadcast.duration}</td>

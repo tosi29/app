@@ -15,7 +15,7 @@ function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBr
     id: parseInt(episode.id),
     date: '2024-01-01', // デフォルト日付（実際のAPIにdateがあれば使用）
     title: episode.title,
-    series: episode.series_name,
+    series: episode.series_name && episode.series_name.trim() ? episode.series_name.trim() : 'その他',
     duration: '15:00', // デフォルト時間（実際のAPIにdurationがあれば使用）
     url: episode.url.youtube_url,
     youtube_video_id: episode.youtube_id,
@@ -56,7 +56,7 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
     
     // 外部APIデータをPastBroadcast型に変換（安全な変換）
     return data.episodes
-      .filter(episode => episode && episode.id && episode.title && episode.series_name) // 必須フィールドをチェック
+      .filter(episode => episode && episode.id && episode.title) // 必須フィールドをチェック（series_nameは空でもOK）
       .map(convertExternalEpisodeToPastBroadcast);
       
   } catch (error) {

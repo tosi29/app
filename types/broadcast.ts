@@ -8,7 +8,7 @@ export interface PastBroadcast {
   id: number;
   date: string;
   title: string;
-  series: string;
+  series: string; // 空文字列の場合は"その他"として表示される
   duration: string;
   url: string;
   youtube_video_id: string;
