@@ -78,7 +78,7 @@ const SearchContent = React.memo(({
       </div>
       
       {isSearched && (
-        <div className="w-full max-w-4xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
+        <div className="w-full max-w-6xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
           <h2 className="my-6 mx-8 mt-6 mb-3 text-2xl font-semibold text-gray-900 max-md:mx-2">
             検索結果: {searchResults.length}件
           </h2>

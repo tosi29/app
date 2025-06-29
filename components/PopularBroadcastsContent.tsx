@@ -115,7 +115,7 @@ export default function PopularBroadcastsContent({
 
   return (
     <>
-      <div className="w-full max-w-4xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
+      <div className="w-full max-w-6xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
         <table className="w-full border-separate border-spacing-0 mb-0">
           <thead>
             <tr>

@@ -175,7 +175,7 @@ const BroadcastsContent = React.memo(({
       ) : (
         <>
           {/* Display mode controls */}
-          <div className="flex justify-between items-center w-full max-w-4xl my-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 max-md:flex-col max-md:gap-4 max-md:items-stretch">
+          <div className="flex justify-between items-center w-full max-w-6xl my-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 max-md:flex-col max-md:gap-4 max-md:items-stretch">
             <div className="flex items-center gap-2 max-md:justify-center">
               <label className="font-semibold text-gray-900 mr-2">表示モード:</label>
               <button
@@ -218,7 +218,7 @@ const BroadcastsContent = React.memo(({
             )}
           </div>
 
-          <div className="w-full max-w-4xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
+          <div className="w-full max-w-6xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
             <table className="w-full border-separate border-spacing-0 mb-0">
               <thead>
                 <tr>
@@ -277,9 +277,9 @@ const BroadcastsContent = React.memo(({
                       {expandedSeries[series] && broadcasts.map((broadcast) => (
                         <React.Fragment key={broadcast.id}>
                           <tr>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{formatDate(broadcast.date)}</td>
+                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
                             <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{broadcast.title}</td>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{formatDuration(broadcast.duration)}</td>
+                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
                             <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
                               <button
                                 type="button"
@@ -324,7 +324,7 @@ const BroadcastsContent = React.memo(({
                   sortedBroadcasts.map((broadcast) => (
                     <React.Fragment key={broadcast.id}>
                       <tr>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{formatDate(broadcast.date)}</td>
+                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
                         <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
                           <div className="flex flex-col gap-1">
                             <div className="font-medium text-gray-900">{broadcast.title}</div>
@@ -333,7 +333,7 @@ const BroadcastsContent = React.memo(({
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{formatDuration(broadcast.duration)}</td>
+                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
                         <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
                           <button
                             type="button"
