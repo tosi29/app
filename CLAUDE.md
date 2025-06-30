@@ -2,7 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-06-30 - Added design system guidelines and established common style patterns
+**Last Updated:** 2025-06-30 - Added product vision and design system guidelines
+
+## プロダクトビジョン
+
+ポッドキャスト配信コンテンツによって、リスナーの学びを促進する
+- ユーザが求めている過去のポッドキャスト配信コンテンツへ容易にアクセスできるようにする
+- エピソードから得られる仮説（原理原則、法則、教訓など）を可視化することで、気付きや発見の機会を提供する
 
 ## Development Commands
 
