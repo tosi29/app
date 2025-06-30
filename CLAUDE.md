@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-06-29 - Reflects hypothesis visualization enhancements, external API integration, and UI improvements
+**Last Updated:** 2025-06-30 - Added Playwright MCP testing guidelines and verified functionality across all main application screens
 
 ## Development Commands
 
@@ -66,66 +66,15 @@ The application also features `Hypothesis` objects:
 - Expandable/collapsible series groups in main listing
 - Series-aware search and filtering with playback time-based YouTube deep-linking
 
-**Tab-Based Navigation:**
-Four main content areas accessible via `Tabs` component:
-1. **Broadcasts** - Series-grouped past content with expandable/collapsible groups
-2. **Popular** - Engagement-sorted content with hypothesis count integration
-3. **Search** - External API search with Lambda integration and fallback functionality
-4. **Hypotheses** - Interactive 2D scatter plot visualization using Recharts library
+**UI仕様の詳細:**
+詳細なUI仕様、コンポーネント構成、API仕様、データ構造については `docs/ui-specifications.md` を参照してください。
 
-### Component Relationships
-
-**Data Flow:**
-- API routes (`/pages/api/`) provide data endpoints
-- Page components (`/pages/`) fetch data and manage state
-- UI components (`/components/`) receive data as props
-- CSS Modules (`/styles/`) provide component-specific styling
-
-**Key Components:**
-- `BroadcastsContent` - Main listing with series grouping, view mode toggle, and sorting
-- `SearchContent` - Search interface with external API integration and fallback
-- `HypothesesSection` - Interactive 2D scatter plot with Recharts, simplified display
-- `BroadcastSummaryModal` - Rich episode summary display with structured content
-- `SettingsModal` - User preferences (embed type selection)
-- `PopularBroadcastsContent` - Engagement metrics with hypothesis count integration
-
-**API Endpoints:**
-- `/api/broadcasts` - Main broadcast content data with external API integration and fallback
-- `/api/hypotheses` - Hypothesis data with episode filtering, confidence/originality scores
-- `/api/popular-broadcasts` - Engagement metrics including calculated hypothesis counts
-- `/api/search-broadcasts` - External Lambda search with excerpt generation and playback time support
-
-### TypeScript Integration
-- Strict TypeScript configuration with comprehensive type checking
-- Centralized type definitions in `/types/` directory
-- Interface-driven development for broadcast and hypothesis data structures
-- Key interfaces: `PastBroadcast`, `PopularBroadcast`, `SearchResultBroadcast`, `ExternalEpisode`, `Hypothesis`
-
-### Hypotheses Feature
-- Interactive 2D scatter plot using Recharts library (confidence vs originality)
-- Simplified graph display without axis labels/numbers for clean interface
-- Each hypothesis includes supporting facts/evidence arrays
-- Episode-specific filtering and analysis with dropdown selection
-- User feedback system with emoji interactions (🤔 interesting, ✨ groundbreaking, 🎯 worth testing)
-- Confidence score and originality score metrics (0-100 scale)
-- Responsive design with mobile optimization
-- Real-time tooltip display with hypothesis details
-
-### External API Integration
-- Lambda function integration for search functionality with environment variable configuration
-- Robust fallback system when external APIs are unavailable
-- YouTube deep-linking with playback time parameters for precise episode moments
-- Multi-platform URL support (YouTube, Spotify, Voicy) with automatic detection
-- External episode data conversion to internal broadcast format with excerpt extraction
-- Error handling and graceful degradation for network issues
-
-### Styling Architecture
-- TailwindCSS utility classes for rapid UI development
-- Responsive design with mobile-first approach (breakpoints for mobile/desktop)
-- Japanese language support throughout UI with proper typography
-- Recharts integration for data visualization with custom styling
-- Component-specific CSS modules for complex layouts
-- Consistent color schemes and spacing patterns
+**主要機能概要:**
+- **4つのタブベースナビゲーション**: 配信一覧、人気の配信、検索、仮説
+- **外部API統合**: Lambda関数による検索機能とフォールバック機能
+- **マルチプラットフォーム対応**: YouTube/Spotify切り替え可能な埋め込みプレイヤー
+- **インタラクティブな仮説可視化**: Rechartsによる2D散布図
+- **レスポンシブデザイン**: モバイル/デスクトップ対応
 
 ## Playwright MCP使用ルール
 
@@ -147,3 +96,26 @@ Four main content areas accessible via `Tabs` component:
    - 回避策を探さない
    - 代替手段を実行しない
    - エラーメッセージをそのまま伝える
+
+### Playwright MCPテスト実績と制約
+
+**テスト済み機能（2025-06-30）:**
+- ✅ 4つのメイン画面すべてでアクセス・操作確認済み
+- ✅ タブ切り替え、検索機能、シリーズ展開/閉じる操作
+- ✅ 基本的なブラウザ操作（navigate, click, type, snapshot）
+
+**制約事項:**
+- ⚠️ レスポンス制限: 25,000トークン超過時は詳細確認不可
+- ⚠️ 大容量データページ（人気の配信、仮説、設定モーダル）では要素の絞り込みが必要
+- ⚠️ 開発サーバー起動時は十分な待機時間（3秒以上）を確保
+
+**推奨テスト手順:**
+1. 開発サーバーをバックグラウンドで起動: `npm run dev &`
+2. 3秒以上待機してからブラウザアクセス
+3. 軽い操作から順次実行（配信一覧 → 検索 → 人気/仮説）
+4. 大容量ページでは特定要素を指定してテスト
+
+**データ規模:**
+- 配信データ: 約500件（60シリーズ）
+- 検索結果: 通常10-50件
+- 仮説データ: エピソード別に複数仮説
