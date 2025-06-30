@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-06-30 - Added Playwright MCP testing guidelines and commit checklist for documentation maintenance
+**Last Updated:** 2025-06-30 - Added design system guidelines and established common style patterns
 
 ## Development Commands
 
@@ -11,6 +11,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev
 ```
 Starts Next.js development server on http://localhost:3000
+
+**開発サーバー管理のベストプラクティス:**
+- **起動前確認**: `lsof -i :3000` でポート3000の使用状況を確認
+- **バックグラウンド起動**: テスト時は `npm run dev &` でバックグラウンド実行
+- **プロセス確認**: `ps aux | grep "next\|node.*3000"` で実行中サーバーを確認
+- **適切な終了**: `pkill -f "next dev"` または `Ctrl+C` で明示的に終了
+- **ポート競合時**: Next.jsが自動的に別ポート（3001等）を使用
 
 **Build & Production:**
 ```bash
@@ -76,6 +83,21 @@ The application also features `Hypothesis` objects:
 - **インタラクティブな仮説可視化**: Rechartsによる2D散布図
 - **レスポンシブデザイン**: モバイル/デスクトップ対応
 
+### デザインシステムガイドライン
+
+**共通スタイルパターン:**
+- **行ホバー**: `hover:bg-gray-50 transition-colors duration-150`
+- **ボタンホバー**: `hover:bg-blue-500 hover:text-white hover:-translate-y-px`
+- **カード要素**: `hover:shadow-md transition-all duration-200`
+- **フォーカス状態**: `focus:outline-2 focus:outline-blue-500 focus:outline-offset-2`
+- **アクティブ状態**: `active:translate-y-0 active:shadow-sm`
+
+**カラーパレット:**
+- **プライマリ**: `blue-500` (メインアクション、フォーカス)
+- **セカンダリ**: `gray-100`, `gray-200` (背景、境界線)
+- **ホバー**: `gray-50` (テーブル行), `gray-100` (ヘッダー)
+- **テキスト**: `gray-900` (メイン), `gray-600` (サブ)
+
 ## Playwright MCP使用ルール
 
 ### 絶対的な禁止事項
@@ -110,10 +132,12 @@ The application also features `Hypothesis` objects:
 - ⚠️ 開発サーバー起動時は十分な待機時間（3秒以上）を確保
 
 **推奨テスト手順:**
-1. 開発サーバーをバックグラウンドで起動: `npm run dev &`
-2. 3秒以上待機してからブラウザアクセス
-3. 軽い操作から順次実行（配信一覧 → 検索 → 人気/仮説）
-4. 大容量ページでは特定要素を指定してテスト
+1. **サーバー状況確認**: `lsof -i :3000` で既存サーバーをチェック
+2. **必要に応じて起動**: サーバーが動いていない場合のみ `npm run dev &` で起動
+3. **起動完了待機**: "Ready in XXXms" メッセージ確認後にテスト開始
+4. **軽い操作から順次実行**: 配信一覧 → 検索 → 人気/仮説の順
+5. **大容量ページ対策**: 特定要素を指定してテスト
+6. **テスト後処理**: 必要に応じて `pkill -f "next dev"` でサーバー終了
 
 **データ規模:**
 - 配信データ: 約500件（60シリーズ）
