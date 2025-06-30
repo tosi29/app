@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-06-30 - Added Playwright MCP testing guidelines and verified functionality across all main application screens
+**Last Updated:** 2025-06-30 - Added Playwright MCP testing guidelines and commit checklist for documentation maintenance
 
 ## Development Commands
 
@@ -119,3 +119,26 @@ The application also features `Hypothesis` objects:
 - 配信データ: 約500件（60シリーズ）
 - 検索結果: 通常10-50件
 - 仮説データ: エピソード別に複数仮説
+
+## コミット前チェックリスト
+
+### ドキュメント更新確認
+プッシュ前に以下のドキュメントが最新状態になっているか確認してください：
+
+**必須確認項目:**
+- [ ] **CLAUDE.md**: Last Updatedの日付更新
+- [ ] **docs/ui-specifications.md**: UI変更がある場合は仕様書の更新
+- [ ] **package.json**: 依存関係の変更がある場合はバージョン確認
+- [ ] **README.md**: 新機能追加時は使用方法の更新
+
+**機能別確認項目:**
+- [ ] **新しいAPI追加**: `docs/ui-specifications.md`のAPI仕様セクション更新
+- [ ] **UI変更**: アイコン、ボタン、レイアウト変更時は仕様書の該当箇所を更新
+- [ ] **新しいタブ・画面追加**: ナビゲーション構成とテスト結果を更新
+- [ ] **Playwright MCPテスト実施**: テスト結果と制約事項を両ファイルに反映
+
+**推奨確認手順:**
+1. 変更内容に応じて該当ドキュメントを確認
+2. 実装と仕様書の整合性をチェック
+3. 新機能のテスト結果があれば文書化
+4. コミットメッセージに文書更新内容を含める
