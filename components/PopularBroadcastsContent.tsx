@@ -155,8 +155,8 @@ export default function PopularBroadcastsContent({
           <tbody>
             {sortedBroadcasts.map((broadcast) => (
               <React.Fragment key={broadcast.id}>
-                <tr>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
+                <tr className="hover:bg-gray-50 transition-colors duration-150">
+                  <td className="px-3 py-2 text-left border-b border-gray-200">
                     <div className="flex flex-col gap-1">
                       <div className="font-medium text-gray-900">{broadcast.title}</div>
                       <div className="text-xs text-gray-600 font-normal">
@@ -164,11 +164,11 @@ export default function PopularBroadcastsContent({
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.hypothesisCount}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.likeCount || ''}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{broadcast.date || '—'}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.hypothesisCount}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.likeCount || ''}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.date || '—'}</td>
+                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">
                     <div className="flex items-center gap-1">
                       <button
                         type="button"

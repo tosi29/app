@@ -333,11 +333,11 @@ const BroadcastsContent = React.memo(({
                       </tr>
                       {expandedSeries[series] && broadcasts.map((broadcast) => (
                         <React.Fragment key={broadcast.id}>
-                          <tr>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">{broadcast.title}</td>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
-                            <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                          <tr className="hover:bg-gray-50 transition-colors duration-150">
+                            <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{formatDate(broadcast.date)}</td>
+                            <td className="px-3 py-2 text-left border-b border-gray-200">{broadcast.title}</td>
+                            <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
+                            <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">
                               <button
                                 type="button"
                                 onClick={() => toggleEmbedVisibility(broadcast.id)}
@@ -380,9 +380,9 @@ const BroadcastsContent = React.memo(({
                   // List display mode
                   sortedBroadcasts.map((broadcast) => (
                     <React.Fragment key={broadcast.id}>
-                      <tr>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100">
+                      <tr className="hover:bg-gray-50 transition-colors duration-150">
+                        <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{formatDate(broadcast.date)}</td>
+                        <td className="px-3 py-2 text-left border-b border-gray-200">
                           <div className="flex flex-col gap-1">
                             <div className="font-medium text-gray-900">{broadcast.title}</div>
                             <div className="text-xs text-gray-600 font-normal">
@@ -390,8 +390,8 @@ const BroadcastsContent = React.memo(({
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
-                        <td className="px-3 py-2 text-left border-b border-gray-200 hover:bg-gray-100 whitespace-nowrap">
+                        <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{formatDuration(broadcast.duration)}</td>
+                        <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">
                           <button
                             type="button"
                             onClick={() => toggleEmbedVisibility(broadcast.id)}
