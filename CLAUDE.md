@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-06-30 - Added product vision with implementation guidelines
+**Last Updated:** 2025-07-02 - Added AI hypothesis visualization implementation patterns and Recharts best practices
 
 ## プロダクトビジョン
 
@@ -108,6 +108,50 @@ The application also features `Hypothesis` objects:
 - **セカンダリ**: `gray-100`, `gray-200` (背景、境界線)
 - **ホバー**: `gray-50` (テーブル行), `gray-100` (ヘッダー)
 - **テキスト**: `gray-900` (メイン), `gray-600` (サブ)
+
+## AI仮説可視化機能の実装パターン
+
+### Rechartsデータマッピングの重要な知見
+
+**問題**: 複数Scatterコンポーネント（トピック別）使用時のデータ座標マッピング不整合
+```tsx
+// ❌ 問題のあるパターン
+{topics.map(topic => (
+  <Scatter key={topic} data={topicData.filter(h => h.topic === topic)} />
+))}
+```
+
+**解決**: 単一Scatterコンポーネント + Cell制御による安定したマッピング
+```tsx
+// ✅ 推奨パターン
+<Scatter data={allData}>
+  {allData.map(item => (
+    <Cell fill={getColor(item.topic)} opacity={isVisible(item.topic) ? 1 : 0.1} />
+  ))}
+</Scatter>
+```
+
+### インタラクティブlegend実装パターン
+
+**透明化アプローチ**: Plotlyライクな表示/非表示制御
+- **座標固定**: 非表示でも点の位置は維持（opacity制御）
+- **状態管理**: Set型での効率的な表示/非表示管理
+- **isolate機能**: ダブルクリックによる単独表示
+
+```tsx
+// 状態管理
+const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(new Set());
+const [isolatedTopic, setIsolatedTopic] = useState<string | null>(null);
+
+// 透明度制御
+fillOpacity={isTopicVisible(hypothesis.topic) ? 1 : 0.1}
+```
+
+### デバッグ時のアプローチ
+
+1. **データ整合性確認**: グラフ表示データ vs リスト表示データ
+2. **座標マッピング検証**: ツールチップ vs クリック処理のデータ一致性
+3. **状態管理一貫性**: フィルタリング条件の統一性チェック
 
 ## Playwright MCP使用ルール
 
