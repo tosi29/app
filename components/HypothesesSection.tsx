@@ -21,6 +21,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
   const [selectedTopic, setSelectedTopic] = useState<string>('');
+  const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(new Set());
+  const [isolatedTopic, setIsolatedTopic] = useState<string | null>(null);
   const hypothesesListRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
@@ -126,14 +128,16 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     return filtered;
   };
 
+  // Helper function to check if topic is visible
+  const isTopicVisible = (topic: string): boolean => {
+    return !hiddenTopics.has(topic);
+  };
+
   // Get filtered hypotheses
   const filteredHypotheses = getFilteredHypotheses();
   
-  // Get all hypotheses that are currently visible in the graph
-  const graphVisibleHypotheses = getUniqueTopics().reduce((acc: Hypothesis[], topic) => {
-    const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
-    return acc.concat(topicHypotheses);
-  }, []);
+  // Get all hypotheses that are currently visible in the graph (considering hidden topics)
+  const graphVisibleHypotheses = filteredHypotheses.filter(h => isTopicVisible(h.topic));
   
   // Sort graph-visible hypotheses for the list display
   const graphSortedHypotheses = [...graphVisibleHypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
@@ -200,6 +204,40 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     setSelectedTopic(event.target.value);
   };
 
+  // Plotly-like legend functions
+  const handleTopicSingleClick = (topic: string): void => {
+    if (isolatedTopic) {
+      // If in isolated mode, exit isolation first
+      setIsolatedTopic(null);
+      setHiddenTopics(new Set());
+    } else {
+      // Toggle visibility of the clicked topic
+      setHiddenTopics(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(topic)) {
+          newSet.delete(topic);
+        } else {
+          newSet.add(topic);
+        }
+        return newSet;
+      });
+    }
+  };
+
+  const handleTopicDoubleClick = (topic: string): void => {
+    if (isolatedTopic === topic) {
+      // If double-clicking the same isolated topic, restore all
+      setIsolatedTopic(null);
+      setHiddenTopics(new Set());
+    } else {
+      // Isolate the clicked topic (hide all others)
+      const allTopics = getUniqueTopics();
+      const topicsToHide = allTopics.filter(t => t !== topic);
+      setHiddenTopics(new Set(topicsToHide));
+      setIsolatedTopic(topic);
+    }
+  };
+
   return (
     <>
       {/* Dropdown filters for episodes and topics */}
@@ -263,7 +301,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                   margin={{
                     top: 20,
                     right: 20,
-                    bottom: 80,
+                    bottom: 20,
                     left: 60,
                   }}
                   onClick={handleClickOutside}
@@ -313,40 +351,16 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                       return null;
                     }}
                   />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={60}
-                    content={() => (
-                      <div className="flex justify-center gap-4 mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 max-md:flex-wrap max-md:gap-2 max-md:justify-start">
-                        {getUniqueTopics().map(topic => {
-                          const color = getTopicColor(topic);
-                          const hypothesesCount = filteredHypotheses.filter(h => h.topic === topic).length;
-                          if (hypothesesCount === 0) return null;
-                          
-                          return (
-                            <div key={topic} className="flex items-center gap-2 text-sm whitespace-nowrap">
-                              <div 
-                                className="w-3 h-3 rounded-full flex-shrink-0" 
-                                style={{ backgroundColor: color }}
-                              />
-                              <span className="font-medium truncate max-w-[120px]" title={topic}>{topic}</span>
-                              <span className="text-gray-500 flex-shrink-0">({hypothesesCount})</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  />
-                  {/* Single scatter with all hypotheses */}
+                  {/* Single scatter with visible hypotheses */}
                   <Scatter
-                    data={filteredHypotheses}
+                    data={graphVisibleHypotheses}
                     onClick={(data) => {
                       if (data && data.payload) {
                         handleHypothesisClick(data.payload as Hypothesis);
                       }
                     }}
                   >
-                    {filteredHypotheses.map((hypothesis) => (
+                    {graphVisibleHypotheses.map((hypothesis) => (
                       <Cell 
                         key={`cell-${hypothesis.id}`}
                         fill={getTopicColor(hypothesis.topic)}
@@ -360,6 +374,70 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
               </ResponsiveContainer>
             </div>
 
+          </div>
+
+          {/* Middle: Topic Legend */}
+          <div className="min-w-[160px] max-w-[180px] max-lg:min-w-0 max-lg:max-w-none">
+            <div className="bg-gray-50 rounded-lg border border-gray-200 p-3 h-[600px] overflow-y-auto">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 text-center">トピック</h3>
+              <div className="space-y-2">
+                {getUniqueTopics().map(topic => {
+                  const color = getTopicColor(topic);
+                  const hypothesesCount = filteredHypotheses.filter(h => h.topic === topic).length;
+                  if (hypothesesCount === 0) return null;
+                  
+                  const isVisible = isTopicVisible(topic);
+                  const isIsolated = isolatedTopic === topic;
+                  
+                  return (
+                    <div 
+                      key={topic} 
+                      className={`flex items-center gap-2 p-2 rounded-md cursor-pointer select-none transition-all duration-200 ${
+                        isVisible 
+                          ? 'hover:bg-white hover:shadow-sm' 
+                          : 'opacity-50'
+                      } ${
+                        isIsolated ? 'bg-blue-100 ring-1 ring-blue-300' : ''
+                      }`}
+                      onClick={() => handleTopicSingleClick(topic)}
+                      onDoubleClick={() => handleTopicDoubleClick(topic)}
+                      title={`${topic} (${hypothesesCount}件)\nクリック: 表示/非表示切替\nダブルクリック: 単独表示`}
+                    >
+                      <div 
+                        className={`w-3 h-3 rounded-full flex-shrink-0 transition-opacity duration-200 ${
+                          !isVisible ? 'opacity-30' : ''
+                        }`}
+                        style={{ backgroundColor: color }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className={`text-xs font-medium truncate transition-all duration-200 ${
+                          !isVisible ? 'line-through text-gray-400' : 'text-gray-800'
+                        }`}>
+                          {topic}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {hypothesesCount}件
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {(hiddenTopics.size > 0 || isolatedTopic) && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <button
+                    className="w-full px-3 py-2 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
+                    onClick={() => {
+                      setHiddenTopics(new Set());
+                      setIsolatedTopic(null);
+                    }}
+                    title="すべてのトピックを表示"
+                  >
+                    すべて表示
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right side: Hypotheses List */}
