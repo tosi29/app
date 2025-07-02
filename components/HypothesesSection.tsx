@@ -126,9 +126,17 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     return filtered;
   };
 
-  // Sort filtered hypotheses by confidence score
+  // Get filtered hypotheses
   const filteredHypotheses = getFilteredHypotheses();
-  const sortedHypotheses = [...filteredHypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
+  
+  // Get all hypotheses that are currently visible in the graph
+  const graphVisibleHypotheses = getUniqueTopics().reduce((acc: Hypothesis[], topic) => {
+    const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
+    return acc.concat(topicHypotheses);
+  }, []);
+  
+  // Sort graph-visible hypotheses for the list display
+  const graphSortedHypotheses = [...graphVisibleHypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
 
 
   // Handle click on hypothesis dot
@@ -239,7 +247,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
           <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>仮説を読み込んでいます...</p>
           <div className="w-10 h-10 border-3 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
         </div>
-      ) : filteredHypotheses.length === 0 ? (
+      ) : graphSortedHypotheses.length === 0 ? (
         <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
           仮説はありません
         </div>
@@ -329,38 +337,25 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                       </div>
                     )}
                   />
-                  {/* Group hypotheses by topic for different colors */}
-                  {getUniqueTopics().map((topic) => {
-                      const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
-                      const color = getTopicColor(topic);
-                      
-                      if (topicHypotheses.length === 0) return null;
-                      
-                      return (
-                        <Scatter
-                          key={topic}
-                          name={topic}
-                          data={topicHypotheses}
-                          fill={color}
-                          onClick={(data) => {
-                            if (data && data.payload) {
-                              handleHypothesisClick(data.payload as Hypothesis);
-                            }
-                          }}
-                        >
-                          {topicHypotheses.map((hypothesis, entryIndex) => (
-                            <Cell 
-                              key={`cell-${entryIndex}`}
-                              fill={color}
-                              stroke={selectedHypothesis?.id === hypothesis.id ? '#000' : 'none'}
-                              strokeWidth={selectedHypothesis?.id === hypothesis.id ? 2 : 0}
-                              r={selectedHypothesis?.id === hypothesis.id ? 8 : 6}
-                            />
-                          ))}
-                        </Scatter>
-                      );
-                    })
-                  }
+                  {/* Single scatter with all hypotheses */}
+                  <Scatter
+                    data={filteredHypotheses}
+                    onClick={(data) => {
+                      if (data && data.payload) {
+                        handleHypothesisClick(data.payload as Hypothesis);
+                      }
+                    }}
+                  >
+                    {filteredHypotheses.map((hypothesis) => (
+                      <Cell 
+                        key={`cell-${hypothesis.id}`}
+                        fill={getTopicColor(hypothesis.topic)}
+                        stroke={selectedHypothesis?.id === hypothesis.id ? '#000' : 'none'}
+                        strokeWidth={selectedHypothesis?.id === hypothesis.id ? 2 : 0}
+                        r={selectedHypothesis?.id === hypothesis.id ? 8 : 6}
+                      />
+                    ))}
+                  </Scatter>
                 </ScatterChart>
               </ResponsiveContainer>
             </div>
@@ -370,7 +365,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
           {/* Right side: Hypotheses List */}
           <div className="flex-1 min-w-[300px] max-lg:flex-none max-lg:min-w-0">
             <div className="max-h-[600px] overflow-y-auto p-3 rounded-lg bg-white max-md:p-2" ref={hypothesesListRef}>
-              {sortedHypotheses.map((hypothesis) => (
+              {graphSortedHypotheses.map((hypothesis) => (
                 <div
                   key={hypothesis.id}
                   data-hypothesis-id={hypothesis.id}
