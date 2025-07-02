@@ -20,7 +20,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
-  const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(new Set());
   const [isolatedTopic, setIsolatedTopic] = useState<string | null>(null);
   const hypothesesListRef = useRef<HTMLDivElement>(null);
@@ -119,13 +118,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   // Function to get filtered hypotheses
   const getFilteredHypotheses = (): Hypothesis[] => {
-    let filtered = hypotheses;
-    
-    if (selectedTopic) {
-      filtered = filtered.filter(h => h.topic === selectedTopic);
-    }
-    
-    return filtered;
+    return hypotheses;
   };
 
   // Helper function to check if topic is visible
@@ -199,10 +192,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     }, undefined, { shallow: true });
   };
 
-  // Handle topic filter change
-  const handleTopicChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setSelectedTopic(event.target.value);
-  };
 
   // Plotly-like legend functions
   const handleTopicSingleClick = (topic: string): void => {
@@ -240,8 +229,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   return (
     <>
-      {/* Dropdown filters for episodes and topics */}
-      <div className="w-full max-w-5xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center gap-6 max-md:flex-col max-md:gap-3 max-md:px-3">
+      {/* Dropdown filter for episodes */}
+      <div className="w-full max-w-5xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center max-md:px-3">
         <div className="flex items-center gap-3 max-md:w-full">
           <label htmlFor="episode-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
             配信で絞り込み:
@@ -256,24 +245,6 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
             {pastBroadcasts.map((broadcast) => (
               <option key={broadcast.id} value={broadcast.id}>
                 {broadcast.title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center gap-3 max-md:w-full">
-          <label htmlFor="topic-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
-            トピックで絞り込み:
-          </label>
-          <select
-            id="topic-filter"
-            value={selectedTopic}
-            onChange={handleTopicChange}
-            className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[150px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:flex-1"
-          >
-            <option value="">すべて</option>
-            {getUniqueTopics().map((topic) => (
-              <option key={topic} value={topic}>
-                {topic}
               </option>
             ))}
           </select>

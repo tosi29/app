@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-07-02 - Added AI hypothesis visualization implementation patterns and Recharts best practices
+**Last Updated:** 2025-07-02 - Simplified hypothesis UI by removing redundant topic filter dropdown
 
 ## プロダクトビジョン
 
