@@ -20,6 +20,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
+  const [selectedTopic, setSelectedTopic] = useState<string>('');
   const hypothesesListRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
@@ -87,31 +88,47 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     return broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
   };
 
-  // Function to map series names to color types
-  const getSeriesColorType = (seriesName: string): string => {
-    // Get all unique series from broadcasts
-    const allSeries = Array.from(new Set(pastBroadcasts.map(b => b.series)));
-    const colorTypes = ['basic', 'guest', 'community'];
+  // Function to map topic names to colors
+  const getTopicColor = (topic: string): string => {
+    const topicColors: { [key: string]: string } = {
+      'リーダーシップ': '#3b82f6',     // Blue
+      '教育手法': '#10b981',          // Green
+      'コミュニケーション': '#f59e0b',  // Amber
+      '技術革新': '#8b5cf6',          // Purple
+      '社会変化': '#ef4444',          // Red
+      '認知科学': '#06b6d4',          // Cyan
+      '人工知能': '#ec4899',          // Pink
+      '仮想現実': '#84cc16',          // Lime
+      '先端科学': '#6366f1',          // Indigo
+      '人材育成': '#14b8a6',          // Teal
+      '学問統合': '#f97316',          // Orange
+      '時代背景': '#a855f7',          // Violet
+      '学習理論': '#22c55e',          // Green
+      'その他': '#6b7280'             // Gray
+    };
     
-    // Sort series alphabetically for consistent assignment
-    const sortedSeries = allSeries.sort();
-    const seriesIndex = sortedSeries.indexOf(seriesName);
-    
-    // Assign color type cyclically
-    return seriesIndex >= 0 ? colorTypes[seriesIndex % colorTypes.length] : 'basic';
+    return topicColors[topic] || '#6b7280';
   };
 
-  // Function to get series CSS class name
-  const getSeriesClassName = (episodeId: number): string => {
-    const series = getEpisodeSeries(episodeId);
-    if (!series) return '';
-    
-    const colorType = getSeriesColorType(series);
-    return `hypothesisDot-${colorType}`;
+  // Function to get unique topics from hypotheses
+  const getUniqueTopics = (): string[] => {
+    return Array.from(new Set(hypotheses.map(h => h.topic))).sort();
   };
 
-  // Sort hypotheses by confidence score
-  const sortedHypotheses = [...hypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
+  // Function to get filtered hypotheses
+  const getFilteredHypotheses = (): Hypothesis[] => {
+    let filtered = hypotheses;
+    
+    if (selectedTopic) {
+      filtered = filtered.filter(h => h.topic === selectedTopic);
+    }
+    
+    return filtered;
+  };
+
+  // Sort filtered hypotheses by confidence score
+  const filteredHypotheses = getFilteredHypotheses();
+  const sortedHypotheses = [...filteredHypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
 
 
   // Handle click on hypothesis dot
@@ -170,26 +187,51 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     }, undefined, { shallow: true });
   };
 
+  // Handle topic filter change
+  const handleTopicChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setSelectedTopic(event.target.value);
+  };
+
   return (
     <>
-      {/* Dropdown filter for episodes */}
-      <div className="w-full max-w-4xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center gap-3 max-md:flex-col max-md:gap-2 max-md:px-3">
-        <label htmlFor="episode-filter" className="font-semibold text-gray-900 m-0 text-sm">
-          配信で絞り込み:
-        </label>
-        <select
-          id="episode-filter"
-          value={dropdownEpisodeId || ''}
-          onChange={handleDropdownChange}
-          className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[200px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:w-full"
-        >
-          <option value="">すべて</option>
-          {pastBroadcasts.map((broadcast) => (
-            <option key={broadcast.id} value={broadcast.id}>
-              {broadcast.title}
-            </option>
-          ))}
-        </select>
+      {/* Dropdown filters for episodes and topics */}
+      <div className="w-full max-w-5xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center gap-6 max-md:flex-col max-md:gap-3 max-md:px-3">
+        <div className="flex items-center gap-3 max-md:w-full">
+          <label htmlFor="episode-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
+            配信で絞り込み:
+          </label>
+          <select
+            id="episode-filter"
+            value={dropdownEpisodeId || ''}
+            onChange={handleDropdownChange}
+            className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[200px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:flex-1"
+          >
+            <option value="">すべて</option>
+            {pastBroadcasts.map((broadcast) => (
+              <option key={broadcast.id} value={broadcast.id}>
+                {broadcast.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-3 max-md:w-full">
+          <label htmlFor="topic-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
+            トピックで絞り込み:
+          </label>
+          <select
+            id="topic-filter"
+            value={selectedTopic}
+            onChange={handleTopicChange}
+            className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[150px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:flex-1"
+          >
+            <option value="">すべて</option>
+            {getUniqueTopics().map((topic) => (
+              <option key={topic} value={topic}>
+                {topic}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {loading ? (
@@ -197,7 +239,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
           <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-secondary)' }}>仮説を読み込んでいます...</p>
           <div className="w-10 h-10 border-3 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
         </div>
-      ) : hypotheses.length === 0 ? (
+      ) : filteredHypotheses.length === 0 ? (
         <div style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-secondary)' }}>
           仮説はありません
         </div>
@@ -221,14 +263,14 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis 
                     type="number" 
-                    dataKey="originalityScore" 
+                    dataKey="x" 
                     domain={[0, 1]}
                     tick={false}
                     axisLine={false}
                   />
                   <YAxis 
                     type="number" 
-                    dataKey="confidenceScore" 
+                    dataKey="y" 
                     domain={[0, 1]}
                     tick={false}
                     axisLine={false}
@@ -245,6 +287,13 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                                 ({getEpisodeSeries(data.episodeId)})
                               </span>
                             </p>
+                            <div className="flex items-center gap-2 mb-1">
+                              <div 
+                                className="w-2 h-2 rounded-full flex-shrink-0" 
+                                style={{ backgroundColor: getTopicColor(data.topic) }}
+                              />
+                              <span className="text-xs font-medium text-gray-700">{data.topic}</span>
+                            </div>
                             <p className="text-sm leading-snug text-gray-900 mb-1 m-0">{data.hypothesis}</p>
                             <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-1">
                               <span className="font-medium">事実:</span> {data.fact}
@@ -261,55 +310,37 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                     height={60}
                     content={() => (
                       <div className="flex justify-center gap-4 mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 max-md:flex-wrap max-md:gap-2 max-md:justify-start">
-                        {!dropdownEpisodeId ? (
-                          // Show all series when no filter is applied
-                          Array.from(new Set(hypotheses.map(h => getEpisodeSeries(h.episodeId))))
-                            .sort()
-                            .map(series => {
-                              const colorType = getSeriesColorType(series);
-                              const color = colorType === 'basic' ? '#3b82f6' : colorType === 'guest' ? '#10b981' : '#8b5cf6';
-                              const hypothesesCount = hypotheses.filter(h => getEpisodeSeries(h.episodeId) === series).length;
-                              return (
-                                <div key={series} className="flex items-center gap-2 text-sm whitespace-nowrap">
-                                  <div 
-                                    className="w-3 h-3 rounded-full flex-shrink-0" 
-                                    style={{ backgroundColor: color }}
-                                  />
-                                  <span className="font-medium truncate max-w-[120px]" title={series}>{series}</span>
-                                  <span className="text-gray-500 flex-shrink-0">({hypothesesCount})</span>
-                                </div>
-                              );
-                            })
-                        ) : (
-                          // Show only the selected episode's series when filtered
-                          <div className="flex items-center gap-2 text-sm">
-                            <div 
-                              className="w-3 h-3 rounded-full" 
-                              style={{ 
-                                backgroundColor: getSeriesColorType(getEpisodeSeries(dropdownEpisodeId)) === 'basic' ? '#3b82f6' : 
-                                                 getSeriesColorType(getEpisodeSeries(dropdownEpisodeId)) === 'guest' ? '#10b981' : '#8b5cf6'
-                              }}
-                            />
-                            <span className="font-medium">{getEpisodeSeries(dropdownEpisodeId)}</span>
-                            <span className="text-gray-500">({hypotheses.length})</span>
-                          </div>
-                        )}
+                        {getUniqueTopics().map(topic => {
+                          const color = getTopicColor(topic);
+                          const hypothesesCount = filteredHypotheses.filter(h => h.topic === topic).length;
+                          if (hypothesesCount === 0) return null;
+                          
+                          return (
+                            <div key={topic} className="flex items-center gap-2 text-sm whitespace-nowrap">
+                              <div 
+                                className="w-3 h-3 rounded-full flex-shrink-0" 
+                                style={{ backgroundColor: color }}
+                              />
+                              <span className="font-medium truncate max-w-[120px]" title={topic}>{topic}</span>
+                              <span className="text-gray-500 flex-shrink-0">({hypothesesCount})</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   />
-                  {/* Group hypotheses by series for different colors */}
-                  {Array.from(new Set(hypotheses.map(h => getEpisodeSeries(h.episodeId))))
-                    .sort()
-                    .map((series) => {
-                      const seriesHypotheses = hypotheses.filter(h => getEpisodeSeries(h.episodeId) === series);
-                      const colorType = getSeriesColorType(series);
-                      const color = colorType === 'basic' ? '#3b82f6' : colorType === 'guest' ? '#10b981' : '#8b5cf6';
+                  {/* Group hypotheses by topic for different colors */}
+                  {getUniqueTopics().map((topic) => {
+                      const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
+                      const color = getTopicColor(topic);
+                      
+                      if (topicHypotheses.length === 0) return null;
                       
                       return (
                         <Scatter
-                          key={series}
-                          name={series}
-                          data={seriesHypotheses}
+                          key={topic}
+                          name={topic}
+                          data={topicHypotheses}
                           fill={color}
                           onClick={(data) => {
                             if (data && data.payload) {
@@ -317,7 +348,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                             }
                           }}
                         >
-                          {seriesHypotheses.map((hypothesis, entryIndex) => (
+                          {topicHypotheses.map((hypothesis, entryIndex) => (
                             <Cell 
                               key={`cell-${entryIndex}`}
                               fill={color}
@@ -349,12 +380,21 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                   onClick={() => handleHypothesisItemClick(hypothesis)}
                 >
                   <div className="flex justify-between items-start mb-1">
-                    <p className="text-sm font-semibold text-blue-500 m-0">
-                      {getEpisodeTitle(hypothesis.episodeId)}
-                      <span className="text-xs text-gray-600 ml-1.5 font-normal">
-                        ({getEpisodeSeries(hypothesis.episodeId)})
-                      </span>
-                    </p>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-blue-500 m-0 mb-1">
+                        {getEpisodeTitle(hypothesis.episodeId)}
+                        <span className="text-xs text-gray-600 ml-1.5 font-normal">
+                          ({getEpisodeSeries(hypothesis.episodeId)})
+                        </span>
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-2 h-2 rounded-full flex-shrink-0" 
+                          style={{ backgroundColor: getTopicColor(hypothesis.topic) }}
+                        />
+                        <span className="text-xs font-medium text-gray-700">{hypothesis.topic}</span>
+                      </div>
+                    </div>
                   </div>
                   <p className="m-0 mb-1 text-sm leading-snug text-gray-900">{hypothesis.hypothesis}</p>
                   <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2">
