@@ -11,8 +11,6 @@ interface TabProps {
 }
 
 export default function Tabs({ active, tabs, onTabChange }: TabProps): React.ReactNode {
-  console.log('Tabs component - active tab:', active);
-  
   return (
     <div className="w-full max-w-4xl flex justify-center">
       <div className="flex bg-white rounded-xl p-1.5 mb-0 flex-wrap gap-1 w-fit shadow-sm border border-gray-200 max-md:w-[calc(100%-1rem)] max-md:mx-2">

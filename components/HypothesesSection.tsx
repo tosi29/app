@@ -163,10 +163,9 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   };
 
   // Handle feedback button clicks
-  const handleFeedback = (feedbackType: string, hypothesis: Hypothesis): void => {
-    console.log(`Feedback "${feedbackType}" given to hypothesis:`, hypothesis.hypothesis);
-    // Here you could add API call to save feedback
-    // For now, just log it
+  const handleFeedback = (_feedbackType: string, _hypothesis: Hypothesis): void => {
+    // TODO: Implement API call to save feedback
+    // Feedback type: _feedbackType, Hypothesis: _hypothesis.hypothesis
   };
 
   // Handle dropdown change
