@@ -325,6 +325,12 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload as Hypothesis;
+                        
+                        // Don't show tooltip for hidden topics
+                        if (!isTopicVisible(data.topic)) {
+                          return null;
+                        }
+                        
                         return (
                           <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-3 max-w-xs">
                             <p className="font-semibold text-sm text-blue-500 mb-1 m-0">
@@ -351,21 +357,27 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                       return null;
                     }}
                   />
-                  {/* Single scatter with visible hypotheses */}
+                  {/* Single scatter with all hypotheses (transparency controlled) */}
                   <Scatter
-                    data={graphVisibleHypotheses}
+                    data={filteredHypotheses}
                     onClick={(data) => {
                       if (data && data.payload) {
-                        handleHypothesisClick(data.payload as Hypothesis);
+                        const hypothesis = data.payload as Hypothesis;
+                        // Only handle click if topic is visible
+                        if (isTopicVisible(hypothesis.topic)) {
+                          handleHypothesisClick(hypothesis);
+                        }
                       }
                     }}
                   >
-                    {graphVisibleHypotheses.map((hypothesis) => (
+                    {filteredHypotheses.map((hypothesis) => (
                       <Cell 
                         key={`cell-${hypothesis.id}`}
                         fill={getTopicColor(hypothesis.topic)}
+                        fillOpacity={isTopicVisible(hypothesis.topic) ? 1 : 0.1}
                         stroke={selectedHypothesis?.id === hypothesis.id ? '#000' : 'none'}
                         strokeWidth={selectedHypothesis?.id === hypothesis.id ? 2 : 0}
+                        strokeOpacity={isTopicVisible(hypothesis.topic) ? 1 : 0.1}
                         r={selectedHypothesis?.id === hypothesis.id ? 8 : 6}
                       />
                     ))}
