@@ -9,6 +9,4 @@ export interface Hypothesis {
   proposer: string;           // 仮説提案者（'AI'など）
   topic: string;              // BERTopicによる分類トピック名
   createdAt: string;          // ISO 8601形式の作成日時
-  confidenceScore: number;    // 0 to 1 where 1 is most confident
-  originalityScore: number;   // 0 to 1 where 1 is most original/unique
 }

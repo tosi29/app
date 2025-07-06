@@ -92,24 +92,20 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   // Function to map topic names to colors
   const getTopicColor = (topic: string): string => {
-    const topicColors: { [key: string]: string } = {
-      'リーダーシップ': '#3b82f6',     // Blue
-      '教育手法': '#10b981',          // Green
-      'コミュニケーション': '#f59e0b',  // Amber
-      '技術革新': '#8b5cf6',          // Purple
-      '社会変化': '#ef4444',          // Red
-      '認知科学': '#06b6d4',          // Cyan
-      '人工知能': '#ec4899',          // Pink
-      '仮想現実': '#84cc16',          // Lime
-      '先端科学': '#6366f1',          // Indigo
-      '人材育成': '#14b8a6',          // Teal
-      '学問統合': '#f97316',          // Orange
-      '時代背景': '#a855f7',          // Violet
-      '学習理論': '#22c55e',          // Green
-      'その他': '#6b7280'             // Gray
-    };
+    // Generate a hash from the topic string
+    let hash = 0;
+    for (let i = 0; i < topic.length; i++) {
+      const char = topic.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
     
-    return topicColors[topic] || '#6b7280';
+    // Convert hash to a color with good saturation and lightness
+    const hue = Math.abs(hash) % 360;
+    const saturation = 65 + (Math.abs(hash) % 20); // 65-85%
+    const lightness = 45 + (Math.abs(hash) % 15);  // 45-60%
+    
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
   // Function to get unique topics from hypotheses
@@ -150,8 +146,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   // Get filtered hypotheses
   const filteredHypotheses = getFilteredHypotheses();
   
-  // Sort hypotheses for the list display
-  const graphSortedHypotheses = [...filteredHypotheses].sort((a, b) => b.confidenceScore - a.confidenceScore);
+  // Use filtered hypotheses without sorting
+  const graphSortedHypotheses = [...filteredHypotheses];
 
 
   // Handle click on hypothesis dot
@@ -296,7 +292,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                   width: undefined,
                   height: 600,
                   xaxis: {
-                    range: [0, 1],
+                    autorange: true,
                     showgrid: true,
                     gridcolor: '#e5e7eb',
                     gridwidth: 1,
@@ -305,7 +301,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                     showticklabels: false
                   },
                   yaxis: {
-                    range: [0, 1],
+                    autorange: true,
                     showgrid: true,
                     gridcolor: '#e5e7eb',
                     gridwidth: 1,
