@@ -16,9 +16,10 @@ interface PastBroadcast {
 interface HypothesesSectionProps {
   pastBroadcasts: PastBroadcast[];
   selectedSeries?: string;
+  selectedEpisodeId?: number;
 }
 
-export default function HypothesesSection({ pastBroadcasts, selectedSeries }: HypothesesSectionProps): React.ReactNode {
+export default function HypothesesSection({ pastBroadcasts, selectedSeries, selectedEpisodeId }: HypothesesSectionProps): React.ReactNode {
   const [selectedHypothesis, setSelectedHypothesis] = useState<Hypothesis | null>(null);
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,12 +28,20 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries }: Hy
 
   const router = useRouter();
 
-  // Sync dropdown state with selectedSeries prop
+  // Sync dropdown state with selectedSeries prop or convert selectedEpisodeId to series
   useEffect(() => {
     if (selectedSeries !== dropdownSeries) {
       setDropdownSeries(selectedSeries);
+    } else if (selectedEpisodeId && !selectedSeries) {
+      // TODO: 一時しのぎ対応 - 検索APIからのepisodeIdパラメータ処理
+      // selectedEpisodeIdからシリーズ名を取得（根本的には検索結果でもseriesパラメータを使うべき）
+      const broadcast = pastBroadcasts.find(b => b.id === selectedEpisodeId);
+      if (broadcast) {
+        const series = broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+        setDropdownSeries(series);
+      }
     }
-  }, [selectedSeries, dropdownSeries]);
+  }, [selectedSeries, selectedEpisodeId, dropdownSeries, pastBroadcasts]);
 
   // Function to extract number from string (e.g., "9. xxxx" → 9)
   const extractNumber = (str: string): number | null => {

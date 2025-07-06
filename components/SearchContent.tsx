@@ -106,7 +106,15 @@ const SearchContent = React.memo(({
                     </button>
                     {' '}
                     <button
-                      onClick={() => router.push(`/?tab=hypotheses&episodeId=${broadcast.id}`)}
+                      onClick={() => {
+                        // TODO: 一時しのぎ対応 - 検索APIのmetadata自体を修正する必要がある
+                        // シリーズ名を正規化（例: "16-7 ヘレン・ケラーとアン・サリヴァン" → "16. ヘレン・ケラーとアン・サリヴァン"）
+                        // 根本的には検索結果のseries_nameフィールドが配信一覧と同じ形式になるべき
+                        const normalizedSeries = broadcast.series 
+                          ? broadcast.series.replace(/^(\d+)-\d+\s+/, '$1. ')
+                          : 'その他';
+                        router.push(`/?tab=hypotheses&series=${encodeURIComponent(normalizedSeries)}`);
+                      }}
                       className="inline-flex items-center justify-center p-2 min-w-10 h-10 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-base cursor-pointer transition-all duration-200 ease-out hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:shadow-sm focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 no-underline"
                       aria-label="仮説を見る"
                     >
