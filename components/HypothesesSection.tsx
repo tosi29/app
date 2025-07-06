@@ -117,6 +117,31 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     return Array.from(new Set(hypotheses.map(h => h.topic))).sort();
   };
 
+  // Function to wrap text at specified width (Japanese-friendly)
+  const wrapText = (text: string, maxWidth: number = 40): string => {
+    if (!text) return '';
+    
+    const lines: string[] = [];
+    let currentLine = '';
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      
+      if (currentLine.length >= maxWidth) {
+        lines.push(currentLine);
+        currentLine = char;
+      } else {
+        currentLine += char;
+      }
+    }
+    
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+    
+    return lines.join('<br>');
+  };
+
   // Function to get filtered hypotheses
   const getFilteredHypotheses = (): Hypothesis[] => {
     return hypotheses;
@@ -244,16 +269,26 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                     customdata: topicHypotheses.map(h => [
                       h,
                       getEpisodeTitle(h.episodeId),
-                      getEpisodeSeries(h.episodeId)
+                      getEpisodeSeries(h.episodeId),
+                      wrapText(h.hypothesis, 40),
+                      wrapText(h.fact, 40)
                     ]) as any,
                     hovertemplate: 
-                      '<b>%{customdata[1]}</b><br>' +
-                      '<span style="color: #6b7280; font-size: 11px;">(%{customdata[2]})</span><br>' +
-                      '<span style="color: ' + getTopicColor(topic) + '; font-size: 11px;">' + topic + '</span><br>' +
-                      '%{customdata[0].hypothesis}<br>' +
-                      '<span style="color: #2563eb; font-size: 11px;"><b>事実:</b> %{customdata[0].fact}</span><br>' +
-                      '<span style="color: #6b7280; font-size: 11px; font-style: italic;">by %{customdata[0].proposer}</span>' +
+                      '<b>仮説：</b><br>' +
+                      '%{customdata[3]}<br>' +
+                      '<br>' +
+                      '<b>事実：</b><br>' +
+                      '%{customdata[4]}<br>' +
+                      '<br>' +
+                      'トピック：' + topic + '<br>' +
+                      '%{customdata[2]} -- %{customdata[1]}' +
                       '<extra></extra>',
+                    hoverlabel: {
+                      bgcolor: 'white',
+                      bordercolor: '#d1d5db',
+                      font: { size: 12 },
+                      namelength: -1
+                    },
                     showlegend: true
                   };
                 })}
@@ -298,12 +333,25 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
                   hoverlabel: {
                     bgcolor: 'white',
                     bordercolor: '#d1d5db',
-                    font: { size: 12 }
-                  }
+                    font: { 
+                      size: 12,
+                      color: '#111827'
+                    },
+                    align: 'left',
+                    namelength: -1
+                  },
+                  hovermode: 'closest'
                 }}
                 config={{
                   displayModeBar: false,
-                  responsive: true
+                  responsive: true,
+                  toImageButtonOptions: {
+                    format: 'png',
+                    filename: 'hypothesis-graph',
+                    height: 600,
+                    width: 800,
+                    scale: 1
+                  }
                 }}
                 style={{
                   width: '100%',
