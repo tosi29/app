@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-07-06 - Migrated to Plotly.js with standard legend functionality
+**Last Updated:** 2025-07-06 - 仮説タブのフィルタリングをエピソード別からシリーズ別に変更
 
 ## プロダクトビジョン
 
@@ -83,6 +83,7 @@ The application also features `Hypothesis` objects:
 - Broadcasts grouped by series (吉田松陰, スパルタ, 人類のコミュニケーション史)
 - Expandable/collapsible series groups in main listing
 - Series-aware search and filtering with playback time-based YouTube deep-linking
+- 仮説画面ではシリーズ別フィルタリング機能（配信一覧からのシリーズ自動設定対応）
 
 **UI仕様の詳細:**
 詳細なUI仕様、コンポーネント構成、API仕様、データ構造については `docs/ui-specifications.md` を参照してください。
@@ -91,7 +92,7 @@ The application also features `Hypothesis` objects:
 - **4つのタブベースナビゲーション**: 配信一覧、人気の配信、検索、仮説
 - **外部API統合**: Lambda関数による検索機能とフォールバック機能
 - **マルチプラットフォーム対応**: YouTube/Spotify切り替え可能な埋め込みプレイヤー
-- **インタラクティブな仮説可視化**: Rechartsによる2D散布図
+- **インタラクティブな仮説可視化**: Plotly.jsによる2D散布図（シリーズ別フィルタリング対応）
 - **レスポンシブデザイン**: モバイル/デスクトップ対応
 
 ### デザインシステムガイドライン

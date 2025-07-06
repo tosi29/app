@@ -15,25 +15,30 @@ interface PastBroadcast {
 
 interface HypothesesSectionProps {
   pastBroadcasts: PastBroadcast[];
-  selectedEpisodeId?: number;
+  selectedSeries?: string;
 }
 
-export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }: HypothesesSectionProps): React.ReactNode {
+export default function HypothesesSection({ pastBroadcasts, selectedSeries }: HypothesesSectionProps): React.ReactNode {
   const [selectedHypothesis, setSelectedHypothesis] = useState<Hypothesis | null>(null);
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [dropdownEpisodeId, setDropdownEpisodeId] = useState<number | undefined>(selectedEpisodeId);
+  const [dropdownSeries, setDropdownSeries] = useState<string | undefined>(selectedSeries);
   const hypothesesListRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
 
-  // Sync dropdown state with selectedEpisodeId prop
+  // Sync dropdown state with selectedSeries prop
   useEffect(() => {
-    // Only update the dropdown state if the selectedEpisodeId is different
-    if (selectedEpisodeId !== dropdownEpisodeId) {
-      setDropdownEpisodeId(selectedEpisodeId);
+    if (selectedSeries !== dropdownSeries) {
+      setDropdownSeries(selectedSeries);
     }
-  }, [selectedEpisodeId, dropdownEpisodeId]);
+  }, [selectedSeries, dropdownSeries]);
+
+  // Get unique series from pastBroadcasts
+  const getUniqueSeries = (): string[] => {
+    const seriesSet = new Set(pastBroadcasts.map(b => b.series && b.series.trim() ? b.series.trim() : 'その他'));
+    return Array.from(seriesSet).sort();
+  };
 
   // Use a ref to keep track of the latest request
   const latestRequestIdRef = useRef<number>(0);
@@ -136,12 +141,15 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     return lines.join('<br>');
   };
 
-  // Function to get filtered hypotheses
+  // Function to get filtered hypotheses by series
   const getFilteredHypotheses = (): Hypothesis[] => {
-    if (!dropdownEpisodeId) {
+    if (!dropdownSeries) {
       return hypotheses;
     }
-    return hypotheses.filter(hypothesis => hypothesis.episodeId === dropdownEpisodeId);
+    return hypotheses.filter(hypothesis => {
+      const episodeSeries = getEpisodeSeries(hypothesis.episodeId);
+      return episodeSeries === dropdownSeries;
+    });
   };
 
   // Get filtered hypotheses
@@ -185,15 +193,15 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   // Handle dropdown change
   const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
+    const series = event.target.value === '' ? undefined : event.target.value;
     
     // Update dropdown state (this will trigger re-filtering via getFilteredHypotheses)
-    setDropdownEpisodeId(episodeId);
+    setDropdownSeries(series);
     
     // Update URL to maintain existing functionality but use replace instead of push
     // to prevent adding a new history entry and causing full page reload
-    const newQuery = episodeId 
-      ? { tab: 'hypotheses', episodeId: episodeId.toString() }
+    const newQuery = series 
+      ? { tab: 'hypotheses', series: series }
       : { tab: 'hypotheses' };
     
     router.replace({
@@ -204,22 +212,22 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   return (
     <>
-      {/* Dropdown filter for episodes */}
+      {/* Dropdown filter for series */}
       <div className="w-full max-w-5xl my-4 px-3 py-3 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-center items-center max-md:px-3">
         <div className="flex items-center gap-3 max-md:w-full">
-          <label htmlFor="episode-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
-            配信で絞り込み:
+          <label htmlFor="series-filter" className="font-semibold text-gray-900 m-0 text-sm whitespace-nowrap">
+            シリーズで絞り込み:
           </label>
           <select
-            id="episode-filter"
-            value={dropdownEpisodeId || ''}
+            id="series-filter"
+            value={dropdownSeries || ''}
             onChange={handleDropdownChange}
             className="px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm font-medium cursor-pointer transition-all duration-200 ease-out min-w-[200px] hover:border-blue-500 hover:shadow-[0_0_0_2px_rgba(59,130,246,0.1)] focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] max-md:min-w-0 max-md:flex-1"
           >
             <option value="">すべて</option>
-            {pastBroadcasts.map((broadcast) => (
-              <option key={broadcast.id} value={broadcast.id}>
-                {broadcast.title}
+            {getUniqueSeries().map((series) => (
+              <option key={series} value={series}>
+                {series}
               </option>
             ))}
           </select>

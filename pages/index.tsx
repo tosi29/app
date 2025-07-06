@@ -11,7 +11,7 @@ import { PastBroadcast } from '../types/broadcast'
 
 export default function Home() {
   const router = useRouter();
-  const { tab, episodeId } = router.query;
+  const { tab, series } = router.query;
   
   // State for broadcasts data
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
@@ -133,7 +133,7 @@ export default function Home() {
       label: '仮説',
       content: <HypothesesSection 
                  pastBroadcasts={pastBroadcasts}
-                 selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
+                 selectedSeries={series ? String(series) : undefined}
                  key="hypotheses-section" // Add a stable key to prevent remounting
                />
     }
