@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-07-06 - 仮説タブのフィルタリングをエピソード別からシリーズ別に変更
+**Last Updated:** 2025-07-06 - 全画面からのシリーズベースナビゲーション統一とOutlierトピック色設定、数値順ソート対応
 
 ## プロダクトビジョン
 
@@ -83,7 +83,8 @@ The application also features `Hypothesis` objects:
 - Broadcasts grouped by series (吉田松陰, スパルタ, 人類のコミュニケーション史)
 - Expandable/collapsible series groups in main listing
 - Series-aware search and filtering with playback time-based YouTube deep-linking
-- 仮説画面ではシリーズ別フィルタリング機能（配信一覧からのシリーズ自動設定対応）
+- 仮説画面ではシリーズ別フィルタリング機能（全画面からのシリーズ自動設定対応）
+- 数値順ソート機能（シリーズ名、トピック名の数値プレフィックス対応）
 
 **UI仕様の詳細:**
 詳細なUI仕様、コンポーネント構成、API仕様、データ構造については `docs/ui-specifications.md` を参照してください。
