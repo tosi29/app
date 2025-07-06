@@ -34,10 +34,37 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries }: Hy
     }
   }, [selectedSeries, dropdownSeries]);
 
+  // Function to extract number from string (e.g., "9. xxxx" → 9)
+  const extractNumber = (str: string): number | null => {
+    const match = str.match(/^(-?\d+)[\.\:]/);
+    return match ? parseInt(match[1]) : null;
+  };
+
+  // Function to sort strings with numeric prefixes
+  const sortByNumericPrefix = (items: string[]): string[] => {
+    return items.sort((a, b) => {
+      const aNum = extractNumber(a);
+      const bNum = extractNumber(b);
+      
+      // 両方に数値がある場合は数値順ソート
+      if (aNum !== null && bNum !== null) {
+        return aNum - bNum;
+      }
+      
+      // 数値がない場合は文字列ソート
+      if (aNum === null && bNum === null) {
+        return a.localeCompare(b);
+      }
+      
+      // 数値があるものを先に表示
+      return aNum !== null ? -1 : 1;
+    });
+  };
+
   // Get unique series from pastBroadcasts
   const getUniqueSeries = (): string[] => {
     const seriesSet = new Set(pastBroadcasts.map(b => b.series && b.series.trim() ? b.series.trim() : 'その他'));
-    return Array.from(seriesSet).sort();
+    return sortByNumericPrefix(Array.from(seriesSet));
   };
 
   // Use a ref to keep track of the latest request
@@ -118,7 +145,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries }: Hy
 
   // Function to get unique topics from hypotheses
   const getUniqueTopics = (): string[] => {
-    return Array.from(new Set(hypotheses.map(h => h.topic))).sort();
+    const topicsSet = new Set(hypotheses.map(h => h.topic));
+    return sortByNumericPrefix(Array.from(topicsSet));
   };
 
   // Function to wrap text at specified width (Japanese-friendly)
