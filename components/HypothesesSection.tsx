@@ -48,10 +48,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
       latestRequestIdRef.current = thisRequestId;
       
       try {
-        // Use dropdownEpisodeId as the single source of truth for data fetching
-        const url = dropdownEpisodeId 
-          ? `/api/hypotheses?episodeId=${dropdownEpisodeId}`
-          : '/api/hypotheses';
+        // Always fetch all hypotheses without API-level filtering
+        const url = '/api/hypotheses';
         
         const response = await fetch(url);
         if (!response.ok) {
@@ -75,7 +73,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
     };
 
     fetchHypotheses();
-  }, [dropdownEpisodeId]); // Only depend on dropdownEpisodeId
+  }, []); // Fetch all hypotheses once on component mount
 
   // Function to get episode title by id
   const getEpisodeTitle = (episodeId: number): string => {
@@ -140,7 +138,10 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
 
   // Function to get filtered hypotheses
   const getFilteredHypotheses = (): Hypothesis[] => {
-    return hypotheses;
+    if (!dropdownEpisodeId) {
+      return hypotheses;
+    }
+    return hypotheses.filter(hypothesis => hypothesis.episodeId === dropdownEpisodeId);
   };
 
   // Get filtered hypotheses
@@ -186,11 +187,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedEpisodeId }:
   const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const episodeId = event.target.value === '' ? undefined : Number(event.target.value);
     
-    // Clear existing hypotheses and show loading state immediately
-    setHypotheses([]);
-    setLoading(true);
-    
-    // Update dropdown state
+    // Update dropdown state (this will trigger re-filtering via getFilteredHypotheses)
     setDropdownEpisodeId(episodeId);
     
     // Update URL to maintain existing functionality but use replace instead of push
