@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-07-02 - Simplified hypothesis UI by removing redundant topic filter dropdown
+**Last Updated:** 2025-07-06 - Migrated to Plotly.js with standard legend functionality
 
 ## プロダクトビジョン
 
@@ -111,47 +111,64 @@ The application also features `Hypothesis` objects:
 
 ## AI仮説可視化機能の実装パターン
 
-### Rechartsデータマッピングの重要な知見
+### Plotly.js実装の重要な知見
 
-**問題**: 複数Scatterコンポーネント（トピック別）使用時のデータ座標マッピング不整合
+**Plotly.js移行完了**: 2025-07-06にRechartsからPlotly.js + Plotly標準legendへの移行を完了
+
+**主要な実装パターン**:
 ```tsx
-// ❌ 問題のあるパターン
-{topics.map(topic => (
-  <Scatter key={topic} data={topicData.filter(h => h.topic === topic)} />
-))}
+// ✅ Plotly.js標準legend使用パターン
+data={getUniqueTopics().map(topic => {
+  const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
+  return {
+    x: topicHypotheses.map(h => h.x),
+    y: topicHypotheses.map(h => h.y),
+    mode: 'markers',
+    type: 'scatter',
+    name: topic,  // legend表示名
+    marker: {
+      color: getTopicColor(topic),
+      size: topicHypotheses.map(h => selectedHypothesis?.id === h.id ? 12 : 8)
+    },
+    customdata: topicHypotheses.map(h => [h, title, series]) as any,
+    hovertemplate: '...',
+    showlegend: true  // Plotly標準legend有効化
+  };
+})}
+layout={{
+  legend: {
+    orientation: 'v',
+    x: 1.02,
+    y: 1,
+    bgcolor: 'rgba(255,255,255,0.8)',
+    bordercolor: '#d1d5db',
+    borderwidth: 1,
+    font: { size: 12 }
+  }
+}}
 ```
 
-**解決**: 単一Scatterコンポーネント + Cell制御による安定したマッピング
+### アーキテクチャの簡素化
+
+**2カラムレイアウト**: グラフ + 仮説リスト
+- **カスタムlegend削除**: 中央のトピック一覧を削除し、Plotly標準legendに統一
+- **状態管理削除**: `hiddenTopics`, `isolatedTopic`等のカスタム制御を削除
+- **レスポンシブ対応**: max-w-6xlでよりワイドなレイアウト
+
+### Plotly.js型定義の対応
+
+**重要**: customdataの型エラー回避
 ```tsx
-// ✅ 推奨パターン
-<Scatter data={allData}>
-  {allData.map(item => (
-    <Cell fill={getColor(item.topic)} opacity={isVisible(item.topic) ? 1 : 0.1} />
-  ))}
-</Scatter>
-```
-
-### インタラクティブlegend実装パターン
-
-**透明化アプローチ**: Plotlyライクな表示/非表示制御
-- **座標固定**: 非表示でも点の位置は維持（opacity制御）
-- **状態管理**: Set型での効率的な表示/非表示管理
-- **isolate機能**: ダブルクリックによる単独表示
-
-```tsx
-// 状態管理
-const [hiddenTopics, setHiddenTopics] = useState<Set<string>>(new Set());
-const [isolatedTopic, setIsolatedTopic] = useState<string | null>(null);
-
-// 透明度制御
-fillOpacity={isTopicVisible(hypothesis.topic) ? 1 : 0.1}
+// 型エラー回避のため、任意のデータ構造をany型で渡す
+customdata: filteredHypotheses.map(h => [h, title, series]) as any
 ```
 
 ### デバッグ時のアプローチ
 
 1. **データ整合性確認**: グラフ表示データ vs リスト表示データ
 2. **座標マッピング検証**: ツールチップ vs クリック処理のデータ一致性
-3. **状態管理一貫性**: フィルタリング条件の統一性チェック
+3. **トピック分割**: getUniqueTopics()による適切なデータ分割
+4. **Plotly.js特有**: hovertemplate文法とcustomdata配列インデックスの確認
 
 ## Playwright MCP使用ルール
 
