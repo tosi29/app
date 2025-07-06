@@ -95,6 +95,11 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries }: Hy
 
   // Function to map topic names to colors
   const getTopicColor = (topic: string): string => {
+    // Outlierトピック（-1.で始まる）は薄いグレーを強制適用
+    if (topic.startsWith('-1.')) {
+      return '#9ca3af'; // gray-400
+    }
+    
     // Generate a hash from the topic string
     let hash = 0;
     for (let i = 0; i < topic.length; i++) {
