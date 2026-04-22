@@ -15,19 +15,19 @@
 
 **Development Server:**
 ```bash
-npm run dev
+pnpm dev
 ```
 Starts Next.js development server on http://localhost:3000
 
 
 **Build & Production:**
 ```bash
-npm run build    # Build for production
-npm start        # Start production server
+pnpm build    # Build for production
+pnpm start    # Start production server
 ```
 
 **Code Quality:**
 ```bash
-npm run lint         # ESLint with Next.js config
-npm run type-check   # TypeScript type checking without emitting files
+pnpm lint         # ESLint with Next.js config
+pnpm type-check   # TypeScript type checking without emitting files
 ```
