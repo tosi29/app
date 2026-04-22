@@ -19,41 +19,43 @@ export default function BroadcastSummaryModal({
   const { summary } = broadcast;
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/70 flex justify-center items-center z-[1000] p-4 max-md:p-2" onClick={onClose}>
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 max-md:max-h-[95vh]" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-start p-6 pb-4 border-b border-gray-200 max-md:p-4 max-md:pb-3">
-          <h2 className="m-0 text-xl font-semibold text-gray-900 leading-tight flex-1 pr-4 max-md:text-lg">{broadcast.title}</h2>
-          <button 
-            className="bg-transparent border-none text-2xl cursor-pointer text-gray-500 p-0 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-200 hover:bg-gray-100 hover:text-gray-900"
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[1000] p-4 animate-fade-in max-md:p-2" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-app-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-surface-200 animate-slide-in max-md:max-h-[95vh]" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-start px-6 py-5 border-b border-surface-100 sticky top-0 bg-white rounded-t-2xl z-10 max-md:px-4 max-md:py-4">
+          <h2 className="m-0 text-lg font-semibold text-text-primary leading-snug flex-1 pr-4 max-md:text-base">{broadcast.title}</h2>
+          <button
+            className="bg-transparent border-none text-text-muted cursor-pointer p-1.5 rounded-lg transition-all duration-200 w-8 h-8 flex items-center justify-center flex-shrink-0 hover:bg-surface-100 hover:text-text-primary"
             onClick={onClose}
             aria-label="閉じる"
           >
-            ×
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            </svg>
           </button>
         </div>
-        
+
         <div className="p-6 max-md:p-4">
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-lg font-semibold text-blue-500 border-l-4 border-l-blue-500 pl-3 max-md:text-base max-md:pl-2">今回の配信概要</h3>
-            <p className="m-0 text-base leading-relaxed text-gray-900 bg-gray-50 p-4 rounded-lg border-l-4 border-l-blue-500 max-md:p-3">{summary.overview}</p>
+            <h3 className="m-0 mb-3 text-sm font-semibold text-primary-600 uppercase tracking-wide max-md:text-xs">概要</h3>
+            <p className="m-0 text-sm leading-relaxed text-text-primary bg-primary-50/50 p-4 rounded-xl border-l-3 border-l-primary-400 max-md:p-3">{summary.overview}</p>
           </div>
 
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-lg font-semibold text-blue-500 border-l-4 border-l-blue-500 pl-3 max-md:text-base max-md:pl-2">事実や出来事</h3>
-            <ul className="m-0 p-0 list-none">
+            <h3 className="m-0 mb-3 text-sm font-semibold text-emerald-600 uppercase tracking-wide max-md:text-xs">事実や出来事</h3>
+            <div className="flex flex-col gap-2">
               {summary.facts.map((fact, index) => (
-                <li key={index} className="mb-3 last:mb-0 p-3 bg-gray-50 rounded-lg border-l-4 border-l-green-500 text-sm leading-normal text-gray-900 relative max-md:p-2 max-md:text-xs">{fact}</li>
+                <div key={index} className="p-3.5 bg-emerald-50/50 rounded-xl border-l-3 border-l-emerald-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs">{fact}</div>
               ))}
-            </ul>
+            </div>
           </div>
 
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-lg font-semibold text-blue-500 border-l-4 border-l-blue-500 pl-3 max-md:text-base max-md:pl-2">学び・教訓・法則</h3>
-            <ul className="m-0 p-0 list-none">
+            <h3 className="m-0 mb-3 text-sm font-semibold text-amber-600 uppercase tracking-wide max-md:text-xs">学び・教訓・法則</h3>
+            <div className="flex flex-col gap-2">
               {summary.lessons.map((lesson, index) => (
-                <li key={index} className="mb-3 last:mb-0 p-3 bg-gray-50 rounded-lg border-l-4 border-l-green-500 text-sm leading-normal text-gray-900 relative max-md:p-2 max-md:text-xs">{lesson}</li>
+                <div key={index} className="p-3.5 bg-amber-50/50 rounded-xl border-l-3 border-l-amber-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs">{lesson}</div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -22,12 +22,9 @@ export default function PopularBroadcastsContent({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sortColumn, setSortColumn] = useState<'viewCount' | 'hypothesisCount' | 'likeCount' | 'title' | 'date'>('viewCount');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
-  // State for summary modal
   const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
   const [selectedBroadcastForSummary, setSelectedBroadcastForSummary] = useState<PopularBroadcast | null>(null);
 
-  // Fetch popular broadcasts data
   useEffect(() => {
     const fetchPopularBroadcasts = async () => {
       try {
@@ -45,50 +42,28 @@ export default function PopularBroadcastsContent({
         setIsLoading(false);
       }
     };
-
     fetchPopularBroadcasts();
   }, []);
 
-  // Sort broadcasts
   const sortedBroadcasts = useMemo(() => {
     const sorted = [...popularBroadcasts];
     sorted.sort((a, b) => {
       let aValue: any, bValue: any;
-      
       switch (sortColumn) {
-        case 'viewCount':
-          aValue = a.viewCount;
-          bValue = b.viewCount;
-          break;
-        case 'hypothesisCount':
-          aValue = a.hypothesisCount;
-          bValue = b.hypothesisCount;
-          break;
-        case 'likeCount':
-          aValue = a.likeCount || 0;
-          bValue = b.likeCount || 0;
-          break;
-        case 'title':
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-          break;
-        case 'date':
-          aValue = a.date ? new Date(a.date) : new Date(0);
-          bValue = b.date ? new Date(b.date) : new Date(0);
-          break;
-        default:
-          return 0;
+        case 'viewCount': aValue = a.viewCount; bValue = b.viewCount; break;
+        case 'hypothesisCount': aValue = a.hypothesisCount; bValue = b.hypothesisCount; break;
+        case 'likeCount': aValue = a.likeCount || 0; bValue = b.likeCount || 0; break;
+        case 'title': aValue = a.title.toLowerCase(); bValue = b.title.toLowerCase(); break;
+        case 'date': aValue = a.date ? new Date(a.date) : new Date(0); bValue = b.date ? new Date(b.date) : new Date(0); break;
+        default: return 0;
       }
-      
       if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
       if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-    
     return sorted;
   }, [popularBroadcasts, sortColumn, sortDirection]);
 
-  // Handle sort
   const handleSort = useCallback((column: typeof sortColumn) => {
     if (sortColumn === column) {
       setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
@@ -98,7 +73,6 @@ export default function PopularBroadcastsContent({
     }
   }, [sortColumn]);
 
-  // Summary modal handlers
   const openSummaryModal = useCallback((broadcast: PopularBroadcast) => {
     setSelectedBroadcastForSummary(broadcast);
     setSummaryModalOpen(true);
@@ -110,97 +84,72 @@ export default function PopularBroadcastsContent({
   }, []);
 
   if (isLoading) {
-    return <div className="flex flex-col items-center gap-4 my-8">人気の配信データを読み込み中...</div>;
+    return (
+      <div className="flex flex-col items-center gap-4 my-16">
+        <div className="w-10 h-10 border-3 border-surface-200 rounded-full border-t-primary-500 animate-spin"></div>
+        <p className="text-text-muted text-sm">人気の配信データを読み込み中...</p>
+      </div>
+    );
   }
+
+  const thClass = "cursor-pointer select-none px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 whitespace-nowrap hover:text-primary-600 transition-colors";
 
   return (
     <>
-      <div className="w-full max-w-6xl my-6 overflow-x-auto rounded-lg shadow-md bg-white">
-        <table className="w-full border-separate border-spacing-0 mb-0">
+      <div className="w-full card-modern overflow-hidden">
+        <table className="w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th 
-                className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('title')}
-              >
-                タイトル {sortColumn === 'title' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <th className={`${thClass} first:rounded-tl-2xl`} onClick={() => handleSort('title')}>
+                タイトル {sortColumn === 'title' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
               </th>
-              <th 
-                className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('viewCount')}
-              >
-                再生 {sortColumn === 'viewCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <th className={thClass} onClick={() => handleSort('viewCount')}>
+                再生 {sortColumn === 'viewCount' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
               </th>
-              <th 
-                className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('hypothesisCount')}
-              >
-                仮説 {sortColumn === 'hypothesisCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <th className={thClass} onClick={() => handleSort('hypothesisCount')}>
+                仮説 {sortColumn === 'hypothesisCount' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
               </th>
-              <th 
-                className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('likeCount')}
-              >
-                👍 {sortColumn === 'likeCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <th className={thClass} onClick={() => handleSort('likeCount')}>
+                いいね {sortColumn === 'likeCount' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
               </th>
-              <th 
-                className="cursor-pointer select-none transition-all duration-200 ease-out hover:bg-gray-100 hover:text-blue-500 px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap"
-                onClick={() => handleSort('date')}
-              >
-                日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <th className={thClass} onClick={() => handleSort('date')}>
+                日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
               </th>
-              <th className="px-3 py-2 text-left border-b border-gray-200 bg-gray-100 font-semibold text-gray-900 sticky top-0 first:rounded-tl-lg last:rounded-tr-lg whitespace-nowrap">リンク</th>
+              <th className={`px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 last:rounded-tr-2xl whitespace-nowrap`}>リンク</th>
             </tr>
           </thead>
           <tbody>
-            {sortedBroadcasts.map((broadcast) => (
+            {sortedBroadcasts.map((broadcast, index) => (
               <React.Fragment key={broadcast.id}>
-                <tr className="hover:bg-gray-50 transition-colors duration-150">
-                  <td className="px-3 py-2 text-left border-b border-gray-200">
-                    <div className="flex flex-col gap-1">
-                      <div className="font-medium text-gray-900">{broadcast.title}</div>
-                      <div className="text-xs text-gray-600 font-normal">
+                <tr className={`hover:bg-primary-50/30 transition-colors duration-150 group ${index % 2 === 0 ? '' : 'bg-surface-50/50'}`}>
+                  <td className="px-4 py-3 border-b border-surface-100">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm font-medium text-text-primary">{broadcast.title}</span>
+                      <span className="text-xs text-text-muted">
                         {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
-                      </div>
+                      </span>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.viewCount.toLocaleString()}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.hypothesisCount}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.likeCount || ''}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">{broadcast.date || '—'}</td>
-                  <td className="px-3 py-2 text-left border-b border-gray-200 whitespace-nowrap">
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => toggleEmbedVisibility(broadcast.id)}
-                        className="inline-flex items-center justify-center p-2 min-w-10 h-10 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-base cursor-pointer transition-all duration-200 ease-out hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:shadow-sm focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 no-underline"
-                        aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}
-                      >
-                        {visibleEmbeds.has(broadcast.id) ? '⏹️' : '▶️'}
+                  <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.viewCount.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.hypothesisCount}</td>
+                  <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.likeCount || ''}</td>
+                  <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap">{broadcast.date || '\u2014'}</td>
+                  <td className="px-4 py-3 border-b border-surface-100 whitespace-nowrap">
+                    <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
+                      <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}>
+                        {visibleEmbeds.has(broadcast.id) ? '\u23F9\uFE0F' : '\u25B6\uFE0F'}
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => router.push(`/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`)}
-                        className="inline-flex items-center justify-center p-2 min-w-10 h-10 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-base cursor-pointer transition-all duration-200 ease-out hover:bg-blue-500 hover:text-white hover:border-blue-500 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:shadow-sm focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 no-underline"
-                        aria-label="仮説を見る"
-                      >
+                      <button type="button" onClick={() => router.push(`/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`)} className="btn-icon" aria-label="仮説を見る">
                         💬
                       </button>
-                      <SummaryButton 
-                        broadcast={broadcast}
-                        onOpenSummary={openSummaryModal}
-                      />
+                      <SummaryButton broadcast={broadcast} onOpenSummary={openSummaryModal} />
                     </div>
                   </td>
                 </tr>
                 {visibleEmbeds.has(broadcast.id) && (
                   <tr>
-                    <td colSpan={6}>
-                      <BroadcastEmbed
-                        broadcast={broadcast}
-                        embedType={embedType}
-                        height={152}
-                      />
+                    <td colSpan={6} className="px-4 py-3 bg-surface-50 border-b border-surface-100">
+                      <BroadcastEmbed broadcast={broadcast} embedType={embedType} height={152} />
                     </td>
                   </tr>
                 )}
@@ -209,7 +158,7 @@ export default function PopularBroadcastsContent({
           </tbody>
         </table>
       </div>
-      <BroadcastSummaryModal 
+      <BroadcastSummaryModal
         broadcast={selectedBroadcastForSummary}
         isOpen={summaryModalOpen}
         onClose={closeSummaryModal}
