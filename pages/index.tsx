@@ -12,27 +12,27 @@ import { PastBroadcast } from '../types/broadcast'
 export default function Home() {
   const router = useRouter();
   const { tab, series, episodeId } = router.query;
-  
+
   // State for broadcasts data
   const [pastBroadcasts, setPastBroadcasts] = useState<PastBroadcast[]>([]);
   const [isLoadingBroadcasts, setIsLoadingBroadcasts] = useState<boolean>(true);
-  
+
   // State for tracking visible embeds
   const [visibleEmbeds, setVisibleEmbeds] = useState<Set<number>>(new Set());
-  
+
   // State for tracking embed type preference (YouTube or Spotify)
   const [embedType, setEmbedType] = useState<'youtube' | 'spotify'>('spotify');
-  
+
   // State for settings modal
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-  
+
   // Set active tab based on URL parameter
   const [activeTab, setActiveTab] = useState<string>(
-    router.query.tab === 'hypotheses' ? 'hypotheses' : 
+    router.query.tab === 'hypotheses' ? 'hypotheses' :
     router.query.tab === 'search' ? 'search' :
     router.query.tab === 'popular' ? 'popular' : 'broadcasts'
   );
-  
+
   // Fetch broadcasts data from API
   useEffect(() => {
     const fetchBroadcasts = async () => {
@@ -54,7 +54,7 @@ export default function Home() {
 
     fetchBroadcasts();
   }, []);
-  
+
   useEffect(() => {
     if (router.isReady) {
       if (tab === 'hypotheses') {
@@ -75,8 +75,8 @@ export default function Home() {
     // Use replace instead of push to prevent unnecessary history entries
     router.replace({
       pathname: '/',
-      query: tabId === 'hypotheses' ? { tab: tabId } : 
-             tabId === 'search' ? { tab: tabId } : 
+      query: tabId === 'hypotheses' ? { tab: tabId } :
+             tabId === 'search' ? { tab: tabId } :
              tabId === 'popular' ? { tab: tabId } : {}
     }, undefined, { shallow: true });
   };
@@ -99,7 +99,7 @@ export default function Home() {
     {
       id: 'broadcasts',
       label: '配信一覧',
-      content: <BroadcastsContent 
+      content: <BroadcastsContent
                 pastBroadcasts={pastBroadcasts}
                 isLoadingBroadcasts={isLoadingBroadcasts}
                 visibleEmbeds={visibleEmbeds}
@@ -111,7 +111,7 @@ export default function Home() {
     {
       id: 'popular',
       label: '人気の配信',
-      content: <PopularBroadcastsContent 
+      content: <PopularBroadcastsContent
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
@@ -121,7 +121,7 @@ export default function Home() {
     {
       id: 'search',
       label: '検索',
-      content: <SearchContent 
+      content: <SearchContent
                 visibleEmbeds={visibleEmbeds}
                 toggleEmbedVisibility={toggleEmbedVisibility}
                 router={router}
@@ -131,42 +131,58 @@ export default function Home() {
     {
       id: 'hypotheses',
       label: '仮説',
-      content: <HypothesesSection 
+      content: <HypothesesSection
                  pastBroadcasts={pastBroadcasts}
                  selectedSeries={series ? String(series) : undefined}
                  selectedEpisodeId={episodeId ? Number(episodeId) : undefined}
-                 key="hypotheses-section" // Add a stable key to prevent remounting
+                 key="hypotheses-section"
                />
     }
   ];
 
   return (
-    <div className="min-h-screen px-4 flex flex-col justify-start items-center bg-app">
+    <div className="min-h-screen flex flex-col">
       <Head>
-        <title>配信一覧 | Next.js App</title>
-        <meta name="description" content="配信一覧ページ" />
+        <title>Podcast Library</title>
+        <meta name="description" content="ポッドキャスト配信ライブラリ" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="w-full flex justify-center items-center px-4 py-4 pb-3 sticky top-0 bg-white z-10 border-b border-transparent gap-8 relative md:flex-row md:gap-8 max-md:flex-col max-md:gap-4 max-md:px-3">
-        <Tabs 
-          active={activeTab} 
-          tabs={tabs} 
-          onTabChange={handleTabChange} 
-        />
-        <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg transition-all duration-200 ease-out flex items-center justify-center hover:bg-black/5 hover:scale-110 hover:-translate-y-1/2 focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2 max-md:right-2 max-md:text-xl max-md:p-1.5"
-          onClick={() => setIsSettingsOpen(true)}
-          aria-label="設定を開く"
-        >
-          ⚙️
-        </button>
-      </div>
+      <header className="glass-header sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between max-md:px-4 max-md:py-2">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-hero-gradient flex items-center justify-center shadow-glow">
+              <span className="text-white text-sm font-bold">P</span>
+            </div>
+            <h1 className="text-lg font-semibold text-text-primary m-0 max-md:text-base">Podcast Library</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Tabs
+              active={activeTab}
+              tabs={tabs}
+              onTabChange={handleTabChange}
+            />
+            <button
+              className="ml-2 p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-100 transition-all duration-200 max-md:p-1.5"
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label="設定を開く"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M16.5 10a1.5 1.5 0 00.9-2.7l-1-1.7a1.5 1.5 0 00-2.6 0l-.1.2a1.5 1.5 0 01-2.1.5 1.5 1.5 0 01-.7-1.3V4.5A1.5 1.5 0 009.5 3h-1A1.5 1.5 0 007 4.5v.2a1.5 1.5 0 01-.7 1.3 1.5 1.5 0 01-2.1-.5l-.1-.2a1.5 1.5 0 00-2.6 0l-1 1.7A1.5 1.5 0 001.5 10h.2a1.5 1.5 0 011.3.7 1.5 1.5 0 01-.5 2.1l-.2.1a1.5 1.5 0 00-.5 2.1l.5.8a1.5 1.5 0 002 .5l.2-.1a1.5 1.5 0 012.1.5 1.5 1.5 0 01.7 1.3v.2a1.5 1.5 0 001.5 1.5h1a1.5 1.5 0 001.5-1.5v-.2a1.5 1.5 0 01.7-1.3 1.5 1.5 0 012.1.5l.1.2a1.5 1.5 0 002.6 0l.5-.8a1.5 1.5 0 00-.5-2.1l-.2-.1a1.5 1.5 0 01-.5-2.1 1.5 1.5 0 011.3-.7h.2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
 
-      <main className="py-8 pb-20 flex-1 flex flex-col justify-start items-center w-full max-w-6xl">
+      <main className="flex-1 flex flex-col items-center w-full max-w-7xl mx-auto px-6 py-8 max-md:px-4 max-md:py-6">
         {tabs.find(tab => tab.id === activeTab)?.content}
       </main>
-      
+
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
