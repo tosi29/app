@@ -13,7 +13,7 @@ interface TabProps {
 export default function Tabs({ active, tabs, onTabChange }: TabProps): React.ReactNode {
   return (
     <nav className="flex items-center">
-      <div className="flex bg-surface-100 rounded-xl p-1 gap-0.5">
+      <div className="flex w-max bg-surface-100 rounded-xl p-1 gap-0.5">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -22,7 +22,7 @@ export default function Tabs({ active, tabs, onTabChange }: TabProps): React.Rea
                 ? 'bg-white text-primary-700 shadow-app-sm font-semibold'
                 : 'bg-transparent text-text-muted hover:text-text-primary'
               }
-              max-md:px-3 max-md:text-xs`}
+              max-md:px-3.5`}
             onClick={() => onTabChange(tab.id)}
           >
             {tab.label}

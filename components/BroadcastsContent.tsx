@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import BroadcastEmbed from './BroadcastEmbed';
 import BroadcastSummaryModal from './BroadcastSummaryModal';
 import SummaryButton from './SummaryButton';
+import { PlayIcon, StopIcon, LightbulbIcon, ChevronRightIcon } from './icons';
 import { PastBroadcast } from '../types/broadcast';
 
 interface BroadcastsContentProps {
@@ -13,6 +14,11 @@ interface BroadcastsContentProps {
   embedType: 'youtube' | 'spotify';
 }
 
+type SortColumn = 'date' | 'title' | 'duration';
+
+const thClass = "px-4 py-3 text-left text-xs font-semibold text-text-muted bg-surface-50 border-b border-surface-200 whitespace-nowrap";
+const thSortableClass = `${thClass} cursor-pointer select-none hover:text-primary-600 transition-colors`;
+
 const BroadcastsContent = React.memo(({
   pastBroadcasts,
   isLoadingBroadcasts,
@@ -22,14 +28,14 @@ const BroadcastsContent = React.memo(({
   embedType
 }: BroadcastsContentProps) => {
   const formatDuration = useCallback((seconds: number | undefined): string => {
-    if (!seconds) return '\u2014';
+    if (!seconds) return '—';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }, []);
 
   const formatDurationInHours = useCallback((seconds: number | undefined): string => {
-    if (!seconds) return '\u2014';
+    if (!seconds) return '—';
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     if (hours > 0) {
@@ -40,13 +46,13 @@ const BroadcastsContent = React.memo(({
   }, []);
 
   const formatDate = useCallback((date: string | undefined): string => {
-    if (!date) return '\u2014';
+    if (!date) return '—';
     return date;
   }, []);
 
   const [expandedSeries, setExpandedSeries] = useState<Record<string, boolean>>({});
   const [groupDisplayMode, setGroupDisplayMode] = useState<boolean>(true);
-  const [sortColumn, setSortColumn] = useState<'date' | 'title' | 'duration'>('date');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
   const [selectedBroadcastForSummary, setSelectedBroadcastForSummary] = useState<PastBroadcast | null>(null);
@@ -143,7 +149,7 @@ const BroadcastsContent = React.memo(({
     setExpandedSeries(allCollapsed);
   }, [broadcastsBySeries]);
 
-  const handleSort = useCallback((column: 'date' | 'title' | 'duration') => {
+  const handleSort = useCallback((column: SortColumn) => {
     if (sortColumn === column) {
       setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
     } else {
@@ -157,12 +163,12 @@ const BroadcastsContent = React.memo(({
   const getSeriesAccent = useCallback((series: string) => {
     const index = seriesList.indexOf(series);
     const accents = [
-      { bg: 'bg-primary-50', border: 'border-l-primary-400', headerBg: 'bg-primary-50/60' },
-      { bg: 'bg-emerald-50', border: 'border-l-emerald-400', headerBg: 'bg-emerald-50/60' },
-      { bg: 'bg-amber-50', border: 'border-l-amber-400', headerBg: 'bg-amber-50/60' },
-      { bg: 'bg-rose-50', border: 'border-l-rose-400', headerBg: 'bg-rose-50/60' },
-      { bg: 'bg-cyan-50', border: 'border-l-cyan-400', headerBg: 'bg-cyan-50/60' },
-      { bg: 'bg-violet-50', border: 'border-l-violet-400', headerBg: 'bg-violet-50/60' },
+      { bar: 'bg-primary-400', headerBg: 'bg-primary-50/60' },
+      { bar: 'bg-emerald-400', headerBg: 'bg-emerald-50/60' },
+      { bar: 'bg-amber-400', headerBg: 'bg-amber-50/60' },
+      { bar: 'bg-rose-400', headerBg: 'bg-rose-50/60' },
+      { bar: 'bg-cyan-400', headerBg: 'bg-cyan-50/60' },
+      { bar: 'bg-violet-400', headerBg: 'bg-violet-50/60' },
     ];
     return accents[index % accents.length];
   }, [seriesList]);
@@ -176,6 +182,26 @@ const BroadcastsContent = React.memo(({
     setSummaryModalOpen(false);
     setSelectedBroadcastForSummary(null);
   }, []);
+
+  const getHypothesesQuery = useCallback((broadcast: PastBroadcast) => {
+    return groupDisplayMode
+      ? `/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`
+      : `/?tab=hypotheses&episodeId=${broadcast.id}`;
+  }, [groupDisplayMode]);
+
+  const renderActions = useCallback((broadcast: PastBroadcast) => (
+    <>
+      <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '再生を閉じる' : '再生する'}>
+        {visibleEmbeds.has(broadcast.id) ? <StopIcon /> : <PlayIcon />}
+      </button>
+      <button type="button" onClick={() => router.push(getHypothesesQuery(broadcast))} className="btn-icon" aria-label="仮説を見る">
+        <LightbulbIcon />
+      </button>
+      <SummaryButton broadcast={broadcast} onOpenSummary={openSummaryModal} />
+    </>
+  ), [toggleEmbedVisibility, visibleEmbeds, router, getHypothesesQuery, openSummaryModal]);
+
+  const sortLabels: Record<SortColumn, string> = { date: '日付', title: 'タイトル', duration: '再生時間' };
 
   return (
     <>
@@ -212,7 +238,7 @@ const BroadcastsContent = React.memo(({
               </button>
             </div>
 
-            {groupDisplayMode && (
+            {groupDisplayMode ? (
               <div className="flex items-center gap-2 max-md:justify-center">
                 <button onClick={expandAllSeries} className="btn-secondary text-xs px-3 py-1.5">
                   すべて展開
@@ -221,32 +247,54 @@ const BroadcastsContent = React.memo(({
                   すべて閉じる
                 </button>
               </div>
+            ) : (
+              <div className="hidden max-md:flex items-center justify-center gap-2">
+                <label htmlFor="broadcast-sort" className="text-sm font-medium text-text-secondary">並び順:</label>
+                <select
+                  id="broadcast-sort"
+                  value={sortColumn}
+                  onChange={(e) => setSortColumn(e.target.value as SortColumn)}
+                  className="px-3 py-1.5 border border-surface-200 rounded-lg bg-surface-50 text-text-primary text-sm cursor-pointer focus:outline-none focus:border-primary-400"
+                >
+                  {(Object.keys(sortLabels) as SortColumn[]).map(column => (
+                    <option key={column} value={column}>{sortLabels[column]}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+                  className="btn-secondary text-xs px-3 py-1.5"
+                  aria-label={sortDirection === 'asc' ? '昇順' : '降順'}
+                >
+                  {sortDirection === 'asc' ? '昇順 ↑' : '降順 ↓'}
+                </button>
+              </div>
             )}
           </div>
 
-          <div className="w-full card-modern overflow-hidden">
+          {/* Desktop: table view */}
+          <div className="w-full card-modern overflow-hidden max-md:hidden">
             <table className="w-full border-separate border-spacing-0">
               <thead>
                 <tr>
                   {groupDisplayMode ? (
                     <>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 first:rounded-tl-2xl whitespace-nowrap">日付</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 whitespace-nowrap">タイトル</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 whitespace-nowrap">再生時間</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 last:rounded-tr-2xl whitespace-nowrap">リンク</th>
+                      <th className={`${thClass} first:rounded-tl-2xl`}>日付</th>
+                      <th className={thClass}>タイトル</th>
+                      <th className={thClass}>再生時間</th>
+                      <th className={`${thClass} last:rounded-tr-2xl`}>リンク</th>
                     </>
                   ) : (
                     <>
-                      <th className="cursor-pointer select-none px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 first:rounded-tl-2xl whitespace-nowrap hover:text-primary-600 transition-colors" onClick={() => handleSort('date')}>
-                        日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
+                      <th className={`${thSortableClass} first:rounded-tl-2xl`} onClick={() => handleSort('date')}>
+                        日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
                       </th>
-                      <th className="cursor-pointer select-none px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 whitespace-nowrap hover:text-primary-600 transition-colors" onClick={() => handleSort('title')}>
-                        タイトル {sortColumn === 'title' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
+                      <th className={thSortableClass} onClick={() => handleSort('title')}>
+                        タイトル {sortColumn === 'title' && (sortDirection === 'asc' ? '↑' : '↓')}
                       </th>
-                      <th className="cursor-pointer select-none px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 whitespace-nowrap hover:text-primary-600 transition-colors" onClick={() => handleSort('duration')}>
-                        再生時間 {sortColumn === 'duration' && (sortDirection === 'asc' ? '\u2191' : '\u2193')}
+                      <th className={thSortableClass} onClick={() => handleSort('duration')}>
+                        再生時間 {sortColumn === 'duration' && (sortDirection === 'asc' ? '↑' : '↓')}
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase tracking-wider bg-surface-50 border-b border-surface-200 last:rounded-tr-2xl whitespace-nowrap">リンク</th>
+                      <th className={`${thClass} last:rounded-tr-2xl`}>リンク</th>
                     </>
                   )}
                 </tr>
@@ -265,9 +313,9 @@ const BroadcastsContent = React.memo(({
                             <td colSpan={4} className="px-4 py-3 border-b border-surface-200">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className={`w-1 h-8 rounded-full ${accent.border.replace('border-l-', 'bg-')}`}></span>
-                                  <span className="text-xs text-text-muted w-5 text-center transition-transform duration-200" style={{ transform: expandedSeries[series] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
-                                    ▶
+                                  <span className={`w-1 h-8 rounded-full ${accent.bar}`}></span>
+                                  <span className="text-text-muted transition-transform duration-200" style={{ transform: expandedSeries[series] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                                    <ChevronRightIcon />
                                   </span>
                                   <span className="font-semibold text-text-primary">{series}</span>
                                   <span className="text-xs text-text-muted bg-surface-100 px-2 py-0.5 rounded-full">{broadcasts.length}</span>
@@ -283,16 +331,10 @@ const BroadcastsContent = React.memo(({
                               <tr className="hover:bg-primary-50/30 transition-colors duration-150 group">
                                 <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap">{formatDate(broadcast.date)}</td>
                                 <td className="px-4 py-3 text-sm text-text-primary border-b border-surface-100 font-medium">{broadcast.title}</td>
-                                <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatDuration(broadcast.duration)}</td>
+                                <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatDuration(broadcast.duration)}</td>
                                 <td className="px-4 py-3 border-b border-surface-100 whitespace-nowrap">
                                   <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
-                                    <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}>
-                                      {visibleEmbeds.has(broadcast.id) ? '\u23F9\uFE0F' : '\u25B6\uFE0F'}
-                                    </button>
-                                    <button type="button" onClick={() => router.push(`/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`)} className="btn-icon" aria-label="仮説を見る">
-                                      💬
-                                    </button>
-                                    <SummaryButton broadcast={broadcast} onOpenSummary={openSummaryModal} />
+                                    {renderActions(broadcast)}
                                   </div>
                                 </td>
                               </tr>
@@ -321,16 +363,10 @@ const BroadcastsContent = React.memo(({
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatDuration(broadcast.duration)}</td>
+                        <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatDuration(broadcast.duration)}</td>
                         <td className="px-4 py-3 border-b border-surface-100 whitespace-nowrap">
                           <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
-                            <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}>
-                              {visibleEmbeds.has(broadcast.id) ? '\u23F9\uFE0F' : '\u25B6\uFE0F'}
-                            </button>
-                            <button type="button" onClick={() => router.push(`/?tab=hypotheses&episodeId=${broadcast.id}`)} className="btn-icon" aria-label="仮説を見る">
-                              💬
-                            </button>
-                            <SummaryButton broadcast={broadcast} onOpenSummary={openSummaryModal} />
+                            {renderActions(broadcast)}
                           </div>
                         </td>
                       </tr>
@@ -346,6 +382,89 @@ const BroadcastsContent = React.memo(({
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile: card view */}
+          <div className="hidden max-md:flex w-full flex-col gap-3">
+            {groupDisplayMode ? (
+              sortSeriesByNumber(Object.entries(broadcastsBySeries))
+                .map(([series, broadcasts]) => {
+                  const accent = getSeriesAccent(series);
+                  return (
+                    <div key={series} className="card-modern overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => toggleSeries(series)}
+                        className={`w-full flex items-center justify-between gap-2 px-4 py-3 text-left border-none cursor-pointer ${accent.headerBg}`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`w-1 h-8 rounded-full flex-shrink-0 ${accent.bar}`}></span>
+                          <span className="text-text-muted flex-shrink-0 transition-transform duration-200" style={{ transform: expandedSeries[series] ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                            <ChevronRightIcon />
+                          </span>
+                          <span className="font-semibold text-sm text-text-primary truncate">{series}</span>
+                          <span className="text-xs text-text-muted bg-surface-100 px-2 py-0.5 rounded-full flex-shrink-0">{broadcasts.length}</span>
+                        </div>
+                        <span className="text-xs text-text-muted font-medium whitespace-nowrap flex-shrink-0">
+                          {calculateSeresTotalDuration(broadcasts)}
+                        </span>
+                      </button>
+                      {expandedSeries[series] && (
+                        <div className="flex flex-col divide-y divide-surface-100 border-t border-surface-100">
+                          {broadcasts.map((broadcast) => (
+                            <div key={broadcast.id} className="px-4 py-3">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0 flex-1">
+                                  <p className="m-0 text-sm font-medium text-text-primary leading-snug">{broadcast.title}</p>
+                                  <p className="m-0 mt-1 text-xs text-text-muted">
+                                    {formatDate(broadcast.date)}
+                                    <span className="mx-1.5">·</span>
+                                    {formatDuration(broadcast.duration)}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-1.5 flex-shrink-0">
+                                  {renderActions(broadcast)}
+                                </div>
+                              </div>
+                              {visibleEmbeds.has(broadcast.id) && (
+                                <div className="mt-3">
+                                  <BroadcastEmbed broadcast={broadcast} embedType={embedType} height={152} />
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+            ) : (
+              sortedBroadcasts.map((broadcast) => (
+                <div key={broadcast.id} className="card-modern p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="m-0 text-sm font-medium text-text-primary leading-snug">{broadcast.title}</p>
+                      <p className="m-0 mt-1 text-xs text-text-muted">
+                        {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : '999. その他'}
+                      </p>
+                      <p className="m-0 mt-1 text-xs text-text-muted">
+                        {formatDate(broadcast.date)}
+                        <span className="mx-1.5">·</span>
+                        {formatDuration(broadcast.duration)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      {renderActions(broadcast)}
+                    </div>
+                  </div>
+                  {visibleEmbeds.has(broadcast.id) && (
+                    <div className="mt-3 pt-3 border-t border-surface-100">
+                      <BroadcastEmbed broadcast={broadcast} embedType={embedType} height={152} />
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </>
       )}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FileTextIcon } from './icons';
 import { PastBroadcast, PopularBroadcast } from '../types/broadcast';
 
 interface SummaryButtonProps<T extends PastBroadcast | PopularBroadcast> {
@@ -21,7 +22,7 @@ const SummaryButton = <T extends PastBroadcast | PopularBroadcast>({
       className="btn-icon"
       aria-label="要約を見る"
     >
-      📋
+      <FileTextIcon />
     </button>
   );
 };

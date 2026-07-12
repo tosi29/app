@@ -146,35 +146,43 @@ export default function Home() {
         <title>Podcast Library</title>
         <meta name="description" content="ポッドキャスト配信ライブラリ" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </Head>
 
       <header className="glass-header sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between max-md:px-4 max-md:py-2">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-hero-gradient flex items-center justify-center shadow-glow">
-              <span className="text-white text-sm font-bold">P</span>
+        <div className="max-w-7xl mx-auto px-6 py-3 max-md:px-4 max-md:py-2">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-hero-gradient flex items-center justify-center shadow-glow">
+                <span className="text-white text-sm font-bold">P</span>
+              </div>
+              <h1 className="text-lg font-semibold text-text-primary m-0 max-md:text-base">Podcast Library</h1>
             </div>
-            <h1 className="text-lg font-semibold text-text-primary m-0 max-md:text-base">Podcast Library</h1>
+            <div className="flex items-center gap-2">
+              <div className="max-md:hidden">
+                <Tabs
+                  active={activeTab}
+                  tabs={tabs}
+                  onTabChange={handleTabChange}
+                />
+              </div>
+              <button
+                className="ml-2 p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-100 transition-all duration-200 max-md:ml-0 max-md:p-1.5"
+                onClick={() => setIsSettingsOpen(true)}
+                aria-label="設定を開く"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16.5 10a1.5 1.5 0 00.9-2.7l-1-1.7a1.5 1.5 0 00-2.6 0l-.1.2a1.5 1.5 0 01-2.1.5 1.5 1.5 0 01-.7-1.3V4.5A1.5 1.5 0 009.5 3h-1A1.5 1.5 0 007 4.5v.2a1.5 1.5 0 01-.7 1.3 1.5 1.5 0 01-2.1-.5l-.1-.2a1.5 1.5 0 00-2.6 0l-1 1.7A1.5 1.5 0 001.5 10h.2a1.5 1.5 0 011.3.7 1.5 1.5 0 01-.5 2.1l-.2.1a1.5 1.5 0 00-.5 2.1l.5.8a1.5 1.5 0 002 .5l.2-.1a1.5 1.5 0 012.1.5 1.5 1.5 0 01.7 1.3v.2a1.5 1.5 0 001.5 1.5h1a1.5 1.5 0 001.5-1.5v-.2a1.5 1.5 0 01.7-1.3 1.5 1.5 0 012.1.5l.1.2a1.5 1.5 0 002.6 0l.5-.8a1.5 1.5 0 00-.5-2.1l-.2-.1a1.5 1.5 0 01-.5-2.1 1.5 1.5 0 011.3-.7h.2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hidden max-md:block mt-2 -mx-4 px-4 overflow-x-auto">
             <Tabs
               active={activeTab}
               tabs={tabs}
               onTabChange={handleTabChange}
             />
-            <button
-              className="ml-2 p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-100 transition-all duration-200 max-md:p-1.5"
-              onClick={() => setIsSettingsOpen(true)}
-              aria-label="設定を開く"
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 13a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M16.5 10a1.5 1.5 0 00.9-2.7l-1-1.7a1.5 1.5 0 00-2.6 0l-.1.2a1.5 1.5 0 01-2.1.5 1.5 1.5 0 01-.7-1.3V4.5A1.5 1.5 0 009.5 3h-1A1.5 1.5 0 007 4.5v.2a1.5 1.5 0 01-.7 1.3 1.5 1.5 0 01-2.1-.5l-.1-.2a1.5 1.5 0 00-2.6 0l-1 1.7A1.5 1.5 0 001.5 10h.2a1.5 1.5 0 011.3.7 1.5 1.5 0 01-.5 2.1l-.2.1a1.5 1.5 0 00-.5 2.1l.5.8a1.5 1.5 0 002 .5l.2-.1a1.5 1.5 0 012.1.5 1.5 1.5 0 01.7 1.3v.2a1.5 1.5 0 001.5 1.5h1a1.5 1.5 0 001.5-1.5v-.2a1.5 1.5 0 01.7-1.3 1.5 1.5 0 012.1.5l.1.2a1.5 1.5 0 002.6 0l.5-.8a1.5 1.5 0 00-.5-2.1l-.2-.1a1.5 1.5 0 01-.5-2.1 1.5 1.5 0 011.3-.7h.2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
           </div>
         </div>
       </header>

@@ -36,12 +36,12 @@ export default function BroadcastSummaryModal({
 
         <div className="p-6 max-md:p-4">
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-sm font-semibold text-primary-600 uppercase tracking-wide max-md:text-xs">概要</h3>
+            <h3 className="m-0 mb-3 text-sm font-semibold text-primary-600 max-md:text-xs">概要</h3>
             <p className="m-0 text-sm leading-relaxed text-text-primary bg-primary-50/50 p-4 rounded-xl border-l-3 border-l-primary-400 max-md:p-3">{summary.overview}</p>
           </div>
 
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-sm font-semibold text-emerald-600 uppercase tracking-wide max-md:text-xs">事実や出来事</h3>
+            <h3 className="m-0 mb-3 text-sm font-semibold text-emerald-600 max-md:text-xs">事実や出来事</h3>
             <div className="flex flex-col gap-2">
               {summary.facts.map((fact, index) => (
                 <div key={index} className="p-3.5 bg-emerald-50/50 rounded-xl border-l-3 border-l-emerald-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs">{fact}</div>
@@ -50,7 +50,7 @@ export default function BroadcastSummaryModal({
           </div>
 
           <div className="mb-8 last:mb-0 max-md:mb-6">
-            <h3 className="m-0 mb-3 text-sm font-semibold text-amber-600 uppercase tracking-wide max-md:text-xs">学び・教訓・法則</h3>
+            <h3 className="m-0 mb-3 text-sm font-semibold text-amber-600 max-md:text-xs">学び・教訓・法則</h3>
             <div className="flex flex-col gap-2">
               {summary.lessons.map((lesson, index) => (
                 <div key={index} className="p-3.5 bg-amber-50/50 rounded-xl border-l-3 border-l-amber-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs">{lesson}</div>

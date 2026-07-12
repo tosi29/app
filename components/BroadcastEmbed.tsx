@@ -60,10 +60,10 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
 
   // どちらも利用できない場合
   return (
-    <div className="w-full flex justify-center my-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-      <div className="text-center text-gray-600">
-        <p className="mb-2">🎵 配信が利用できません</p>
-        <p className="text-sm">YouTube・Spotify版ともに現在利用できません</p>
+    <div className="w-full flex justify-center my-4 p-4 border border-surface-200 rounded-xl bg-surface-50">
+      <div className="text-center">
+        <p className="mb-1 text-sm font-medium text-text-secondary">配信が利用できません</p>
+        <p className="text-xs text-text-muted m-0">YouTube・Spotify版ともに現在利用できません</p>
       </div>
     </div>
   );
