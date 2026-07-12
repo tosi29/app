@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import BroadcastEmbed from './BroadcastEmbed';
+import { PlayIcon, StopIcon, LightbulbIcon, SearchIcon } from './icons';
 import { SearchResultBroadcast } from '../types/broadcast';
 import { NextRouter } from 'next/router';
 
@@ -48,10 +49,9 @@ const SearchContent = React.memo(({
       <div className="w-full max-w-2xl card-modern p-6 mb-8 max-md:p-4">
         <form onSubmit={handleSearch} className="flex gap-3 items-center max-md:flex-col max-md:gap-3">
           <div className="relative flex-1 max-md:w-full">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.3-4.3"/>
-            </svg>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
+              <SearchIcon size={18} />
+            </span>
             <input
               type="text"
               id="searchQuery"
@@ -103,8 +103,8 @@ const SearchContent = React.memo(({
                     {broadcast.excerpt}
                   </div>
                   <div className="flex justify-end gap-1.5">
-                    <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '非表示' : '再生'}>
-                      {visibleEmbeds.has(broadcast.id) ? '\u23F9\uFE0F' : '\u25B6\uFE0F'}
+                    <button type="button" onClick={() => toggleEmbedVisibility(broadcast.id)} className="btn-icon" aria-label={visibleEmbeds.has(broadcast.id) ? '再生を閉じる' : '再生する'}>
+                      {visibleEmbeds.has(broadcast.id) ? <StopIcon /> : <PlayIcon />}
                     </button>
                     <button
                       onClick={() => {
@@ -116,7 +116,7 @@ const SearchContent = React.memo(({
                       className="btn-icon"
                       aria-label="仮説を見る"
                     >
-                      💬
+                      <LightbulbIcon />
                     </button>
                   </div>
                   {visibleEmbeds.has(broadcast.id) && (

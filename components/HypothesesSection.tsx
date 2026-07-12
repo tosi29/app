@@ -24,7 +24,15 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownSeries, setDropdownSeries] = useState<string | undefined>(selectedSeries);
+  const [isNarrowViewport, setIsNarrowViewport] = useState<boolean>(false);
   const hypothesesListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkViewport = () => setIsNarrowViewport(window.innerWidth < 768);
+    checkViewport();
+    window.addEventListener('resize', checkViewport);
+    return () => window.removeEventListener('resize', checkViewport);
+  }, []);
 
   const router = useRouter();
 
@@ -211,7 +219,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
           <div className="flex gap-6 w-full max-lg:flex-col max-lg:gap-4">
             {/* Left side: Graph */}
             <div className="flex-1 min-w-[600px] max-lg:flex-none max-lg:min-w-0">
-              <div className="w-full h-[600px] rounded-xl overflow-hidden bg-white">
+              <div className="w-full h-[600px] rounded-xl overflow-hidden bg-white max-md:h-[480px]">
                 <Plot
                   data={getUniqueTopics().map(topic => {
                     const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
@@ -258,7 +266,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                   })}
                   layout={{
                     width: undefined,
-                    height: 600,
+                    height: isNarrowViewport ? 480 : 600,
                     xaxis: {
                       autorange: true,
                       showgrid: true,
@@ -280,7 +288,14 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                     plot_bgcolor: '#fafbfc',
                     paper_bgcolor: 'white',
                     margin: { l: 40, r: 20, t: 20, b: 20 },
-                    legend: {
+                    legend: isNarrowViewport ? {
+                      orientation: 'h',
+                      x: 0,
+                      y: -0.05,
+                      yanchor: 'top',
+                      bgcolor: 'rgba(255,255,255,0.9)',
+                      font: { size: 10, color: '#475569' }
+                    } : {
                       orientation: 'v',
                       x: 1.02,
                       y: 1,
@@ -362,27 +377,24 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                       <p className="m-0 text-xs text-text-muted text-right">by {hypothesis.proposer}</p>
 
                       {/* Feedback buttons */}
-                      <div className="flex gap-1.5 mt-2.5 pt-2.5 border-t border-surface-100">
+                      <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-surface-100">
                         <button
-                          className="px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 active:scale-95"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 active:scale-95"
                           onClick={(e) => { e.stopPropagation(); handleFeedback('interesting', hypothesis); }}
-                          title="興味深い"
                         >
-                          🤔
+                          <span aria-hidden="true">🤔</span> 興味深い
                         </button>
                         <button
-                          className="px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 active:scale-95"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 active:scale-95"
                           onClick={(e) => { e.stopPropagation(); handleFeedback('groundbreaking', hypothesis); }}
-                          title="画期的"
                         >
-                          ✨
+                          <span aria-hidden="true">✨</span> 画期的
                         </button>
                         <button
-                          className="px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-95"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-95"
                           onClick={(e) => { e.stopPropagation(); handleFeedback('worth-testing', hypothesis); }}
-                          title="検証したい"
                         >
-                          🎯
+                          <span aria-hidden="true">🎯</span> 検証したい
                         </button>
                       </div>
                     </div>
