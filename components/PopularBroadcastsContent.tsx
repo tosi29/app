@@ -13,7 +13,7 @@ interface PopularBroadcastsContentProps {
   embedType: 'youtube' | 'spotify';
 }
 
-type SortColumn = 'viewCount' | 'hypothesisCount' | 'likeCount' | 'title' | 'date';
+type SortColumn = 'viewCount' | 'hypothesisCount' | 'likeCount' | 'commentCount' | 'title' | 'date';
 
 export default function PopularBroadcastsContent({
   visibleEmbeds,
@@ -56,6 +56,7 @@ export default function PopularBroadcastsContent({
         case 'viewCount': aValue = a.viewCount; bValue = b.viewCount; break;
         case 'hypothesisCount': aValue = a.hypothesisCount; bValue = b.hypothesisCount; break;
         case 'likeCount': aValue = a.likeCount || 0; bValue = b.likeCount || 0; break;
+        case 'commentCount': aValue = a.commentCount || 0; bValue = b.commentCount || 0; break;
         case 'title': aValue = a.title.toLowerCase(); bValue = b.title.toLowerCase(); break;
         case 'date': aValue = a.date ? new Date(a.date) : new Date(0); bValue = b.date ? new Date(b.date) : new Date(0); break;
         default: return 0;
@@ -107,11 +108,16 @@ export default function PopularBroadcastsContent({
     );
   }
 
+  // 統計が未取得のエピソードは「—」で表示する
+  const formatCount = (count: number | undefined): string =>
+    count != null ? count.toLocaleString() : '—';
+
   const thClass = "cursor-pointer select-none px-4 py-3 text-left text-xs font-semibold text-text-muted bg-surface-50 border-b border-surface-200 whitespace-nowrap hover:text-primary-600 transition-colors";
   const sortLabels: Record<SortColumn, string> = {
     viewCount: '再生数',
     hypothesisCount: '仮説数',
     likeCount: 'いいね数',
+    commentCount: 'コメント数',
     title: 'タイトル',
     date: '日付',
   };
@@ -157,6 +163,9 @@ export default function PopularBroadcastsContent({
               <th className={thClass} onClick={() => handleSort('likeCount')}>
                 いいね {sortColumn === 'likeCount' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
+              <th className={thClass} onClick={() => handleSort('commentCount')}>
+                コメント {sortColumn === 'commentCount' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </th>
               <th className={thClass} onClick={() => handleSort('date')}>
                 日付 {sortColumn === 'date' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
@@ -177,7 +186,8 @@ export default function PopularBroadcastsContent({
                   </td>
                   <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.viewCount.toLocaleString()}</td>
                   <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.hypothesisCount}</td>
-                  <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{broadcast.likeCount || ''}</td>
+                  <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatCount(broadcast.likeCount)}</td>
+                  <td className="px-4 py-3 text-text-secondary border-b border-surface-100 whitespace-nowrap font-mono text-xs">{formatCount(broadcast.commentCount)}</td>
                   <td className="px-4 py-3 text-sm text-text-secondary border-b border-surface-100 whitespace-nowrap">{broadcast.date || '—'}</td>
                   <td className="px-4 py-3 border-b border-surface-100 whitespace-nowrap">
                     <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
@@ -187,7 +197,7 @@ export default function PopularBroadcastsContent({
                 </tr>
                 {visibleEmbeds.has(broadcast.id) && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-3 bg-surface-50 border-b border-surface-100">
+                    <td colSpan={7} className="px-4 py-3 bg-surface-50 border-b border-surface-100">
                       <BroadcastEmbed broadcast={broadcast} embedType={embedType} height={152} />
                     </td>
                   </tr>
@@ -222,8 +232,11 @@ export default function PopularBroadcastsContent({
             <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
               <span className="text-xs text-text-secondary bg-surface-100 px-2 py-0.5 rounded-full">再生 {broadcast.viewCount.toLocaleString()}</span>
               <span className="text-xs text-text-secondary bg-surface-100 px-2 py-0.5 rounded-full">仮説 {broadcast.hypothesisCount}</span>
-              {broadcast.likeCount ? (
-                <span className="text-xs text-text-secondary bg-surface-100 px-2 py-0.5 rounded-full">いいね {broadcast.likeCount}</span>
+              {broadcast.likeCount != null ? (
+                <span className="text-xs text-text-secondary bg-surface-100 px-2 py-0.5 rounded-full">いいね {broadcast.likeCount.toLocaleString()}</span>
+              ) : null}
+              {broadcast.commentCount != null ? (
+                <span className="text-xs text-text-secondary bg-surface-100 px-2 py-0.5 rounded-full">コメント {broadcast.commentCount.toLocaleString()}</span>
               ) : null}
             </div>
             {visibleEmbeds.has(broadcast.id) && (

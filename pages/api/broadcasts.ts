@@ -57,6 +57,9 @@ function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBr
     url: episode.url.youtube_url,
     youtube_video_id: episode.youtube_id,
     spotify_episode_id: extractSpotifyEpisodeId(episode.url.spotify_url),
+    viewCount: episode.view_count,
+    likeCount: episode.like_count,
+    commentCount: episode.comment_count,
   };
 }
 

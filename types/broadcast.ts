@@ -14,7 +14,9 @@ export interface PastBroadcast {
   youtube_video_id: string;
   spotify_episode_id: string;
   playback_time?: number;
-  likeCount?: number;
+  viewCount?: number; // YouTube再生数
+  likeCount?: number; // YouTubeいいね数
+  commentCount?: number; // YouTubeコメント数
   summary?: BroadcastSummary;
 }
 
@@ -41,6 +43,10 @@ export interface ExternalEpisode {
   series_number: string;
   youtube_duration: string;
   youtube_published_at: string;
+  view_count?: number; // YouTube再生数（統計更新Lambda実行後に付与される）
+  like_count?: number; // YouTubeいいね数
+  comment_count?: number; // YouTubeコメント数
+  stats_updated_at?: string; // 統計情報の最終更新日時（ISO 8601）
 }
 
 export interface ExternalApiResponse {
