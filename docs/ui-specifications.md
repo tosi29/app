@@ -113,26 +113,27 @@
 
 ### 機能概要
 
-人気の配信を閲覧数、コメント数、いいね数などでソート表示する機能を提供します。
+人気の配信を再生数、いいね数、コメント数などでソート表示する機能を提供します。
+再生数・いいね数・コメント数は外部API（YouTube統計を日次で反映）から取得した実データを表示します。
 
 ### テーブル構成
 
 | カラム | 内容 |
 |--------|------|
 | タイトル | エピソードタイトル + シリーズ名 |
-| 再生 | 再生回数（数値） |
-| コメント | コメント数 |
-| 👍 | いいね数 |
+| 再生 | YouTube再生数（数値） |
+| いいね | YouTubeいいね数（未取得時は「—」） |
+| コメント | YouTubeコメント数（未取得時は「—」） |
 | 日付 | YYYY-MM-DD形式 |
-| リンク | 再生・コメント表示ボタン |
+| リンク | 再生・仮説・概要ボタン |
 
 ### ソート機能
 
 #### ソート可能カラム
 - **タイトル**: アルファベット順
-- **再生**: 再生回数順  
+- **再生**: 再生数順  
+- **いいね**: いいね数順
 - **コメント**: コメント数順
-- **👍**: いいね数順
 - **日付**: 日付順
 
 #### ソート操作
@@ -308,7 +309,9 @@ interface PastBroadcast {
   url: string;               // 配信URL
   youtube_video_id: string;  // YouTube動画ID
   spotify_episode_id: string; // SpotifyエピソードID
-  likeCount?: number;        // いいね数（オプショナル）
+  viewCount?: number;        // YouTube再生数（オプショナル）
+  likeCount?: number;        // YouTubeいいね数（オプショナル）
+  commentCount?: number;     // YouTubeコメント数（オプショナル）
   summary?: BroadcastSummary; // 配信概要（オプショナル）
 }
 ```
@@ -343,8 +346,8 @@ interface Hypothesis {
 
 ```typescript
 interface PopularBroadcast extends PastBroadcast {
-  commentCount: number;   // コメント数
-  viewCount: number;      // 再生回数
+  hypothesisCount: number; // 仮説数
+  viewCount: number;       // YouTube再生数（未取得時は0）
 }
 ```
 

@@ -56,6 +56,9 @@ function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBr
     url: episode.url.youtube_url,
     youtube_video_id: episode.youtube_id,
     spotify_episode_id: extractSpotifyEpisodeId(episode.url.spotify_url),
+    viewCount: episode.view_count,
+    likeCount: episode.like_count,
+    commentCount: episode.comment_count,
   };
 }
 
@@ -121,17 +124,12 @@ export default async function handler(
     });
     
     // Create popular broadcasts data
-    const popularBroadcasts: PopularBroadcast[] = broadcasts.map(broadcast => {
-      const hypothesisCount = hypothesisCounts[broadcast.id] || 0;
-      // Calculate a view count based on likes and hypotheses (simulated data)
-      const viewCount = (broadcast.likeCount || 0) * 10 + hypothesisCount * 5;
-      
-      return {
-        ...broadcast,
-        hypothesisCount,
-        viewCount
-      };
-    });
+    // viewCount は外部APIが返すYouTube再生数（統計未取得のエピソードは0）
+    const popularBroadcasts: PopularBroadcast[] = broadcasts.map(broadcast => ({
+      ...broadcast,
+      hypothesisCount: hypothesisCounts[broadcast.id] || 0,
+      viewCount: broadcast.viewCount ?? 0,
+    }));
     
     res.status(200).json(popularBroadcasts);
   } catch (error) {
