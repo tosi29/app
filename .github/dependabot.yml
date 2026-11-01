@@ -14,5 +14,9 @@ updates:
         applies-to: security-updates
         patterns:
           - "*"
+    # Major upgrades require coordinated config/code migrations.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     cooldown:
       default-days: 7
