@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       fontFamily: {
@@ -24,7 +21,7 @@ module.exports = {
         ],
       },
       borderWidth: {
-        '3': '3px',
+        3: '3px',
       },
       colors: {
         primary: {
@@ -67,7 +64,7 @@ module.exports = {
         'app-md': '0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04)',
         'app-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
         'app-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
-        'glow': '0 0 20px rgba(99, 102, 241, 0.15)',
+        glow: '0 0 20px rgba(99, 102, 241, 0.15)',
         'glow-accent': '0 0 20px rgba(245, 158, 11, 0.15)',
       },
       borderRadius: {
@@ -102,4 +99,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};

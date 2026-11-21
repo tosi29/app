@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PastBroadcast, ExternalEpisode, ExternalApiResponse } from '../../types/broadcast';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import type { ExternalApiResponse, ExternalEpisode, PastBroadcast } from '../../types/broadcast';
 
 // Spotify URLからエピソードIDを抽出する関数
 function extractSpotifyEpisodeId(spotifyUrl: string): string {
@@ -11,11 +11,11 @@ function extractSpotifyEpisodeId(spotifyUrl: string): string {
 function parseYouTubeDurationToSeconds(duration: string): number | undefined {
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!match) return undefined;
-  
-  const hours = parseInt(match[1] || '0');
-  const minutes = parseInt(match[2] || '0');
-  const seconds = parseInt(match[3] || '0');
-  
+
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
+
   return hours * 3600 + minutes * 60 + seconds;
 }
 
@@ -38,18 +38,17 @@ function extractSeriesNumber(seriesNumber: string): string | undefined {
 // series_with_number を生成する関数 (例: "9. 吉田松陰")
 function generateSeriesWithNumber(seriesName: string, seriesNumber: string): string {
   const number = extractSeriesNumber(seriesNumber);
-  if (number && seriesName && seriesName.trim()) {
+  if (number && seriesName?.trim()) {
     return `${number}. ${seriesName.trim()}`;
   }
   // series_numberが無効またはseries_nameが空の場合は"999. その他"として最後に表示
-  return seriesName && seriesName.trim() ? seriesName.trim() : '999. その他';
+  return seriesName?.trim() ? seriesName.trim() : '999. その他';
 }
-
 
 // 外部APIデータをPastBroadcast型に変換する関数
 function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBroadcast {
   return {
-    id: parseInt(episode.id),
+    id: parseInt(episode.id, 10),
     date: parseYouTubePublishedAt(episode.youtube_published_at),
     title: episode.title,
     series: generateSeriesWithNumber(episode.series_name, episode.series_number),
@@ -69,36 +68,35 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
     // TODO: 実際の外部APIのURLに置き換える
     const API_URL = process.env.EXTERNAL_BROADCASTS_API_URL || 'https://api.example.com/broadcasts';
     const API_TIMEOUT = 5000; // 5秒タイムアウト
-    
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
-    
+
     const response = await fetch(API_URL, {
       signal: controller.signal,
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status} ${response.statusText}`);
     }
-    
+
     const data: ExternalApiResponse = await response.json();
-    
+
     // データ形式の検証
     if (!data.episodes || !Array.isArray(data.episodes)) {
       throw new Error('Invalid API response format: episodes array not found');
     }
-    
+
     // 外部APIデータをPastBroadcast型に変換（安全な変換）
     return data.episodes
-      .filter(episode => episode && episode.id && episode.title) // 必須フィールドをチェック（series_nameは空でもOK）
+      .filter((episode) => episode?.id && episode.title) // 必須フィールドをチェック（series_nameは空でもOK）
       .map(convertExternalEpisodeToPastBroadcast);
-      
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -113,14 +111,11 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
   }
 }
 
-export default async function handler(
-  _req: NextApiRequest,
-  res: NextApiResponse<PastBroadcast[]>
-) {
+export default async function handler(_req: NextApiRequest, res: NextApiResponse<PastBroadcast[]>) {
   try {
     // 外部APIから配信データを取得
     const externalBroadcasts = await fetchExternalBroadcasts();
-    
+
     res.status(200).json(externalBroadcasts);
   } catch (error) {
     console.error('Error in broadcasts API:', error);

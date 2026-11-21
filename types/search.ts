@@ -1,6 +1,6 @@
 export type Content = {
   text: string;
-  type: "TEXT";
+  type: 'TEXT';
 };
 
 export type Metadata = {

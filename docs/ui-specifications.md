@@ -13,7 +13,7 @@
 - **UIライブラリ**: React 18.2.0
 - **スタイリング**: TailwindCSS 3.4.17
 - **チャートライブラリ**: Plotly.js 2.35.0
-- **開発ツール**: ESLint 8.56.0
+- **開発ツール**: Biome（lint・整形）、TypeScript
 
 ### アーキテクチャ
 

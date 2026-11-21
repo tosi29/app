@@ -3,11 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
+  html,
+  body {
     padding: 0;
     margin: 0;
     line-height: 1.6;
-    font-family: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    font-family:
+      "Inter", "Noto Sans JP", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 40%, #f8fafc 100%);
@@ -59,37 +61,29 @@
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.04),
+      0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
   .card-modern:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.06),
+      0 2px 4px -2px rgba(0, 0, 0, 0.04);
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-medium text-sm rounded-xl
-           transition-all duration-200 ease-out
-           hover:bg-primary-700 hover:-translate-y-px hover:shadow-glow
-           active:translate-y-0
-           focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
+    @apply inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-medium text-sm rounded-xl transition-all duration-200 ease-out hover:bg-primary-700 hover:-translate-y-px hover:shadow-glow active:translate-y-0 focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2 bg-white text-text-secondary font-medium text-sm rounded-xl
-           border border-surface-200
-           transition-all duration-200 ease-out
-           hover:bg-surface-50 hover:border-primary-300 hover:text-primary-600 hover:-translate-y-px
-           active:translate-y-0
-           focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
+    @apply inline-flex items-center justify-center px-4 py-2 bg-white text-text-secondary font-medium text-sm rounded-xl border border-surface-200 transition-all duration-200 ease-out hover:bg-surface-50 hover:border-primary-300 hover:text-primary-600 hover:-translate-y-px active:translate-y-0 focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
   }
 
   .btn-icon {
-    @apply inline-flex items-center justify-center p-2 min-w-10 h-10
-           bg-primary-50 text-primary-600 border border-primary-100 rounded-xl
-           text-base cursor-pointer transition-all duration-200 ease-out
-           hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:-translate-y-px hover:shadow-glow
-           active:translate-y-0 active:shadow-sm
-           focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
+    @apply inline-flex items-center justify-center p-2 min-w-10 h-10 bg-primary-50 text-primary-600 border border-primary-100 rounded-xl text-base cursor-pointer transition-all duration-200 ease-out hover:bg-primary-600 hover:text-white hover:border-primary-600 hover:-translate-y-px hover:shadow-glow active:translate-y-0 active:shadow-sm focus:outline-2 focus:outline-primary-500 focus:outline-offset-2;
   }
 }

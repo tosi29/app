@@ -1,6 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PopularBroadcast, PastBroadcast, ExternalEpisode, ExternalApiResponse } from '../../types/broadcast';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { hypotheses } from '../../data/hypotheses-sample';
+import type {
+  ExternalApiResponse,
+  ExternalEpisode,
+  PastBroadcast,
+  PopularBroadcast,
+} from '../../types/broadcast';
 
 // Spotify URLからエピソードIDを抽出する関数（broadcasts.tsから移動）
 function extractSpotifyEpisodeId(spotifyUrl: string): string {
@@ -12,11 +17,11 @@ function extractSpotifyEpisodeId(spotifyUrl: string): string {
 function parseYouTubeDurationToSeconds(duration: string): number | undefined {
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!match) return undefined;
-  
-  const hours = parseInt(match[1] || '0');
-  const minutes = parseInt(match[2] || '0');
-  const seconds = parseInt(match[3] || '0');
-  
+
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
+
   return hours * 3600 + minutes * 60 + seconds;
 }
 
@@ -39,16 +44,16 @@ function extractSeriesNumber(seriesNumber: string): string | undefined {
 // series_with_number を生成する関数（broadcasts.tsから移動）
 function generateSeriesWithNumber(seriesName: string, seriesNumber: string): string {
   const number = extractSeriesNumber(seriesNumber);
-  if (number && seriesName && seriesName.trim()) {
+  if (number && seriesName?.trim()) {
     return `${number}. ${seriesName.trim()}`;
   }
-  return seriesName && seriesName.trim() ? seriesName.trim() : '999. その他';
+  return seriesName?.trim() ? seriesName.trim() : '999. その他';
 }
 
 // 外部APIデータをPastBroadcast型に変換する関数（broadcasts.tsから移動）
 function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBroadcast {
   return {
-    id: parseInt(episode.id),
+    id: parseInt(episode.id, 10),
     date: parseYouTubePublishedAt(episode.youtube_published_at),
     title: episode.title,
     series: generateSeriesWithNumber(episode.series_name, episode.series_number),
@@ -67,34 +72,33 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
   try {
     const API_URL = process.env.EXTERNAL_BROADCASTS_API_URL || 'https://api.example.com/broadcasts';
     const API_TIMEOUT = 5000;
-    
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
-    
+
     const response = await fetch(API_URL, {
       signal: controller.signal,
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });
-    
+
     clearTimeout(timeoutId);
-    
+
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status} ${response.statusText}`);
     }
-    
+
     const data: ExternalApiResponse = await response.json();
-    
+
     if (!data.episodes || !Array.isArray(data.episodes)) {
       throw new Error('Invalid API response format: episodes array not found');
     }
-    
+
     return data.episodes
-      .filter(episode => episode && episode.id && episode.title)
+      .filter((episode) => episode?.id && episode.title)
       .map(convertExternalEpisodeToPastBroadcast);
-      
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -111,26 +115,26 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
 
 export default async function handler(
   _req: NextApiRequest,
-  res: NextApiResponse<PopularBroadcast[]>
+  res: NextApiResponse<PopularBroadcast[]>,
 ) {
   try {
     // 外部APIから配信データを取得
     const broadcasts = await fetchExternalBroadcasts();
-    
+
     // Count hypotheses for each episode
     const hypothesisCounts: Record<number, number> = {};
-    hypotheses.forEach(hypothesis => {
+    hypotheses.forEach((hypothesis) => {
       hypothesisCounts[hypothesis.episodeId] = (hypothesisCounts[hypothesis.episodeId] || 0) + 1;
     });
-    
+
     // Create popular broadcasts data
     // viewCount は外部APIが返すYouTube再生数（統計未取得のエピソードは0）
-    const popularBroadcasts: PopularBroadcast[] = broadcasts.map(broadcast => ({
+    const popularBroadcasts: PopularBroadcast[] = broadcasts.map((broadcast) => ({
       ...broadcast,
       hypothesisCount: hypothesisCounts[broadcast.id] || 0,
       viewCount: broadcast.viewCount ?? 0,
     }));
-    
+
     res.status(200).json(popularBroadcasts);
   } catch (error) {
     console.error('Error in popular-broadcasts API:', error);

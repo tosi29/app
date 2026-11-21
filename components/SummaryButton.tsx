@@ -1,6 +1,5 @@
-import React from 'react';
+import type { PastBroadcast, PopularBroadcast } from '../types/broadcast';
 import { FileTextIcon } from './icons';
-import { PastBroadcast, PopularBroadcast } from '../types/broadcast';
 
 interface SummaryButtonProps<T extends PastBroadcast | PopularBroadcast> {
   broadcast: T;
@@ -9,7 +8,7 @@ interface SummaryButtonProps<T extends PastBroadcast | PopularBroadcast> {
 
 const SummaryButton = <T extends PastBroadcast | PopularBroadcast>({
   broadcast,
-  onOpenSummary
+  onOpenSummary,
 }: SummaryButtonProps<T>) => {
   if (!broadcast.summary) {
     return null;

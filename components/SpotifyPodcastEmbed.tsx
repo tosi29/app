@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface SpotifyPodcastEmbedProps {
   episodeId: string;
@@ -7,11 +7,11 @@ interface SpotifyPodcastEmbedProps {
   height?: string;
 }
 
-export default function SpotifyPodcastEmbed({ 
-  episodeId, 
-  startTime = 0, 
-  width = "100%", 
-  height = "352" 
+export default function SpotifyPodcastEmbed({
+  episodeId,
+  startTime = 0,
+  width = '100%',
+  height = '352',
 }: SpotifyPodcastEmbedProps): React.ReactNode {
   // 空文字列や無効なIDをチェック
   if (!episodeId || episodeId.trim() === '') {
@@ -28,14 +28,14 @@ export default function SpotifyPodcastEmbed({
   // Construct the Spotify embed URL
   const baseUrl = `https://open.spotify.com/embed/episode/${episodeId}`;
   const params = new URLSearchParams({
-    utm_source: 'generator'
+    utm_source: 'generator',
   });
-  
+
   // Add start time parameter if provided and greater than 0
   if (startTime > 0) {
     params.set('t', startTime.toString());
   }
-  
+
   const embedUrl = `${baseUrl}?${params.toString()}`;
 
   return (
