@@ -99,9 +99,7 @@ const SearchContent = React.memo(
                           {broadcast.title}
                         </h3>
                         <span className="text-xs text-text-muted">
-                          {broadcast.series && broadcast.series.trim()
-                            ? broadcast.series.trim()
-                            : 'その他'}
+                          {broadcast.series?.trim() ? broadcast.series.trim() : 'その他'}
                         </span>
                       </div>
                       {broadcast.likeCount && (
@@ -123,6 +121,7 @@ const SearchContent = React.memo(
                         {visibleEmbeds.has(broadcast.id) ? <StopIcon /> : <PlayIcon />}
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           const normalizedSeries = broadcast.series
                             ? broadcast.series.replace(/^(\d+)-\d+\s+/, '$1. ')

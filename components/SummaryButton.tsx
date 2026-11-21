@@ -1,4 +1,3 @@
-import React from 'react';
 import type { PastBroadcast, PopularBroadcast } from '../types/broadcast';
 import { FileTextIcon } from './icons';
 

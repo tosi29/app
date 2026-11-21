@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { sampleRetrievalResults } from '../../data/search-sample-data';
-import { PastBroadcast, type SearchResultBroadcast } from '../../types/broadcast';
+import type { SearchResultBroadcast } from '../../types/broadcast';
 import type { SearchResponse, SearchResultItem } from '../../types/search';
 
 // Function to extract YouTube video ID from URL

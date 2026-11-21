@@ -12,9 +12,9 @@ function parseYouTubeDurationToSeconds(duration: string): number | undefined {
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!match) return undefined;
 
-  const hours = parseInt(match[1] || '0');
-  const minutes = parseInt(match[2] || '0');
-  const seconds = parseInt(match[3] || '0');
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
 
   return hours * 3600 + minutes * 60 + seconds;
 }
@@ -38,17 +38,17 @@ function extractSeriesNumber(seriesNumber: string): string | undefined {
 // series_with_number を生成する関数 (例: "9. 吉田松陰")
 function generateSeriesWithNumber(seriesName: string, seriesNumber: string): string {
   const number = extractSeriesNumber(seriesNumber);
-  if (number && seriesName && seriesName.trim()) {
+  if (number && seriesName?.trim()) {
     return `${number}. ${seriesName.trim()}`;
   }
   // series_numberが無効またはseries_nameが空の場合は"999. その他"として最後に表示
-  return seriesName && seriesName.trim() ? seriesName.trim() : '999. その他';
+  return seriesName?.trim() ? seriesName.trim() : '999. その他';
 }
 
 // 外部APIデータをPastBroadcast型に変換する関数
 function convertExternalEpisodeToPastBroadcast(episode: ExternalEpisode): PastBroadcast {
   return {
-    id: parseInt(episode.id),
+    id: parseInt(episode.id, 10),
     date: parseYouTubePublishedAt(episode.youtube_published_at),
     title: episode.title,
     series: generateSeriesWithNumber(episode.series_name, episode.series_number),
@@ -95,7 +95,7 @@ async function fetchExternalBroadcasts(): Promise<PastBroadcast[]> {
 
     // 外部APIデータをPastBroadcast型に変換（安全な変換）
     return data.episodes
-      .filter((episode) => episode && episode.id && episode.title) // 必須フィールドをチェック（series_nameは空でもOK）
+      .filter((episode) => episode?.id && episode.title) // 必須フィールドをチェック（series_nameは空でもOK）
       .map(convertExternalEpisodeToPastBroadcast);
   } catch (error) {
     if (error instanceof Error) {

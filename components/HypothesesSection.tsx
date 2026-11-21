@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import type { PlotMouseEvent } from 'plotly.js';
+import type { Datum, PlotMouseEvent } from 'plotly.js';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import type { Hypothesis } from '../types/hypothesis';
@@ -47,8 +47,7 @@ export default function HypothesesSection({
     } else if (selectedEpisodeId && !selectedSeries) {
       const broadcast = pastBroadcasts.find((b) => b.id === selectedEpisodeId);
       if (broadcast) {
-        const series =
-          broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+        const series = broadcast.series?.trim() ? broadcast.series.trim() : 'その他';
         setDropdownSeries(series);
       }
     }
@@ -56,7 +55,7 @@ export default function HypothesesSection({
 
   const extractNumber = (str: string): number | null => {
     const match = str.match(/^(-?\d+)[.:]/);
-    return match ? parseInt(match[1]) : null;
+    return match ? parseInt(match[1], 10) : null;
   };
 
   const sortByNumericPrefix = (items: string[]): string[] => {
@@ -71,7 +70,7 @@ export default function HypothesesSection({
 
   const getUniqueSeries = (): string[] => {
     const seriesSet = new Set(
-      pastBroadcasts.map((b) => (b.series && b.series.trim() ? b.series.trim() : 'その他')),
+      pastBroadcasts.map((b) => (b.series?.trim() ? b.series.trim() : 'その他')),
     );
     return sortByNumericPrefix(Array.from(seriesSet));
   };
@@ -110,7 +109,7 @@ export default function HypothesesSection({
   const getEpisodeSeries = (episodeId: number): string => {
     const broadcast = pastBroadcasts.find((b) => b.id === episodeId);
     if (!broadcast) return 'その他';
-    return broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+    return broadcast.series?.trim() ? broadcast.series.trim() : 'その他';
   };
 
   const getTopicColor = (topic: string): string => {
@@ -263,7 +262,7 @@ export default function HypothesesSection({
                         getEpisodeSeries(h.episodeId),
                         wrapText(h.hypothesis, 40),
                         wrapText(h.fact, 40),
-                      ]) as any,
+                      ]) as unknown as Datum[][],
                       hovertemplate:
                         '<b>仮説：</b><br>' +
                         '%{customdata[3]}<br>' +
@@ -351,7 +350,7 @@ export default function HypothesesSection({
                   onClick={(data: PlotMouseEvent) => {
                     if (data.points && data.points.length > 0) {
                       const point = data.points[0];
-                      const hypothesis = (point as any).customdata[0] as Hypothesis;
+                      const hypothesis = (point.customdata as unknown as [Hypothesis])[0];
                       handleHypothesisClick(hypothesis);
                     } else {
                       handleClickOutside();
@@ -366,6 +365,7 @@ export default function HypothesesSection({
               <div className="max-h-[600px] overflow-y-auto pr-1" ref={hypothesesListRef}>
                 <div className="flex flex-col gap-2.5">
                   {graphSortedHypotheses.map((hypothesis) => (
+                    // biome-ignore lint/a11y/useSemanticElements: 内側にフィードバックボタンを含むため <button> にはできない
                     <div
                       key={hypothesis.id}
                       data-hypothesis-id={hypothesis.id}
@@ -374,7 +374,18 @@ export default function HypothesesSection({
                           ? 'border-primary-300 shadow-md shadow-primary-500/10 bg-primary-50/50'
                           : 'border-surface-200 bg-white hover:border-primary-200 hover:shadow-app-sm hover:-translate-y-px'
                       }`}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={selectedHypothesis?.id === hypothesis.id}
                       onClick={() => handleHypothesisItemClick(hypothesis)}
+                      onKeyDown={(e) => {
+                        // 内側のフィードバックボタンでのキー操作は、そのボタン自身に任せる
+                        if (e.target !== e.currentTarget) return;
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleHypothesisItemClick(hypothesis);
+                        }
+                      }}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
@@ -408,6 +419,7 @@ export default function HypothesesSection({
                       {/* Feedback buttons */}
                       <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-surface-100">
                         <button
+                          type="button"
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 active:scale-95"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -417,6 +429,7 @@ export default function HypothesesSection({
                           <span aria-hidden="true">🤔</span> 興味深い
                         </button>
                         <button
+                          type="button"
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 active:scale-95"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -426,6 +439,7 @@ export default function HypothesesSection({
                           <span aria-hidden="true">✨</span> 画期的
                         </button>
                         <button
+                          type="button"
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-95"
                           onClick={(e) => {
                             e.stopPropagation();

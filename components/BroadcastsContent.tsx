@@ -1,3 +1,4 @@
+import type { NextRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PastBroadcast } from '../types/broadcast';
 import BroadcastEmbed from './BroadcastEmbed';
@@ -10,7 +11,7 @@ interface BroadcastsContentProps {
   isLoadingBroadcasts: boolean;
   visibleEmbeds: Set<number>;
   toggleEmbedVisibility: (id: number) => void;
-  router: any;
+  router: NextRouter;
   embedType: 'youtube' | 'spotify';
 }
 
@@ -63,8 +64,7 @@ const BroadcastsContent = React.memo(
     const broadcastsBySeries = useMemo(() => {
       const grouped: Record<string, PastBroadcast[]> = {};
       pastBroadcasts.forEach((broadcast) => {
-        const seriesName =
-          broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : '999. その他';
+        const seriesName = broadcast.series?.trim() ? broadcast.series.trim() : '999. その他';
         if (!grouped[seriesName]) {
           grouped[seriesName] = [];
         }
@@ -88,7 +88,7 @@ const BroadcastsContent = React.memo(
 
     const extractSeriesNumberFromName = useCallback((seriesName: string): number | null => {
       const match = seriesName.match(/^(\d+)\./);
-      return match ? parseInt(match[1]) : null;
+      return match ? parseInt(match[1], 10) : null;
     }, []);
 
     const sortSeriesByNumber = useCallback(
@@ -107,11 +107,12 @@ const BroadcastsContent = React.memo(
     const sortedBroadcasts = useMemo(() => {
       const sorted = [...pastBroadcasts];
       sorted.sort((a, b) => {
-        let aValue: any, bValue: any;
+        let aValue: number | string;
+        let bValue: number | string;
         switch (sortColumn) {
           case 'date':
-            aValue = a.date ? new Date(a.date) : new Date(0);
-            bValue = b.date ? new Date(b.date) : new Date(0);
+            aValue = a.date ? new Date(a.date).getTime() : 0;
+            bValue = b.date ? new Date(b.date).getTime() : 0;
             break;
           case 'title':
             aValue = a.title.toLowerCase();
@@ -206,7 +207,7 @@ const BroadcastsContent = React.memo(
     const getHypothesesQuery = useCallback(
       (broadcast: PastBroadcast) => {
         return groupDisplayMode
-          ? `/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`
+          ? `/?tab=hypotheses&series=${encodeURIComponent(broadcast.series?.trim() ? broadcast.series.trim() : 'その他')}`
           : `/?tab=hypotheses&episodeId=${broadcast.id}`;
       },
       [groupDisplayMode],
@@ -257,6 +258,7 @@ const BroadcastsContent = React.memo(
               <div className="flex items-center gap-2 max-md:justify-center">
                 <span className="text-sm font-medium text-text-secondary mr-1">表示:</span>
                 <button
+                  type="button"
                   onClick={() => setGroupDisplayMode(true)}
                   className={`px-3.5 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 ease-out border ${
                     groupDisplayMode
@@ -267,6 +269,7 @@ const BroadcastsContent = React.memo(
                   グループ
                 </button>
                 <button
+                  type="button"
                   onClick={() => setGroupDisplayMode(false)}
                   className={`px-3.5 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 ease-out border ${
                     !groupDisplayMode
@@ -280,10 +283,18 @@ const BroadcastsContent = React.memo(
 
               {groupDisplayMode ? (
                 <div className="flex items-center gap-2 max-md:justify-center">
-                  <button onClick={expandAllSeries} className="btn-secondary text-xs px-3 py-1.5">
+                  <button
+                    type="button"
+                    onClick={expandAllSeries}
+                    className="btn-secondary text-xs px-3 py-1.5"
+                  >
                     すべて展開
                   </button>
-                  <button onClick={collapseAllSeries} className="btn-secondary text-xs px-3 py-1.5">
+                  <button
+                    type="button"
+                    onClick={collapseAllSeries}
+                    className="btn-secondary text-xs px-3 py-1.5"
+                  >
                     すべて閉じる
                   </button>
                 </div>
@@ -308,6 +319,7 @@ const BroadcastsContent = React.memo(
                     ))}
                   </select>
                   <button
+                    type="button"
                     onClick={() => setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
                     className="btn-secondary text-xs px-3 py-1.5"
                     aria-label={sortDirection === 'asc' ? '昇順' : '降順'}
@@ -441,7 +453,7 @@ const BroadcastsContent = React.memo(
                                   {broadcast.title}
                                 </span>
                                 <span className="text-xs text-text-muted">
-                                  {broadcast.series && broadcast.series.trim()
+                                  {broadcast.series?.trim()
                                     ? broadcast.series.trim()
                                     : '999. その他'}
                                 </span>
@@ -558,9 +570,7 @@ const BroadcastsContent = React.memo(
                             {broadcast.title}
                           </p>
                           <p className="m-0 mt-1 text-xs text-text-muted">
-                            {broadcast.series && broadcast.series.trim()
-                              ? broadcast.series.trim()
-                              : '999. その他'}
+                            {broadcast.series?.trim() ? broadcast.series.trim() : '999. その他'}
                           </p>
                           <p className="m-0 mt-1 text-xs text-text-muted">
                             {formatDate(broadcast.date)}

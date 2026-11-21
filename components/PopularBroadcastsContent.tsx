@@ -52,7 +52,8 @@ export default function PopularBroadcastsContent({
   const sortedBroadcasts = useMemo(() => {
     const sorted = [...popularBroadcasts];
     sorted.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: number | string;
+      let bValue: number | string;
       switch (sortColumn) {
         case 'viewCount':
           aValue = a.viewCount;
@@ -71,8 +72,8 @@ export default function PopularBroadcastsContent({
           bValue = b.title.toLowerCase();
           break;
         case 'date':
-          aValue = a.date ? new Date(a.date) : new Date(0);
-          bValue = b.date ? new Date(b.date) : new Date(0);
+          aValue = a.date ? new Date(a.date).getTime() : 0;
+          bValue = b.date ? new Date(b.date).getTime() : 0;
           break;
         default:
           return 0;
@@ -121,7 +122,7 @@ export default function PopularBroadcastsContent({
           type="button"
           onClick={() =>
             router.push(
-              `/?tab=hypotheses&series=${encodeURIComponent(broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他')}`,
+              `/?tab=hypotheses&series=${encodeURIComponent(broadcast.series?.trim() ? broadcast.series.trim() : 'その他')}`,
             )
           }
           className="btn-icon"
@@ -178,6 +179,7 @@ export default function PopularBroadcastsContent({
           ))}
         </select>
         <button
+          type="button"
           onClick={() => setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
           className="btn-secondary text-xs px-3 py-1.5"
           aria-label={sortDirection === 'asc' ? '昇順' : '降順'}
@@ -223,9 +225,7 @@ export default function PopularBroadcastsContent({
                         {broadcast.title}
                       </span>
                       <span className="text-xs text-text-muted">
-                        {broadcast.series && broadcast.series.trim()
-                          ? broadcast.series.trim()
-                          : 'その他'}
+                        {broadcast.series?.trim() ? broadcast.series.trim() : 'その他'}
                       </span>
                     </div>
                   </td>
@@ -270,7 +270,7 @@ export default function PopularBroadcastsContent({
                   {broadcast.title}
                 </p>
                 <p className="m-0 mt-1 text-xs text-text-muted">
-                  {broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他'}
+                  {broadcast.series?.trim() ? broadcast.series.trim() : 'その他'}
                   {broadcast.date && (
                     <>
                       <span className="mx-1.5">·</span>

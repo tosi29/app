@@ -8,8 +8,8 @@ export default function PastBroadcasts() {
   useEffect(() => {
     // Redirect to the home page with the same parameters
     const query: Record<string, string | string[]> = {};
-    if (tab) query['tab'] = tab;
-    if (episodeId) query['episodeId'] = episodeId;
+    if (tab) query.tab = tab;
+    if (episodeId) query.episodeId = episodeId;
 
     router.replace({
       pathname: '/',

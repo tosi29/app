@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BroadcastsContent from '../components/BroadcastsContent';
 import HypothesesSection from '../components/HypothesesSection';
 import PopularBroadcastsContent from '../components/PopularBroadcastsContent';
@@ -185,11 +185,13 @@ export default function Home() {
                 <Tabs active={activeTab} tabs={tabs} onTabChange={handleTabChange} />
               </div>
               <button
+                type="button"
                 className="ml-2 p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-surface-100 transition-all duration-200 max-md:ml-0 max-md:p-1.5"
                 onClick={() => setIsSettingsOpen(true)}
                 aria-label="設定を開く"
               >
                 <svg
+                  aria-hidden="true"
                   width="20"
                   height="20"
                   viewBox="0 0 20 20"

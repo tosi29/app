@@ -2,8 +2,21 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { hypotheses } from '../../data/hypotheses-sample';
 import type { Hypothesis } from '../../types/hypothesis';
 
+// 外部APIが返す仮説1件の形（snake_case）
+interface ExternalHypothesis {
+  id: number;
+  episode_id: number;
+  hypothesis: string;
+  fact: string;
+  x: number;
+  y: number;
+  proposer: string;
+  topic: string;
+  created_at: string;
+}
+
 // Function to transform external API data to internal format
-function transformExternalData(externalData: any[]): Hypothesis[] {
+function transformExternalData(externalData: ExternalHypothesis[]): Hypothesis[] {
   return externalData.map((item) => ({
     id: item.id,
     episodeId: item.episode_id,

@@ -1,5 +1,5 @@
-import React from 'react';
 import type { PastBroadcast } from '../types/broadcast';
+import { useCloseOnEscape } from './useCloseOnEscape';
 
 interface BroadcastSummaryModalProps {
   broadcast: PastBroadcast | null;
@@ -12,31 +12,44 @@ export default function BroadcastSummaryModal({
   isOpen,
   onClose,
 }: BroadcastSummaryModalProps) {
-  if (!isOpen || !broadcast || !broadcast.summary) {
+  useCloseOnEscape(isOpen, onClose);
+
+  if (!isOpen || !broadcast?.summary) {
     return null;
   }
 
   const { summary } = broadcast;
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: キーボードでは useCloseOnEscape の Esc で閉じる
+    // biome-ignore lint/a11y/noStaticElementInteractions: 背景クリックで閉じるのはマウス向けの補助操作
     <div
       className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-[1000] p-4 animate-fade-in max-md:p-2"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="broadcast-summary-title"
         className="bg-white rounded-2xl shadow-app-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-surface-200 animate-slide-in max-md:max-h-[95vh]"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start px-6 py-5 border-b border-surface-100 sticky top-0 bg-white rounded-t-2xl z-10 max-md:px-4 max-md:py-4">
-          <h2 className="m-0 text-lg font-semibold text-text-primary leading-snug flex-1 pr-4 max-md:text-base">
+          <h2
+            id="broadcast-summary-title"
+            className="m-0 text-lg font-semibold text-text-primary leading-snug flex-1 pr-4 max-md:text-base"
+          >
             {broadcast.title}
           </h2>
           <button
+            type="button"
             className="bg-transparent border-none text-text-muted cursor-pointer p-1.5 rounded-lg transition-all duration-200 w-8 h-8 flex items-center justify-center flex-shrink-0 hover:bg-surface-100 hover:text-text-primary"
             onClick={onClose}
             aria-label="閉じる"
           >
             <svg
+              aria-hidden="true"
               width="16"
               height="16"
               viewBox="0 0 24 24"
@@ -67,6 +80,7 @@ export default function BroadcastSummaryModal({
             <div className="flex flex-col gap-2">
               {summary.facts.map((fact, index) => (
                 <div
+                  // biome-ignore lint/suspicious/noArrayIndexKey: 並び替えも追加削除もしない静的な表示で、同じ文が重複しうる
                   key={index}
                   className="p-3.5 bg-emerald-50/50 rounded-xl border-l-3 border-l-emerald-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs"
                 >
@@ -83,6 +97,7 @@ export default function BroadcastSummaryModal({
             <div className="flex flex-col gap-2">
               {summary.lessons.map((lesson, index) => (
                 <div
+                  // biome-ignore lint/suspicious/noArrayIndexKey: 並び替えも追加削除もしない静的な表示で、同じ文が重複しうる
                   key={index}
                   className="p-3.5 bg-amber-50/50 rounded-xl border-l-3 border-l-amber-400 text-sm leading-relaxed text-text-primary max-md:p-2.5 max-md:text-xs"
                 >

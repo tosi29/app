@@ -17,6 +17,7 @@ export default function Tabs({ active, tabs, onTabChange }: TabProps): React.Rea
       <div className="flex w-max bg-surface-100 rounded-xl p-1 gap-0.5">
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             className={`px-4 py-1.5 border-none rounded-lg cursor-pointer text-sm transition-all duration-200 ease-out font-medium whitespace-nowrap
               ${
