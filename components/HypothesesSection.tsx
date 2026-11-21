@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import { Hypothesis } from '../types/hypothesis';
-import { PlotMouseEvent } from 'plotly.js';
+import { useRouter } from 'next/router';
+import type { PlotMouseEvent } from 'plotly.js';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { Hypothesis } from '../types/hypothesis';
 
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
@@ -19,7 +20,11 @@ interface HypothesesSectionProps {
   selectedEpisodeId?: number;
 }
 
-export default function HypothesesSection({ pastBroadcasts, selectedSeries, selectedEpisodeId }: HypothesesSectionProps): React.ReactNode {
+export default function HypothesesSection({
+  pastBroadcasts,
+  selectedSeries,
+  selectedEpisodeId,
+}: HypothesesSectionProps): React.ReactNode {
   const [selectedHypothesis, setSelectedHypothesis] = useState<Hypothesis | null>(null);
   const [hypotheses, setHypotheses] = useState<Hypothesis[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,16 +45,17 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
     if (selectedSeries !== dropdownSeries) {
       setDropdownSeries(selectedSeries);
     } else if (selectedEpisodeId && !selectedSeries) {
-      const broadcast = pastBroadcasts.find(b => b.id === selectedEpisodeId);
+      const broadcast = pastBroadcasts.find((b) => b.id === selectedEpisodeId);
       if (broadcast) {
-        const series = broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
+        const series =
+          broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
         setDropdownSeries(series);
       }
     }
   }, [selectedSeries, selectedEpisodeId, dropdownSeries, pastBroadcasts]);
 
   const extractNumber = (str: string): number | null => {
-    const match = str.match(/^(-?\d+)[\.\:]/);
+    const match = str.match(/^(-?\d+)[.:]/);
     return match ? parseInt(match[1]) : null;
   };
 
@@ -64,7 +70,9 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   };
 
   const getUniqueSeries = (): string[] => {
-    const seriesSet = new Set(pastBroadcasts.map(b => b.series && b.series.trim() ? b.series.trim() : 'その他'));
+    const seriesSet = new Set(
+      pastBroadcasts.map((b) => (b.series && b.series.trim() ? b.series.trim() : 'その他')),
+    );
     return sortByNumericPrefix(Array.from(seriesSet));
   };
 
@@ -95,12 +103,12 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   }, []);
 
   const getEpisodeTitle = (episodeId: number): string => {
-    const broadcast = pastBroadcasts.find(b => b.id === episodeId);
+    const broadcast = pastBroadcasts.find((b) => b.id === episodeId);
     return broadcast ? broadcast.title : '不明なエピソード';
   };
 
   const getEpisodeSeries = (episodeId: number): string => {
-    const broadcast = pastBroadcasts.find(b => b.id === episodeId);
+    const broadcast = pastBroadcasts.find((b) => b.id === episodeId);
     if (!broadcast) return 'その他';
     return broadcast.series && broadcast.series.trim() ? broadcast.series.trim() : 'その他';
   };
@@ -110,7 +118,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
     let hash = 0;
     for (let i = 0; i < topic.length; i++) {
       const char = topic.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     const hue = Math.abs(hash) % 360;
@@ -120,7 +128,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   };
 
   const getUniqueTopics = (): string[] => {
-    const topicsSet = new Set(hypotheses.map(h => h.topic));
+    const topicsSet = new Set(hypotheses.map((h) => h.topic));
     return sortByNumericPrefix(Array.from(topicsSet));
   };
 
@@ -143,7 +151,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
 
   const getFilteredHypotheses = (): Hypothesis[] => {
     if (!dropdownSeries) return hypotheses;
-    return hypotheses.filter(hypothesis => {
+    return hypotheses.filter((hypothesis) => {
       const episodeSeries = getEpisodeSeries(hypothesis.episodeId);
       return episodeSeries === dropdownSeries;
     });
@@ -155,7 +163,9 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   const handleHypothesisClick = (hypothesis: Hypothesis): void => {
     setSelectedHypothesis(hypothesis);
     if (hypothesesListRef.current) {
-      const hypothesisElement = hypothesesListRef.current.querySelector(`[data-hypothesis-id="${hypothesis.id}"]`);
+      const hypothesisElement = hypothesesListRef.current.querySelector(
+        `[data-hypothesis-id="${hypothesis.id}"]`,
+      );
       if (hypothesisElement) {
         hypothesisElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -177,9 +187,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
   const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     const series = event.target.value === '' ? undefined : event.target.value;
     setDropdownSeries(series);
-    const newQuery = series
-      ? { tab: 'hypotheses', series: series }
-      : { tab: 'hypotheses' };
+    const newQuery = series ? { tab: 'hypotheses', series: series } : { tab: 'hypotheses' };
     router.replace({ pathname: '/', query: newQuery }, undefined, { shallow: true });
   };
 
@@ -188,7 +196,10 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
       {/* Dropdown filter for series */}
       <div className="w-full max-w-5xl card-modern p-4 mb-6 flex justify-center items-center max-md:px-3">
         <div className="flex items-center gap-3 max-md:w-full">
-          <label htmlFor="series-filter" className="text-sm font-medium text-text-secondary whitespace-nowrap">
+          <label
+            htmlFor="series-filter"
+            className="text-sm font-medium text-text-secondary whitespace-nowrap"
+          >
             シリーズ:
           </label>
           <select
@@ -199,7 +210,9 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
           >
             <option value="">すべて</option>
             {getUniqueSeries().map((series) => (
-              <option key={series} value={series}>{series}</option>
+              <option key={series} value={series}>
+                {series}
+              </option>
             ))}
           </select>
         </div>
@@ -221,29 +234,35 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
             <div className="flex-1 min-w-[600px] max-lg:flex-none max-lg:min-w-0">
               <div className="w-full h-[600px] rounded-xl overflow-hidden bg-white max-md:h-[480px]">
                 <Plot
-                  data={getUniqueTopics().map(topic => {
-                    const topicHypotheses = filteredHypotheses.filter(h => h.topic === topic);
+                  data={getUniqueTopics().map((topic) => {
+                    const topicHypotheses = filteredHypotheses.filter((h) => h.topic === topic);
                     return {
-                      x: topicHypotheses.map(h => h.x),
-                      y: topicHypotheses.map(h => h.y),
+                      x: topicHypotheses.map((h) => h.x),
+                      y: topicHypotheses.map((h) => h.y),
                       mode: 'markers',
                       type: 'scatter',
                       name: topic,
                       marker: {
-                        size: topicHypotheses.map(h => selectedHypothesis?.id === h.id ? 14 : 9),
+                        size: topicHypotheses.map((h) =>
+                          selectedHypothesis?.id === h.id ? 14 : 9,
+                        ),
                         color: getTopicColor(topic),
                         opacity: 0.85,
                         line: {
-                          color: topicHypotheses.map(h => selectedHypothesis?.id === h.id ? '#1e293b' : 'rgba(255,255,255,0.8)'),
-                          width: topicHypotheses.map(h => selectedHypothesis?.id === h.id ? 2.5 : 1)
-                        }
+                          color: topicHypotheses.map((h) =>
+                            selectedHypothesis?.id === h.id ? '#1e293b' : 'rgba(255,255,255,0.8)',
+                          ),
+                          width: topicHypotheses.map((h) =>
+                            selectedHypothesis?.id === h.id ? 2.5 : 1,
+                          ),
+                        },
                       },
-                      customdata: topicHypotheses.map(h => [
+                      customdata: topicHypotheses.map((h) => [
                         h,
                         getEpisodeTitle(h.episodeId),
                         getEpisodeSeries(h.episodeId),
                         wrapText(h.hypothesis, 40),
-                        wrapText(h.fact, 40)
+                        wrapText(h.fact, 40),
                       ]) as any,
                       hovertemplate:
                         '<b>仮説：</b><br>' +
@@ -252,16 +271,18 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                         '<b>事実：</b><br>' +
                         '%{customdata[4]}<br>' +
                         '<br>' +
-                        'トピック：' + topic + '<br>' +
+                        'トピック：' +
+                        topic +
+                        '<br>' +
                         '%{customdata[2]} -- %{customdata[1]}' +
                         '<extra></extra>',
                       hoverlabel: {
                         bgcolor: 'white',
                         bordercolor: '#e2e8f0',
                         font: { size: 12, color: '#1e293b' },
-                        namelength: -1
+                        namelength: -1,
                       },
-                      showlegend: true
+                      showlegend: true,
                     };
                   })}
                   layout={{
@@ -274,7 +295,7 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                       gridwidth: 1,
                       zeroline: false,
                       showline: false,
-                      showticklabels: false
+                      showticklabels: false,
                     },
                     yaxis: {
                       autorange: true,
@@ -283,35 +304,37 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                       gridwidth: 1,
                       zeroline: false,
                       showline: false,
-                      showticklabels: false
+                      showticklabels: false,
                     },
                     plot_bgcolor: '#fafbfc',
                     paper_bgcolor: 'white',
                     margin: { l: 40, r: 20, t: 20, b: 20 },
-                    legend: isNarrowViewport ? {
-                      orientation: 'h',
-                      x: 0,
-                      y: -0.05,
-                      yanchor: 'top',
-                      bgcolor: 'rgba(255,255,255,0.9)',
-                      font: { size: 10, color: '#475569' }
-                    } : {
-                      orientation: 'v',
-                      x: 1.02,
-                      y: 1,
-                      bgcolor: 'rgba(255,255,255,0.9)',
-                      bordercolor: '#e2e8f0',
-                      borderwidth: 1,
-                      font: { size: 11, color: '#475569' }
-                    },
+                    legend: isNarrowViewport
+                      ? {
+                          orientation: 'h',
+                          x: 0,
+                          y: -0.05,
+                          yanchor: 'top',
+                          bgcolor: 'rgba(255,255,255,0.9)',
+                          font: { size: 10, color: '#475569' },
+                        }
+                      : {
+                          orientation: 'v',
+                          x: 1.02,
+                          y: 1,
+                          bgcolor: 'rgba(255,255,255,0.9)',
+                          bordercolor: '#e2e8f0',
+                          borderwidth: 1,
+                          font: { size: 11, color: '#475569' },
+                        },
                     hoverlabel: {
                       bgcolor: 'white',
                       bordercolor: '#e2e8f0',
                       font: { size: 12, color: '#1e293b' },
                       align: 'left',
-                      namelength: -1
+                      namelength: -1,
                     },
-                    hovermode: 'closest'
+                    hovermode: 'closest',
                   }}
                   config={{
                     displayModeBar: false,
@@ -321,8 +344,8 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                       filename: 'hypothesis-graph',
                       height: 600,
                       width: 800,
-                      scale: 1
-                    }
+                      scale: 1,
+                    },
                   }}
                   style={{ width: '100%', height: '100%' }}
                   onClick={(data: PlotMouseEvent) => {
@@ -366,33 +389,48 @@ export default function HypothesesSection({ pastBroadcasts, selectedSeries, sele
                               className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
                               style={{ backgroundColor: getTopicColor(hypothesis.topic) }}
                             />
-                            <span className="text-xs font-medium text-text-secondary">{hypothesis.topic}</span>
+                            <span className="text-xs font-medium text-text-secondary">
+                              {hypothesis.topic}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <p className="m-0 mb-2 text-sm leading-relaxed text-text-primary">{hypothesis.hypothesis}</p>
+                      <p className="m-0 mb-2 text-sm leading-relaxed text-text-primary">
+                        {hypothesis.hypothesis}
+                      </p>
                       <div className="text-xs text-primary-700 bg-primary-50 px-3 py-2 rounded-lg mb-2">
                         <span className="font-semibold">事実:</span> {hypothesis.fact}
                       </div>
-                      <p className="m-0 text-xs text-text-muted text-right">by {hypothesis.proposer}</p>
+                      <p className="m-0 text-xs text-text-muted text-right">
+                        by {hypothesis.proposer}
+                      </p>
 
                       {/* Feedback buttons */}
                       <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-surface-100">
                         <button
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 active:scale-95"
-                          onClick={(e) => { e.stopPropagation(); handleFeedback('interesting', hypothesis); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFeedback('interesting', hypothesis);
+                          }}
                         >
                           <span aria-hidden="true">🤔</span> 興味深い
                         </button>
                         <button
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 active:scale-95"
-                          onClick={(e) => { e.stopPropagation(); handleFeedback('groundbreaking', hypothesis); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFeedback('groundbreaking', hypothesis);
+                          }}
                         >
                           <span aria-hidden="true">✨</span> 画期的
                         </button>
                         <button
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-50 text-text-secondary text-xs font-medium cursor-pointer transition-all duration-200 border border-surface-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 active:scale-95"
-                          onClick={(e) => { e.stopPropagation(); handleFeedback('worth-testing', hypothesis); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFeedback('worth-testing', hypothesis);
+                          }}
                         >
                           <span aria-hidden="true">🎯</span> 検証したい
                         </button>

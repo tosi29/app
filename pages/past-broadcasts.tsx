@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function PastBroadcasts() {
   const router = useRouter();
@@ -10,10 +10,10 @@ export default function PastBroadcasts() {
     const query: Record<string, string | string[]> = {};
     if (tab) query['tab'] = tab;
     if (episodeId) query['episodeId'] = episodeId;
-    
+
     router.replace({
       pathname: '/',
-      query
+      query,
     });
   }, [tab, episodeId, router]);
 

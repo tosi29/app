@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
   embedType,
-  onEmbedTypeChange
+  onEmbedTypeChange,
 }) => {
   if (!isOpen) return null;
 
@@ -22,7 +22,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[1000] animate-fade-in" onClick={handleBackdropClick}>
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[1000] animate-fade-in"
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-2xl shadow-app-xl border border-surface-200 w-[90%] max-w-md animate-slide-in max-md:w-[95%]">
         <div className="flex justify-between items-center px-6 py-5 border-b border-surface-100">
           <h2 className="m-0 text-lg font-semibold text-text-primary">設定</h2>
@@ -31,15 +34,27 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             onClick={onClose}
             aria-label="設定を閉じる"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
             </svg>
           </button>
         </div>
 
         <div className="p-6">
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-3">再生プラットフォーム</label>
+            <label className="block text-sm font-medium text-text-secondary mb-3">
+              再生プラットフォーム
+            </label>
             <div className="flex gap-2 max-md:flex-col">
               <button
                 onClick={() => onEmbedTypeChange('spotify')}

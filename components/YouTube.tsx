@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface YouTubeProps {
   videoId: string;
@@ -7,11 +7,11 @@ interface YouTubeProps {
   height?: number;
 }
 
-export default function YouTube({ 
-  videoId, 
-  startTime, 
-  width = 560, 
-  height = 315 
+export default function YouTube({
+  videoId,
+  startTime,
+  width = 560,
+  height = 315,
 }: YouTubeProps): React.ReactNode {
   // 空文字列や無効なIDをチェック
   if (!videoId || videoId.trim() === '') {

@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type React from 'react';
+import type { ReactNode } from 'react';
 
 interface TabProps {
   active: string;
@@ -18,9 +19,10 @@ export default function Tabs({ active, tabs, onTabChange }: TabProps): React.Rea
           <button
             key={tab.id}
             className={`px-4 py-1.5 border-none rounded-lg cursor-pointer text-sm transition-all duration-200 ease-out font-medium whitespace-nowrap
-              ${active === tab.id
-                ? 'bg-white text-primary-700 shadow-app-sm font-semibold'
-                : 'bg-transparent text-text-muted hover:text-text-primary'
+              ${
+                active === tab.id
+                  ? 'bg-white text-primary-700 shadow-app-sm font-semibold'
+                  : 'bg-transparent text-text-muted hover:text-text-primary'
               }
               max-md:px-3.5`}
             onClick={() => onTabChange(tab.id)}

@@ -1,7 +1,7 @@
-import React from 'react';
+import type React from 'react';
+import type { PastBroadcast } from '../types/broadcast';
 import SpotifyPodcastEmbed from './SpotifyPodcastEmbed';
 import YouTube from './YouTube';
-import { PastBroadcast } from '../types/broadcast';
 
 interface BroadcastEmbedProps {
   broadcast: PastBroadcast;
@@ -10,12 +10,7 @@ interface BroadcastEmbedProps {
   width?: number;
 }
 
-const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({ 
-  broadcast, 
-  embedType, 
-  height,
-  width 
-}) => {
+const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({ broadcast, embedType, height, width }) => {
   const hasSpotify = broadcast.spotify_episode_id && broadcast.spotify_episode_id.trim() !== '';
   const hasYouTube = broadcast.youtube_video_id && broadcast.youtube_video_id.trim() !== '';
 
@@ -23,14 +18,14 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
   if (embedType === 'spotify') {
     if (hasSpotify) {
       return (
-        <SpotifyPodcastEmbed 
+        <SpotifyPodcastEmbed
           episodeId={broadcast.spotify_episode_id}
           height={(height || 152).toString()}
         />
       );
     } else if (hasYouTube) {
       return (
-        <YouTube 
+        <YouTube
           videoId={broadcast.youtube_video_id}
           startTime={broadcast.playback_time}
           width={width || 560}
@@ -41,7 +36,7 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
   } else {
     if (hasYouTube) {
       return (
-        <YouTube 
+        <YouTube
           videoId={broadcast.youtube_video_id}
           startTime={broadcast.playback_time}
           width={width || 560}
@@ -50,7 +45,7 @@ const BroadcastEmbed: React.FC<BroadcastEmbedProps> = ({
       );
     } else if (hasSpotify) {
       return (
-        <SpotifyPodcastEmbed 
+        <SpotifyPodcastEmbed
           episodeId={broadcast.spotify_episode_id}
           height={(height || 152).toString()}
         />
