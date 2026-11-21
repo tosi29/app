@@ -28,6 +28,10 @@ pnpm start    # Start production server
 
 **Code Quality:**
 ```bash
-pnpm lint         # ESLint with Next.js config
+pnpm lint         # Biome: lint + format check (CI mode, no writes)
+pnpm format       # Biome: apply formatting, import sorting and safe fixes
 pnpm type-check   # TypeScript type checking without emitting files
+pnpm check        # lint + type-check (what CI runs before build)
 ```
+
+**CI:** `.github/workflows/ci.yml` runs `pnpm lint` → `pnpm type-check` → `pnpm build` on every PR and push to main. Run `pnpm check` locally before pushing. Deployment is handled separately by the Vercel GitHub integration (not configured in this repo).
